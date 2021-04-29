@@ -1,0 +1,110 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+ {% block head %}
+ 	<title>{% block title %} Sistema Gerencial de Servicio Social {% endblock %}</title>
+
+	{% block static %}
+
+	<meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+	<!-- Favicon -->
+	<link type="image/x-icon" href="{% static 'img/favAgronomia.png'%}" rel="icon">
+
+	<!-- Enlaces -->
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i|Montserrat:300,400,500,700" rel="stylesheet">
+	<script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.js"></script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+
+	<!-- Librerias -->
+	<link rel = "stylesheet" href = "{% static 'lib/bootstrap/css/bootstrap.min.css' %}">
+	<link rel = "stylesheet" href = "{% static 'lib/animate/animate.min.css' %}">
+	<link rel = "stylesheet" href = "{% static 'lib/ionicons/css/ionicons.min.css' %}">
+	<script src = "{% static 'lib/jquery/jquery.min.js' %}"></script>
+	<script src = "{% static 'lib/jquery/jquery-migrate.min.js' %}"></script>
+	<script src = "{% static 'lib/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+	<!-- CSS y Bootstrap -->
+	<link rel = "stylesheet" href = "{% static 'css/style.css' %}">
+	<link rel = "stylesheet" href = "{% static 'css/bootstrap.min.css' %}">
+	<link rel = "stylesheet" href = "{% static 'css/archivo.css' %}">
+	<link rel = "stylesheet" href = "{% static 'css/estilos_sec_not.css' %}">
+	<link rel = "stylesheet" type = "text/css" href = "{% static 'css/jquery-ui.css' %}"/>
+	<link rel = "stylesheet" type = "text/css" href = "{% static 'css/jquery.dataTables.min.css' %}"/>
+
+	<!-- JavaScript -->
+	<script type = "text/javascript" src = "{% static 'js/bootstrap.min.js' %}"></script>
+	<script type = "text/javascript" src = "{% static 'js/jquery.js' %}" charset="UTF-8"></script>
+	<script type = "text/javascript" src = "{% static 'js/bootstrap.min.js' %}" charset="UTF-8"></script>
+	<script type = "text/javascript" src = "{% static 'js/jquery-ui.js' %}"></script>
+	<script type = "text/javascript" src = "{% static 'js/jquery.dataTables.min.js' %}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+  <script type = "text/javascript" src = "{% static 'js/main.js' %}"></script>
+  <script>
+      {% if messages %}
+          var html_mensaje = '';
+          {% for mensaje in messages %}
+              html_mensaje += '{{ mensaje }}';
+          {% endfor %}
+          notificacionError(html_mensaje);
+      {% endif %}
+  </script>
+
+	{% endblock %}
+
+{% endblock %}
+
+  {% block extra_css %}
+  {% endblock extra_css %}
+
+</head>
+
+<body>
+
+  <header id="header">
+    <div class="container-fluid navbar navbar-light">
+
+      <div id="logo" class="pull-left">
+        <a  href=" {% url 'sistemaGerencialAgro:index' %}"><img src="{% static 'img/logoUPSAgro.png' %} " class ="imglogo"></a>
+        <h1>Sistema Gerencial de Servicio Social - Agronom&iacute;a.</h1>
+      </div>
+
+      <div id="logo" class="pull-rigth">
+				<input type="button" href="{% url 'sistemaGerencialAgro:index' %}" class="btn-success btn" name="submit" disabled style="background-color:transparent; border:none;"></a> 
+        <a href="" style="text-decoration:none"><input type="button" href="" class="btn btn-success btn-sm" name="submit" value="Cerrar Sesi&oacute;n" style="background:green;"></a> 
+			</div>
+
+    </div>
+
+    <div class="bot">
+      <ul class="nav-menu">
+
+        <li class="list-group-item" onclick="window.location.href='{% url 'sistemaGerencialAgro:index' %}'"><a style="text-decoration:none" href="{% url 'sistemaGerencialAgro:index' %}">Inicio</a></li>
+        
+        <li class="list-group-item" onclick="window.location.href='{% url 'sistemaGerencialAgro:consulta_estudiante' %}'"><a style="text-decoration:none" href="{% url 'sistemaGerencialAgro:consulta_estudiante' %}">Ejemplo</a></li>
+
+      </ul>
+    </div>
+  </header>
+
+  <section>
+    <div class="container">
+      </br></br></br></br></br></br></br>
+
+  		{% block content %}
+        </br></br></br></br></br></br></br></br></br></br><img src = "{% static 'img/FondoUPS_Inicio.png' %}">
+      {%endblock%}
+
+    </div>
+  </section>
+
+  {% block js %}
+
+	{% endblock %}
+
+</body>
+
+</html>

@@ -1,0 +1,65 @@
+.container
+{
+    display: block;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+section{
+    display: block;
+    width: 100%;
+}
+form{
+    display: block;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+form input, select, label, textarea{
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+}
+.rowExp{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: justify-all;
+}
+
+.columExp{
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: justify;
+}
+form input, select{
+    margin: 8px;
+    text-align: justify;
+    width: 150px;
+}
+form label{
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 20px;
+    width: 180px;
+}
+form input[type=text], input[type=number]:valid, form input[type=date]{
+    border: 1px solid green;
+}
+form input:invalid{
+    border: 1px solid red;
+}
+textarea{
+    height: 20px;
+    width: 350px;
+
+}
+#Cancelarbtn, #guardarbtn{
+    text-align: center;
+}
+.buttons input{
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+}

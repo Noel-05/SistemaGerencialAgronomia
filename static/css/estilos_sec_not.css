@@ -1,0 +1,204 @@
+
+.container {
+    display: block;
+    text-align: center;
+    margin-left: auto;
+	margin-right: auto;
+}
+
+.form-titulo{
+	background: white;
+	color: black;
+	padding: 20px;
+	text-align: center;
+	font-weight: 100px;
+	font-size: 30px;
+	border-bottom: 5px solid #000050;
+	margin-top: 30px;
+	width: 100%;
+}
+
+.contenedor-inputs{
+ 	width: 100%;
+}
+
+.form-busqueda{
+	width: 100%;
+	margin: 30px;
+	background: white;
+	border-radius: 7px;
+}
+
+.input-style{
+	margin-right:10px;
+	height: 50px; 
+	border-radius: 3px;
+	border: 1px solid darkgray;
+}
+
+.btn-buscar{
+	text-align: center;
+	background: green;
+	color: white;
+	margin: auto;
+	padding: 0px 35px;
+	border-radius: 5px ;
+}
+
+.btn-busquedaform{
+	text-align: center;
+	background: green;
+	color: white;
+	margin: auto;
+	padding: 10px 15px;
+	border-radius: 5px ;
+}
+
+.btn-busquedaform:hover{
+	opacity:0.7;
+	text-decoration: unset;
+	background: #9c9c9c;
+	color: white;
+}
+
+.btn-buscar:hover{
+	opacity:0.7;
+	text-decoration: unset;
+	background: #9c9c9c;
+	color: white;
+}
+
+.btn-busqueda{
+	margin-left: 10px;
+}
+
+
+.btn-busqueda-asig{
+	border-radius: 5px;
+	color: red;
+}
+
+.row{
+	color: black;
+}
+
+.btn-registrar{
+	margin-left: 250px;
+
+}
+
+.tamaño{
+    width: 35%;
+    margin: 30px auto;
+}
+
+
+.cuerpo-tabla{
+	margin-top: 25px;
+}
+
+.input-group-text{
+	width: 125px;
+}
+
+.etiqueta-th{
+	padding: 15px;
+	
+}
+
+.width-th-x{
+	width: 100%;
+}
+
+.width-th-xx{
+	width: 10%;
+	padding: 5px;
+}
+
+.width-th{
+	width: 10%;
+}
+
+.th-borde{
+	border-right:0.5px solid #646060;
+}
+
+.table-border{
+	border-left: 0.5px solid #646060;
+}
+
+.table-border-act1{
+	border-left: none;
+	border-right: none;
+}
+
+.etiqueta-tr:hover{
+	background: #7fb5b5;
+	opacity: 0.9;
+	color: white;
+}
+
+tr:nth-child(even){
+	background-color: #b8f3af;
+}
+
+
+.table-mov{
+	margin-left:-25px;
+}
+
+.table-mov-asig{
+	margin-left: -145px;
+}
+
+.width-form-label{
+	width: 50%;
+	float: left;
+	padding-left: 20px;
+}
+
+.input-group-select{
+	width: 100%;
+}
+
+.input-text{
+	width: 200px;
+}
+
+
+.input-padding-top{
+	padding-top: 100px;
+}
+
+
+.table-margin-left{
+	margin-left: -30px;
+}
+
+.table-margin-left2{
+	margin-left: -20px;
+}
+
+.table-margin-left3{
+	margin-left: -15px;
+}
+
+.table-margin-left4{
+	margin-left: -10px;
+}
+
+.a-btn{	
+	font: oblique bold 100% cursive;
+	color: red;
+}
+
+.a-btn:hover{
+	text-decoration: underline;
+	color: white;
+}
+
+.foto-inicio
+{
+    width:35px;
+    height: 35px;
+}

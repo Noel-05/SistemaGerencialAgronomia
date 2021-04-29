@@ -1,0 +1,106 @@
+{% extends 'base/base.html' %}
+{%block title%}
+Ejemplo de Consultas
+{%endblock%}
+{% block content %}
+
+  <header>
+    <div class="container">
+
+        <h2 align="center" class="form-titulo" style ="margin-left: 5px;">Ejemplo de Consultas</h2>
+        </br></br></br>
+        
+    </div>
+  </header>
+
+<div class="container">
+
+    <!-- Boton Buscar Texto -->
+    <div align="center" class="busqueda">
+        <form method="POST" action="">
+            {% csrf_token %} 
+            <input type="text" name="fecha"  id = "fecha" class = "input-style" placeholder="Porfavor Ingrese el Porcentaje." maxlength="7">
+            <input class="btn-buscar btn-busqueda" type = "submit" value = "Buscar" id = "fechaBuscar">
+        </form>
+    </div>
+    </br></br>
+
+    <!-- Boton Buscar Fech-->
+    <div align="center" class="busqueda">
+        <form method="POST" action="">
+            {% csrf_token %} 
+            <input type="date" name="fecha"  id = "fecha" class = "input-style" placeholder="Porfavor Seleccione la Fecha." maxlength="7">
+            <input class="btn-buscar btn-busqueda" type = "submit" value = "Buscar" id = "fechaBuscar">
+        </form>
+    </div>
+    </br></br>
+    
+    <!-- Boton Buscar Lista-->
+    <div align="center" class="busqueda">
+        <form method="POST" action="">
+            {% csrf_token %} 
+            <select name="" class="form-control col-4 col-sm-2 input-style" title="Selecciona la Modalidad Por Favor">
+                <option selected value=""> Selecciona Modalida </option>
+                    <option value="Buscar">Presencial</option> 
+                    <option value="Buscar">Virtual</option> 
+                </option> 
+            </select>
+            <input class="btn-buscar btn-busqueda" type = "submit" value = "Buscar" id = "fechaBuscar">
+        </form>
+    </div>
+
+    </br>
+
+    <div>
+        <table>
+            <thead>
+        	   <tr>
+                    <th>Carnet</th>
+            		<th>Nombre</th>
+                    <th>Sexo</th>
+            	    <th>Telefono</th>
+            	    <th>Correo</th>
+            	    <th>Direccion</th>
+        		</tr>
+            </thead>
+
+            {% if estudiante_list %}
+            {% for est in estudiante_list %}
+        		<tr class="etiqueta-tr">
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ est.carnet_estudiante }}</td>
+            		<td class="th-borde width-th-xx" style = "text-align:center;">{{ est.nombre_estudiante}} {{ est.apellido_estudiante}}</td>
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ est.sexo_estudiante }}</td>
+            		<td class="th-borde width-th-xx" style = "text-align:center;">{{ est.telefono_estudiante }}</td>
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ est.correo_estudiante }}</td>
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ est.direccion_estudiante }}</td>
+        		</tr>
+            {% endfor %}
+            {% endif %}     
+
+    	</table>
+    </div>
+
+</div>
+
+    <div id = "popup"> 
+  
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+    <script>
+        var modal;
+        function abrir_modal(url, titulo)
+        {
+            modal = $('#popup').dialog({
+                title :titulo,
+                modal :true,
+                width :500,
+                resizable :false
+            }).dialog('open').load(url)
+        }
+    </script>
+
+{% endblock %}
