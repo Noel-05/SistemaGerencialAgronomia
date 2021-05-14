@@ -1,0 +1,82 @@
+{% extends 'base/base.html' %}
+{%block title%}
+Reporte de estudiantes por género
+{%endblock%}
+{% block content %}
+
+  <header>
+    <div class="container">
+
+        <h2 align="center" class="form-titulo" style ="margin-left: 5px;">Reporte de estudiantes por género</h2>
+        </br></br></br>
+        
+    </div>
+  </header>
+
+<div class="container">
+
+    <!-- Boton Buscar Texto -->
+    <div align="center" class="busqueda">
+        <form method="POST" action="">
+            {% csrf_token %} 
+            <input type="radio" name=sexo value="F">Femenino
+            <input type="radio" name=sexo value="M">Masculino
+            <input class="btn-buscar btn-busqueda" type = "submit" value = "Buscar">
+            <input class="btn-buscar btn-busqueda" type = "submit" value = "Generar PDF">
+        </form>
+    </div>
+    </br></br>
+
+    <div>
+        <table>
+            <thead>
+        	   <tr>
+                    <th>Carnet</th>
+            		<th>Nombre</th>
+                    <th>Apellido</th>
+            	    <th>Sexo</th>
+            	    <th>Modalidad</th>
+                    <th>Fecha de inicio</th>
+        		</tr>
+            </thead>
+
+            {% if estudiantes %}
+            {% for estudiante in estudiantes %}
+        		<tr class="etiqueta-tr">
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ estudiante.carnet_estudiante }}</td>
+            		<td class="th-borde width-th-xx" style = "text-align:center;">{{ estudiante.carnet_estudiante.carnet_estudiante.nombre_estudiante}}</td>
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ estudiante.carnet_estudiante.carnet_estudiante.apellido_estudiante }}</td>
+            		<td class="th-borde width-th-xx" style = "text-align:center;">{{ estudiante.carnet_estudiante.carnet_estudiante.sexo_estudiante }}</td>
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ estudiante.modalidad }}</td>
+                     <td class="th-borde width-th-xx" style = "text-align:center;">{{ estudiante.fecha_inicio }}</td>
+        		</tr>
+            {% endfor %}
+            {% endif %}     
+
+    	</table>
+    </div>
+
+</div>
+
+    <div id = "popup"> 
+  
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+    <script>
+        var modal;
+        function abrir_modal(url, titulo)
+        {
+            modal = $('#popup').dialog({
+                title :titulo,
+                modal :true,
+                width :500,
+                resizable :false
+            }).dialog('open').load(url)
+        }
+    </script>
+
+{% endblock %}

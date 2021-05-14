@@ -1,0 +1,81 @@
+{% extends 'base/base.html' %}
+{%block title%}
+Ejemplo de Consultas
+{%endblock%}
+{% block content %}
+
+  <header>
+    <div class="container">
+
+        <h2 align="center" class="form-titulo" style ="margin-left: 5px;">Ejemplo de Consultas</h2>
+        </br></br></br>
+        
+    </div>
+  </header>
+
+<div class="container">
+
+    <!-- Boton Buscar Texto -->
+    <div align="center" class="busqueda">
+        <form method="POST" action="">
+            {% csrf_token %} 
+            <select name="modalidad">
+                <option value="Presencial">Presencial</option>
+                <option value="Virtual">Virtual</option>
+            </select>
+            <input class="btn-buscar btn-busqueda" type = "submit" value = "Buscar" id = "fechaBuscar">
+        </form>
+    </div>
+    </br></br>
+
+    <div>
+        <table>
+            <thead>
+        	   <tr>
+                    <th>Carnet</th>
+            		<th>Nombre</th>
+                    <th>Apellido</th>
+            	    <th>Carrera</th>
+            	    <th>Porcentaje</th>
+        		</tr>
+            </thead>
+
+            {% if estudios_universitarios %}
+            {% for estudios in estudios_universitarios %}
+        		<tr class="etiqueta-tr">
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ estudios_universitarios.carnet_estudiante }}</td>
+            		<td class="th-borde width-th-xx" style = "text-align:center;">{{ estudios_universitarios.carnet_estudiante.nombre_estudiante}} {{ est.apellido_estudiante}}</td>
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ estudios_universitarios.carnet_estudiante.apellido_estudiante }}</td>
+            		<td class="th-borde width-th-xx" style = "text-align:center;">{{ estudios_universitarios.codigo_carrera.nombre_carrera }}</td>
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ estudios_universitarios.porc_carrerar_aprob }}</td>
+        		</tr>
+            {% endfor %}
+            {% endif %}     
+
+    	</table>
+    </div>
+
+</div>
+
+    <div id = "popup"> 
+  
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+    <script>
+        var modal;
+        function abrir_modal(url, titulo)
+        {
+            modal = $('#popup').dialog({
+                title :titulo,
+                modal :true,
+                width :500,
+                resizable :false
+            }).dialog('open').load(url)
+        }
+    </script>
+
+{% endblock %}
