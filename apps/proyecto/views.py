@@ -77,9 +77,9 @@ def export_estudiantes_csv(request):
     response['Content-Disposition'] = 'attachment; filename="users.csv"'
 
     wb = xlwt.Workbook(encoding='utf-8')
-    ws = wb.add_sheet('Datos de estudiantes') # this will make a sheet named Users Data
+    ws = wb.add_sheet('Datos de estudiantes') 
 
-    # Sheet header, first row
+    
     row_num = 0
 
     font_style = xlwt.XFStyle()
@@ -88,7 +88,7 @@ def export_estudiantes_csv(request):
     columns = ['Carnet', 'Nombre', 'Apellido']
 
     for col_num in range(len(columns)):
-        ws.write(row_num, col_num, columns[col_num], font_style) # at 0 row 0 column 
+        ws.write(row_num, col_num, columns[col_num], font_style) 
 
     # Sheet body, remaining rows
     font_style = xlwt.XFStyle()
