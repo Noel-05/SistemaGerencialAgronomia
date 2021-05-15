@@ -1,6 +1,6 @@
 {% extends 'base/base.html' %}
 {%block title%}
-Reporte de estudiantes
+Estudiantes por porcentaje de carrera aprobado
 {%endblock%}
 {% block content %}
 
@@ -19,10 +19,12 @@ Reporte de estudiantes
     <div align="center" class="busqueda">
         <form method="POST" action="{% url 'sistemaGerencialAgro:buscar_porcentaje' %}">
             {% csrf_token %} 
-            <input type="text" name="porcentaje" class = "input-style" placeholder="Porfavor Ingrese el Porcentaje." maxlength="7">
-            <input class="btn-buscar btn-busqueda" type = "submit" value = "Buscar">
-             <a href="{% url 'sistemaGerencialAgro:export_csv' %}">Exportar CSV</a>
-        </form>
+            <input type="number" name="porcentaje" class = "input-style" placeholder="Porfavor Ingrese el Porcentaje." min="60" max="100">
+            <button type="submit" class="btn btn-busqueda">Buscar</button>
+            <a  type="submit" class="btn btn-success" href="{% url 'sistemaGerencialAgro:export_csv' %}">Exportar CSV</a>  
+        </form> 
+        <a href="{% url 'sistemaGerencialAgro:reporte_porcentaje' %}" target="__blank"><button type="submit" class="btn btn-busqueda">Generar PDF</button></a>
+        
     </div>
     </br></br>
     </br></br>

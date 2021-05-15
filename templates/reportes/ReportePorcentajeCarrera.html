@@ -1,0 +1,35 @@
+{%block title%}
+{{title}}
+{%endblock%}
+{% block content %}
+
+
+<div class="container">
+    <!-- Boton Buscar Texto -->
+    <div>
+        <table>
+            <thead>
+        	   <tr>
+                    <th>Carnet</th>
+            		<th>Nombre</th>
+                    <th>Apellido</th>
+            	    <th>Carrera</th>
+            	    <th>Porcentaje</th>
+        		</tr>
+            </thead>
+
+            {% if estudios_universitarios %}
+            {% for estudios in estudios_universitarios %}
+        		<tr class="etiqueta-tr">
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ estudios.carnet_estudiante }}</td>
+            		<td class="th-borde width-th-xx" style = "text-align:center;">{{ estudios.carnet_estudiante.nombre_estudiante}}</td>
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ estudios.carnet_estudiante.apellido_estudiante}}</td>
+            		<td class="th-borde width-th-xx" style = "text-align:center;">{{ estudios.codigo_carrera.nombre_carrera }}</td>
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ estudios.porc_carrerar_aprob}}</td>
+        		</tr>
+            {% endfor %}
+            {% endif %}     
+
+    	</table>
+    </div>
+{% endblock %}

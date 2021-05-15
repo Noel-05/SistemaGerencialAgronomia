@@ -1,34 +1,8 @@
-{% extends 'base/base.html' %}
 {%block title%}
-Estudiantes por modalidad
+{{title}}
 {%endblock%}
 {% block content %}
 
-  <header>
-    <div class="container">
-
-        <h2 align="center" class="form-titulo" style ="margin-left: 5px;">Ejemplo de Consultas</h2>
-        </br></br></br>
-        
-    </div>
-  </header>
-
-<div class="container">
-
-    <!-- Boton Buscar Texto -->
-    <div align="center" class="busqueda">
-        <form method="POST" action="">
-            {% csrf_token %} 
-            <select name="modalidad">
-                <option value="Presencial">Presencial</option>
-                <option value="Virtual">Virtual</option>
-            </select>
-            <input class="btn-buscar btn-busqueda" type = "submit" value = "Buscar">
-             <a  type="submit" class="btn btn-success" href="{% url 'sistemaGerencialAgro:export_csv' %}">Exportar CSV</a>
-        </form>
-        <a href="{% url 'sistemaGerencialAgro:reporte_modalidad' %}" target="__blank"><button type="submit" class="btn btn-busqueda">Generar PDF</button></a>
-    </div>
-    </br></br>
 
     <div>
         <table>
@@ -66,18 +40,5 @@ Estudiantes por modalidad
 {% endblock %}
 
 {% block js %}
-
-    <script>
-        var modal;
-        function abrir_modal(url, titulo)
-        {
-            modal = $('#popup').dialog({
-                title :titulo,
-                modal :true,
-                width :500,
-                resizable :false
-            }).dialog('open').load(url)
-        }
-    </script>
 
 {% endblock %}

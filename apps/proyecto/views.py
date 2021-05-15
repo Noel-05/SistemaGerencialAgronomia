@@ -1,19 +1,21 @@
-from django.shortcuts import render
-from django.shortcuts import redirect
+from django.shortcuts import render,redirect
 from django.core import serializers
 from django.http import HttpResponseRedirect
-from django.urls import reverse_lazy
-from django.urls import reverse
+from django.urls import reverse_lazy,reverse
 from django.conf import settings
 from django.contrib import messages
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView,View
 from django.http import HttpResponse
+#Libreriías agregadas por Huiza
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+from django.contrib.staticfiles import finders
 from .models import *
 import xlwt
-
+import os
 #------------------------------------------------------------------------------
 
 
@@ -51,26 +53,63 @@ def consultaEstudiante(request):
 
 #------------------------------------------------------------------------------
 
-class reportesEstudiantesPorcentajeCarrera(TemplateView):
+class consultaEstudiantesPorcentajeCarrera(TemplateView):
     template_name='proyecto/EstudiantesPorcentajeCarrera.html'
     def post(self,request,*args,**kwargs):
         porcentaje=request.POST['porcentaje']
         estudios_universitarios=EstudioUniversitario.objects.filter(porc_carrerar_aprob=porcentaje)
         return render(request,'proyecto/EstudiantesPorcentajeCarrera.html',{'estudios_universitarios':estudios_universitarios})
 
-class reportesEstudiantesPorGenero(TemplateView):
+class consultaEstudiantesPorGenero(TemplateView):
     template_name='proyecto/EstudiantesPorGenero.html'
     def post(self,request,*args,**kwargs):
         sexo=request.POST['sexo']
         estudiantes=Solicitud.objects.filter(carnet_estudiante__carnet_estudiante__sexo_estudiante=sexo)
         return render(request,'proyecto/EstudiantesPorGenero.html',{'estudiantes':estudiantes})
 
-class reportesEstudiantesPorModalidad(TemplateView):
+class consultaEstudiantesPorModalidad(TemplateView):
     template_name='proyecto/EstudiantesPorModalidad.html'
     def post(self,request,*args,**kwargs):
         modalidad=request.POST['modalidad']
         solicitudes=Solicitud.objects.filter(modalidad=modalidad)
         return render(request,'proyecto/EstudiantesPorModalidad.html',{'solicitudes':solicitudes})
+
+
+class reporteEstudiantePorcentajeCarrera(View):
+    def get(self,request,*args,**kwargs):
+        template = get_template('reportes/ReportePorcentajeCarrera.html')
+        context={'title':'Reporte de estudiantes por porcentaje carrera aprobado'}
+        html = template.render(context)
+        response = HttpResponse(content_type='application/pdf')
+        #response['Content-Disposition'] = 'attachment; filename="Estudiantes por porcentaje de carrera aprobado.pdf"'
+        pisa_status = pisa.CreatePDF(html, dest=response)
+        if pisa_status.err:
+            return HttpResponse('We had some errors <pre>'+ html + '</pre>')
+        return response
+
+class reporteEstudianteGenero(View):
+    def get(self,request,*args,**kwargs):
+        template = get_template('reportes/ReporteGenero.html')
+        context={'title':'Reporte de estudiantes por género'}
+        html = template.render(context)
+        response = HttpResponse(content_type='application/pdf')
+        #response['Content-Disposition'] = 'attachment; filename="Estudiantes por porcentaje de carrera aprobado.pdf"'
+        pisa_status = pisa.CreatePDF(html, dest=response)
+        if pisa_status.err:
+            return HttpResponse('We had some errors <pre>'+ html + '</pre>')
+        return response
+
+class reporteEstudianteModalidad(View):
+    def get(self,request,*args,**kwargs):
+        template = get_template('reportes/ReporteModalidad.html')
+        context={'title':'Reporte de estudiantes por modalidad'}
+        html = template.render(context)
+        response = HttpResponse(content_type='application/pdf')
+        #response['Content-Disposition'] = 'attachment; filename="Estudiantes por porcentaje de carrera aprobado.pdf"'
+        pisa_status = pisa.CreatePDF(html, dest=response)
+        if pisa_status.err:
+            return HttpResponse('We had some errors <pre>'+ html + '</pre>')
+        return response
 
 def export_estudiantes_csv(request):
     response = HttpResponse(content_type='text/csv')
