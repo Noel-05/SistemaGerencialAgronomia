@@ -71,13 +71,14 @@ class consultaEstudiantesPorModalidad(TemplateView):
     template_name='proyecto/EstudiantesPorModalidad.html'
     def post(self,request,*args,**kwargs):
         modalidad=request.POST['modalidad']
-        solicitudes=Solicitud.objects.filter(modalidad=modalidad)
-        return render(request,'proyecto/EstudiantesPorModalidad.html',{'solicitudes':solicitudes})
+        servicios=ServicioSocial.objects.filter(carnet_estudiante__modalidad=modalidad)
+        return render(request,'proyecto/EstudiantesPorModalidad.html',{'servicios':servicios})
 
 
 class reporteEstudiantePorcentajeCarrera(View):
     def get(self,request,*args,**kwargs):
-        template = get_template('reportes/ReportePorcentajeCarrera.html')
+        #estudios_universitarios=EstudioUniversitario.objects.filter(porc_carrerar_aprob=60)
+        template = get_template('proyecto/EstudiantesPorcentajeCarrera.html')
         context={'title':'Reporte de estudiantes por porcentaje carrera aprobado'}
         html = template.render(context)
         response = HttpResponse(content_type='application/pdf')
@@ -89,8 +90,9 @@ class reporteEstudiantePorcentajeCarrera(View):
 
 class reporteEstudianteGenero(View):
     def get(self,request,*args,**kwargs):
+        estudiantes=Solicitud.objects.filter(carnet_estudiante__carnet_estudiante__sexo_estudiante="M")
         template = get_template('reportes/ReporteGenero.html')
-        context={'title':'Reporte de estudiantes por género'}
+        context={'title':'Reporte de estudiantes por género','estudiantes':estudiantes}
         html = template.render(context)
         response = HttpResponse(content_type='application/pdf')
         #response['Content-Disposition'] = 'attachment; filename="Estudiantes por porcentaje de carrera aprobado.pdf"'
@@ -101,8 +103,9 @@ class reporteEstudianteGenero(View):
 
 class reporteEstudianteModalidad(View):
     def get(self,request,*args,**kwargs):
+        servicios=ServicioSocial.objects.filter(carnet_estudiante__modalidad="Presencial")
         template = get_template('reportes/ReporteModalidad.html')
-        context={'title':'Reporte de estudiantes por modalidad'}
+        context={'title':'Reporte de estudiantes por modalidad','servicios':servicios}
         html = template.render(context)
         response = HttpResponse(content_type='application/pdf')
         #response['Content-Disposition'] = 'attachment; filename="Estudiantes por porcentaje de carrera aprobado.pdf"'
