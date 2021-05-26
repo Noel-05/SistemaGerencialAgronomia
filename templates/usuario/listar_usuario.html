@@ -1,0 +1,60 @@
+{% extends 'base/base.html' %}
+
+{% load static %}
+
+{%block title%}
+Listado de Usuarios
+{%endblock%}
+
+{% block extra_css %}
+{% endblock extra_css %}
+
+{% block content %}
+
+    <div class="container" align="center">
+
+        <font face="small fonts" size="10" color="#049286">
+            <h2 align="center" class="form-titulo" style ="margin-left: 5px; margin-top:20px; bg-success text-white">Registro de Usuarios</h2>
+        </font>
+        
+        <input type="button" class="btn btn-outline-success" align="center" onclick="abrir_modal_creacion('{% url 'usuario:registrar_usuario' %}');", value="Agregar">
+        <p> </p>
+    
+    </div>
+    
+    <div class="table-responsive">
+        <div class="table-stats order-table ov-h" align="center">
+
+            <table id="tabla_usuarios" class="table table-hover">
+                
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Username</th>
+                        <th>Nombres</th>
+                        <th>Apellidos</th>
+                        <th>Email</th>
+                        <th>Rol</th>
+                        <th>Opciones</th>
+                    </tr>
+                </thead>
+                
+                <tbody>               
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+<div class="modal fade" tabindex="-1" id="creacion" role="dialog"></div>
+<div class="modal fade" tabindex="-1" id="edicion" role="dialog"></div>
+<div class="modal fade" tabindex="-1" id="eliminacion" role="dialog"></div>
+
+{% block extrajs %}
+    <script src="{% static 'js/lib/data-table/datatables.min.js' %}"></script>
+    <script src="{% static 'js/lib/data-table/dataTables.bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/usuarios/index.js' %}"></script>
+{% endblock extrajs %}
+
+{% endblock %}
+

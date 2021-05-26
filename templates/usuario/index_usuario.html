@@ -1,0 +1,122 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+ {% block head %}
+ 	<title>{% block title %} Sistema Servicio Social {% endblock %}</title>
+
+	{% block static %}
+
+	<meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+	<!-- Favicon -->
+	<link type="image/x-icon" href="{% static 'img/favAgronomia.png'%}" rel="icon">
+
+	<!-- Enlaces -->
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i|Montserrat:300,400,500,700" rel="stylesheet">
+	<script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.js"></script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+
+	<!-- Librerias -->
+	<link rel = "stylesheet" href = "{% static 'lib/bootstrap/css/bootstrap.min.css' %}">
+	<link rel = "stylesheet" href = "{% static 'lib/animate/animate.min.css' %}">
+	<link rel = "stylesheet" href = "{% static 'lib/ionicons/css/ionicons.min.css' %}">
+	<script src = "{% static 'lib/jquery/jquery.min.js' %}"></script>
+	<script src = "{% static 'lib/jquery/jquery-migrate.min.js' %}"></script>
+	<script src = "{% static 'lib/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+	<!-- CSS y Bootstrap -->
+	<link rel = "stylesheet" href = "{% static 'css/style.css' %}">
+	<link rel = "stylesheet" href = "{% static 'css/bootstrap.min.css' %}">
+	<link rel = "stylesheet" href = "{% static 'css/archivo.css' %}">
+	<link rel = "stylesheet" href = "{% static 'css/estilos_sec_not.css' %}">
+	<link rel = "stylesheet" type = "text/css" href = "{% static 'css/jquery-ui.css' %}"/>
+	<link rel = "stylesheet" type = "text/css" href = "{% static 'css/jquery.dataTables.min.css' %}"/>
+
+	<!-- JavaScript -->
+	<script type = "text/javascript" src = "{% static 'js/bootstrap.min.js' %}"></script>
+	<script type = "text/javascript" src = "{% static 'js/jquery.js' %}" charset="UTF-8"></script>
+	<script type = "text/javascript" src = "{% static 'js/bootstrap.min.js' %}" charset="UTF-8"></script>
+	<script type = "text/javascript" src = "{% static 'js/jquery-ui.js' %}"></script>
+	<script type = "text/javascript" src = "{% static 'js/jquery.dataTables.min.js' %}"></script>
+  	<script type = "text/javascript" src = "{% static 'js/main.js' %}"></script>
+
+	{% endblock %}
+
+{% endblock %}
+
+</head>
+
+<body>
+	<header id="header">
+
+		<div class="container-fluid navbar navbar-light">
+			<div id="logo" class="pull-left">
+				<a  href="{% url 'usuario:index' %}"><img src="{% static 'img/logoUPSAgro.png' %}" class ="imglogo"></a>
+				<h1>Servicio Social - Agronomia.</h1>
+			</div>
+
+			<div id="logo" class="pull-rigth">
+				<input type="button" href="" class="btn-success btn" name="submit" value="{{ user.username }}" disabled style="background-color:transparent; border:none;"></a> 
+        <a href="{% url 'usuario:logout' %}" style="text-decoration:none"><input type="button" href="{% url 'usuario:logout' %}" class="btn btn-success btn-sm" name="submit" value="Cerrar Sesi&oacute;n" style="background:green;"></a> 
+			</div>
+
+		</div>
+
+		<div class="bot">
+			<ul class="nav-menu">
+				<a href="{% url 'evaluacionCliente:index' user.username %}" style="text-decoration:none"><input type="button" href="{% url 'evaluacionCliente:index' user.username %}" class="btn btn-success btn-sm" name="submit" value="Comenzar" style="background:green;"></a>
+			</ul>
+		</div>
+	</header>
+
+
+  <section>
+    <div class="container">
+      </br></br></br></br></br></br></br>
+
+  		{% block content %}
+        </br></br></br></br></br></br></br></br></br></br><img src = "{% static 'img/FondoUPS_Inicio.png' %}">
+      {%endblock%}
+
+	  <div class="modal fade" id="mostrarmodal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+				<div class="modal-header">
+					<h3><strong><i>Bienvenido al Sistema Gestor de</br>Servicio Social - Agronom&iacute;a</i></strong></h3>
+				</div>
+				<div class="modal-body">
+					<h4><strong>¡Atenci&oacute;n!</strong></h4>
+					<i>Porfavor presiona el bot&oacute;n de <strong>Comenzar</strong> </br>para poder iniciar.</i></br>
+					</br><img src = "{% static 'img/favAgronomia.png' %}">
+			</div>
+				<div class="modal-footer">
+				<a href="{% url 'evaluacionCliente:index' user.username %}" class="btn btn-Secundary">Comenzar</a>
+				</div>
+			</div>
+		</div>
+
+    </div>
+  </section>
+
+  {% block js %}
+
+	{% endblock %}
+
+</body>
+
+	<!-- Para el modal de la Ventana Flotante-->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script>
+       $(document).ready(function()
+       {
+          $("#mostrarmodal").modal("show");
+       });
+    </script>
+
+
+</html>

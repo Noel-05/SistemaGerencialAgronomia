@@ -15,9 +15,44 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
+from django.urls import reverse_lazy
+from django.contrib.auth import views as auth_views
+from .forms import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('apps.proyecto.urls')),
+    path('',include('apps.usuario.urls')),    
     path('accounts/', include('django.contrib.auth.urls')),
+    
+    path('reset_password/',
+         auth_views.PasswordResetView.as_view(template_name="accounts/password_reset.html"),
+         name="reset_password"),
+
+    path('reset_password_sent/', 
+        auth_views.PasswordResetDoneView.as_view(template_name="accounts/password_reset_sent.html"), 
+        name="password_reset_done"),
+
+    path('reset/<uidb64>/<token>/',
+        auth_views.PasswordResetConfirmView.as_view(template_name="accounts/password_reset_form.html", form_class=FormularioContraOlvidada), 
+        name="password_reset_confirm"),
+
+    path('reset_password_complete/', 
+        auth_views.PasswordResetCompleteView.as_view(template_name="accounts/password_reset_done.html"), 
+        name="password_reset_complete"),
+
+    path('password_change/', auth_views.PasswordChangeView.as_view(template_name='accounts/password_change.html', form_class=FormularioCambioContraseña), 
+        name='password_change'),
+
+    path('password_change/done/', auth_views.PasswordChangeDoneView.as_view(template_name='accounts/password_change_done.html'), 
+        name='password_change_done'),
 ]
+
+'''
+1 - Submit email form                         //PasswordResetView.as_view()
+2 - Email sent success message                //PasswordResetDoneView.as_view()
+3 - Link to password Rest form in email       //PasswordResetConfirmView.as_view()
+4 - Password successfully changed message     //PasswordResetCompleteView.as_view()
+5 - Password change                           //PasswordChangeDoneView.as_view()
+'''

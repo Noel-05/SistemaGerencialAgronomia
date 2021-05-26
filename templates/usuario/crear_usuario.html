@@ -1,0 +1,26 @@
+{% extends 'base/base.html' %}
+
+{% load static %}
+
+<title>{% block title %} Registrar Usuario {% endblock %}</title>
+
+<!-- CSS y Bootstrap -->
+<link rel = "stylesheet" href = "{% static 'css/bootstrap.min.css' %}">
+{% block content %}
+</br>
+<div class="card">
+    <div class="card-header">
+        <h2 align="center" class="form-titulo" style ="margin-left: 5px;">Registro de Usuarios</h2>
+    </div>
+    <div class="card-body">
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="">
+                <input type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent btn-buscar" name="submit" value="Registrar">
+                <a href="{% url 'usuario:listar_usuarios' %}"><input type="button" href="{% url 'usuario:listar_usuarios' %}" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent btn-buscar" name="submit" value="Cancelar"></a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
