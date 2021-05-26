@@ -8,10 +8,10 @@ from django.conf.urls.static import static
 app_name = 'sistemaGerencialAgro'
 
 urlpatterns = [
-    path('', index),
-    path('sistemaGerencialAgro/index/', index, name = 'index'),
+    path('', login_required(index)),
+    path('sistemaGerencialAgro/index/', login_required(index), name = 'index'),
 
     
     # ESTA URL ES SOLO PARA QUE FUNCIONE EL EJEMPLO, LUEGO SE BORRARA
-    path('istemaGerencialAgro/consultaEstudiante/', consultaEstudiante, name="consulta_estudiante"),
+    path('istemaGerencialAgro/consultaEstudiante/', login_required(consultaEstudiante), name="consulta_estudiante"),
 ]

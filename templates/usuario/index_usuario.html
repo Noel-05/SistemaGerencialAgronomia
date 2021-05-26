@@ -4,7 +4,7 @@
 
 <head>
  {% block head %}
- 	<title>{% block title %} Sistema Gerencial de Servicio Social {% endblock %}</title>
+ 	<title>{% block title %} Sistema Servicio Social {% endblock %}</title>
 
 	{% block static %}
 
@@ -41,57 +41,37 @@
 	<script type = "text/javascript" src = "{% static 'js/bootstrap.min.js' %}" charset="UTF-8"></script>
 	<script type = "text/javascript" src = "{% static 'js/jquery-ui.js' %}"></script>
 	<script type = "text/javascript" src = "{% static 'js/jquery.dataTables.min.js' %}"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-  <script type = "text/javascript" src = "{% static 'js/main.js' %}"></script>
-  <script>
-      {% if messages %}
-          var html_mensaje = '';
-          {% for mensaje in messages %}
-              html_mensaje += '{{ mensaje }}';
-          {% endfor %}
-          notificacionError(html_mensaje);
-      {% endif %}
-  </script>
+  	<script type = "text/javascript" src = "{% static 'js/main.js' %}"></script>
 
 	{% endblock %}
 
 {% endblock %}
 
-  {% block extra_css %}
-  {% endblock extra_css %}
-
 </head>
 
 <body>
+	<header id="header">
 
-  <header id="header">
-    <div class="container-fluid navbar navbar-light">
-
-      <div id="logo" class="pull-left">
-        <a  href=" {% url 'sistemaGerencialAgro:index' %}"><img src="{% static 'img/logoUPSAgro.png' %} " class ="imglogo"></a>
-        <h1>Sistema Gerencial de Servicio Social - Agronom&iacute;a.</h1>
-      </div>
-
-      <div id="logo" class="pull-rigth">
-				<input type="button" href="{% url 'sistemaGerencialAgro:index' %}" class="btn-success btn" name="submit" value="{{ user.username }}" disabled style="background-color:transparent; border:none;">
-        <a href="{% url 'usuario:logout' %}" style="text-decoration:none"><input type="button" href="" class="btn btn-success btn-sm" name="submit" value="Cerrar Sesi&oacute;n" style="background:green;"></a> 
-              
+		<div class="container-fluid navbar navbar-light">
+			<div id="logo" class="pull-left">
+				<a  href="{% url 'usuario:index' %}"><img src="{% static 'img/logoUPSAgro.png' %}" class ="imglogo"></a>
+				<h1>Servicio Social - Agronomia.</h1>
 			</div>
 
-    </div>
+			<div id="logo" class="pull-rigth">
+				<input type="button" href="" class="btn-success btn" name="submit" value="{{ user.username }}" disabled style="background-color:transparent; border:none;"></a> 
+        <a href="{% url 'usuario:logout' %}" style="text-decoration:none"><input type="button" href="{% url 'usuario:logout' %}" class="btn btn-success btn-sm" name="submit" value="Cerrar Sesi&oacute;n" style="background:green;"></a> 
+			</div>
 
-    <div class="bot">
-      <ul class="nav-menu">
+		</div>
 
-        <li class="list-group-item" onclick="window.location.href='{% url 'sistemaGerencialAgro:index' %}'"><a style="text-decoration:none" href="{% url 'sistemaGerencialAgro:index' %}">Inicio</a></li>
-        
-        <li class="list-group-item" onclick="window.location.href='{% url 'sistemaGerencialAgro:consulta_estudiante' %}'"><a style="text-decoration:none" href="{% url 'sistemaGerencialAgro:consulta_estudiante' %}">Ejemplo</a></li>
+		<div class="bot">
+			<ul class="nav-menu">
+				<a href="{% url 'evaluacionCliente:index' user.username %}" style="text-decoration:none"><input type="button" href="{% url 'evaluacionCliente:index' user.username %}" class="btn btn-success btn-sm" name="submit" value="Comenzar" style="background:green;"></a>
+			</ul>
+		</div>
+	</header>
 
-        <li class="list-group-item" onclick="window.location.href='{% url 'usuario:inicio_usuarios' %}'"><a style="text-decoration:none" href="{% url 'usuario:inicio_usuarios' %}">Usuarios</a></li>
-
-      </ul>
-    </div>
-  </header>
 
   <section>
     <div class="container">
@@ -101,6 +81,23 @@
         </br></br></br></br></br></br></br></br></br></br><img src = "{% static 'img/FondoUPS_Inicio.png' %}">
       {%endblock%}
 
+	  <div class="modal fade" id="mostrarmodal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+				<div class="modal-header">
+					<h3><strong><i>Bienvenido al Sistema Gestor de</br>Servicio Social - Agronom&iacute;a</i></strong></h3>
+				</div>
+				<div class="modal-body">
+					<h4><strong>¡Atenci&oacute;n!</strong></h4>
+					<i>Porfavor presiona el bot&oacute;n de <strong>Comenzar</strong> </br>para poder iniciar.</i></br>
+					</br><img src = "{% static 'img/favAgronomia.png' %}">
+			</div>
+				<div class="modal-footer">
+				<a href="{% url 'evaluacionCliente:index' user.username %}" class="btn btn-Secundary">Comenzar</a>
+				</div>
+			</div>
+		</div>
+
     </div>
   </section>
 
@@ -109,5 +106,17 @@
 	{% endblock %}
 
 </body>
+
+	<!-- Para el modal de la Ventana Flotante-->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script>
+       $(document).ready(function()
+       {
+          $("#mostrarmodal").modal("show");
+       });
+    </script>
+
 
 </html>
