@@ -13,7 +13,6 @@ urlpatterns = [
 
     
     # ESTA URL ES SOLO PARA QUE FUNCIONE EL EJEMPLO, LUEGO SE BORRARA
-<<<<<<< HEAD
     path('istemaGerencialAgro/consultaEstudiante/', consultaEstudiante, name="consulta_estudiante"),
     path('sistemaGerencialAgro/porcentaje/', consultaEstudiantesPorcentajeCarrera.as_view(), name="buscar_porcentaje"),
     path('sistemaGerencialAgro/genero/', consultaEstudiantesPorGenero.as_view(), name="buscar_genero"),
@@ -22,7 +21,6 @@ urlpatterns = [
     path('reporte/porcentaje', reporteEstudiantePorcentajeCarrera.as_view(), name="reporte_porcentaje"),
     path('reporte/genero/', reporteEstudianteGenero.as_view(), name="reporte_genero"),
     path('reporte/modalidad/', reporteEstudianteModalidad.as_view(), name="reporte_modalidad"),
-=======
     path('istemaGerencialAgro/consultaEstudiante/', login_required(consultaEstudiante), name="consulta_estudiante"),
->>>>>>> master
+
 ]
