@@ -78,7 +78,7 @@ class consultaEstudiantesPorModalidad(TemplateView):
 class reporteEstudiantePorcentajeCarrera(View):
     def get(self,request,*args,**kwargs):
         #estudios_universitarios=EstudioUniversitario.objects.filter(porc_carrerar_aprob=60)
-        template = get_template('proyecto/EstudiantesPorcentajeCarrera.html')
+        template = get_template('reportes/ReportePorcentajeCarrera.html')
         context={'title':'Reporte de estudiantes por porcentaje carrera aprobado'}
         html = template.render(context)
         response = HttpResponse(content_type='application/pdf')
