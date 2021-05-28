@@ -22,5 +22,8 @@ urlpatterns = [
     path('reporte/genero/', reporteEstudianteGenero.as_view(), name="reporte_genero"),
     path('reporte/modalidad/', reporteEstudianteModalidad.as_view(), name="reporte_modalidad"),
     path('istemaGerencialAgro/consultaEstudiante/', login_required(consultaEstudiante), name="consulta_estudiante"),
+    path('sistemaGerencialAgro/consultaSolicitudAprobadas/', consultaSolicitud, name="consulta_solicitud"),
+    path('sistemaGerencialAgro/estado/', consultaSolicitudesAprobadas.as_view(), name="buscar_estado"),
+
 
 ]

@@ -144,3 +144,28 @@ def export_estudiantes_csv(request):
     wb.save(response)
 
     return response
+
+
+#Muestra todos las solicitudes, tanto aprobadas como no aprobadas
+
+def consultaSolicitud(request):
+
+    #estudiante_list=Estudiante.objects.order_by('carnet_estudiante')
+    estado_solicitud=EstadoSolicitud.objects.order_by('carnet_estudiante')
+    
+    context = {
+        #'estudiante_list': estudiante_list,
+        'estado_solicitud':estado_solicitud,
+    }
+
+    return render(
+        request,
+        'proyecto/SolicitudesAprobadas.html', context
+    )
+
+class consultaSolicitudesAprobadas(TemplateView):
+    template_name='proyecto/SolicitudesAprobadas.html'
+    def post(self,request,*args,**kwargs):
+        estado=request.POST['estado']
+        estado_solici=EstadoSolicitud.objects.filter(aceptado=estado)
+        return render(request,'proyecto/SolicitudesAprobadas.html',{'estado_solici':estado_solici})
