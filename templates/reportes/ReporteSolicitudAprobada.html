@@ -1,0 +1,36 @@
+{%block title%}
+{{title}}
+{%endblock%}
+{% block content %}
+    <div>
+        <table>
+            <thead>
+               <tr>
+                    <th>Carnet</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Estado</th>
+                    <th>Observaciones</th>
+                </tr>
+            </thead>
+
+            {% if servicios%}
+            {% for servicio in servicios %}
+                <tr class="etiqueta-tr">
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ servicio.carnet_estudiante}}</td>
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ servicio.carnet_estudiante.carnet_estudiante.carnet_estudiante.nombre_estudiante}}</td>
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ servicio.carnet_estudiante.carnet_estudiante.carnet_estudiante.apellido_estudiante }}</td>
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ servicio.aceptado }}</td>
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ servicio.observaciones }}</td>
+                </tr>
+            {% endfor %}
+            {% endif %}     
+
+        </table>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+
+{% endblock %}

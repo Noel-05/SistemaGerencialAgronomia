@@ -1,0 +1,100 @@
+{% extends 'base/base.html' %}
+{%block title%}
+Solicitudes Aprobadas
+{%endblock%}
+{% block content %}
+
+  <header>
+    <div class="container">
+
+        <h2 align="center" class="form-titulo" style ="margin-left: 5px;">Solicitudes aprobadas</h2>
+        </br></br></br>
+        
+    </div>
+  </header>
+
+<div class="container">
+
+    <!-- Boton Buscar Texto -->
+    <div align="center" class="busqueda">
+        <form method="POST" action="">
+            {% csrf_token %} 
+            <select name="estado">
+                <option selected value=""> Selecciona estado </option>
+                <option value="Si">Si</option>
+                <option value="No">No</option>
+            </select>
+            <input class="btn-buscar btn-busqueda" type = "submit" value = "Buscar">
+        </form>
+        <br>
+        <a href="{% url 'sistemaGerencialAgro:reporte_estado' %}" target="__blank"><button type="submit" class="btn btn-busqueda">Generar PDF</button></a>
+        <a  type="submit" class="btn btn-success" href="{% url 'sistemaGerencialAgro:export_csv' %}">Exportar CSV</a>
+    </br>
+
+    </div>
+    </br></br>
+
+    <div>
+        <table>
+            <thead>
+        	   <tr>
+                    <th>Carnet</th>
+            		<th>Nombre</th>
+                    <th>Apellido</th>
+            	    <th>Estado</th>
+            	    <th>Observaciones</th>
+        		</tr>
+            </thead>
+
+            {% if not estado_solici%}
+            {% for est in estado_solicitud %}
+        		<tr class="etiqueta-tr">
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ est.carnet_estudiante}}</td>
+            		<td class="th-borde width-th-xx" style = "text-align:center;">{{ est.carnet_estudiante.carnet_estudiante.carnet_estudiante.nombre_estudiante}}</td>
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ est.carnet_estudiante.carnet_estudiante.carnet_estudiante.apellido_estudiante }}</td>
+            		<td class="th-borde width-th-xx" style = "text-align:center;">{{ est.aceptado }}</td>
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ est.observaciones }}</td>
+        		</tr>
+            {% endfor %}
+            {% endif %}     
+
+
+            {% if estado_solici%}
+            {% for est in estado_solici %}
+        		<tr class="etiqueta-tr">
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ est.carnet_estudiante}}</td>
+            		<td class="th-borde width-th-xx" style = "text-align:center;">{{ est.carnet_estudiante.carnet_estudiante.carnet_estudiante.nombre_estudiante}}</td>
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ est.carnet_estudiante.carnet_estudiante.carnet_estudiante.apellido_estudiante }}</td>
+            		<td class="th-borde width-th-xx" style = "text-align:center;">{{ est.aceptado }}</td>
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ est.observaciones }}</td>
+        		</tr>
+            {% endfor %}
+            {% endif %}     
+
+    	</table>
+    </div>
+
+</div>
+
+    <div id = "popup"> 
+  
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+    <script>
+        var modal;
+        function abrir_modal(url, titulo)
+        {
+            modal = $('#popup').dialog({
+                title :titulo,
+                modal :true,
+                width :500,
+                resizable :false
+            }).dialog('open').load(url)
+        }
+    </script>
+
+{% endblock %}
