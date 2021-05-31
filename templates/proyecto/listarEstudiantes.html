@@ -17,13 +17,13 @@ Estudiantes por porcentaje de carrera aprobado
 
     <!-- Boton Buscar Texto -->
     <div align="center" class="busqueda">
-        <form method="POST" action="{% url 'sistemaGerencialAgro:buscar_porcentaje' %}">
+        <form method="POST" action="{% url 'sistemaGerencialAgro:buscar_criterio' %}">
             {% csrf_token %} 
-            <input type="number" name="porcentaje" class = "input-style" placeholder="Porfavor Ingrese el Porcentaje." min="60" max="100">
+            <input type="radio" name="criterio" value="carrera">Por carrera
+            <input type="radio" name="criterio" value="genero">Por genéro
+            <input type="radio" name="criterio" value="modalidad">Por modalidad
+
             <button type="submit" class="btn btn-busqueda">Buscar</button>
-            <a  type="submit" class="btn btn-success" href="{% url 'sistemaGerencialAgro:export_csv' %}">Exportar CSV</a>  
-        </form> 
-        <a href="{% url 'sistemaGerencialAgro:buscar_porcentaje' %}" target="__blank"><button type="submit" class="btn btn-busqueda">Generar PDF</button></a>
         
     </div>
     </br></br>
@@ -40,8 +40,8 @@ Estudiantes por porcentaje de carrera aprobado
         		</tr>
             </thead>
 
-            {% if estudios_universitarios %}
-            {% for estudios in estudios_universitarios %}
+            {% if object_list %}
+            {% for estudios in object_list %}
         		<tr class="etiqueta-tr">
                     <td class="th-borde width-th-xx" style = "text-align:center;">{{ estudios.carnet_estudiante }}</td>
             		<td class="th-borde width-th-xx" style = "text-align:center;">{{ estudios.carnet_estudiante.nombre_estudiante}}</td>
