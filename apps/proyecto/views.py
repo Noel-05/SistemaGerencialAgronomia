@@ -169,3 +169,46 @@ class consultaSolicitudesAprobadas(TemplateView):
         estado=request.POST['estado']
         estado_solici=EstadoSolicitud.objects.filter(aceptado=estado)
         return render(request,'proyecto/SolicitudesAprobadas.html',{'estado_solici':estado_solici})
+
+        
+def consultaSolicitudPeriodo(request):
+
+    #estudiante_list=Estudiante.objects.order_by('carnet_estudiante')
+    periodo_solicitud=Solicitud.objects.order_by('carnet_estudiante')
+    
+    context = {
+        #'estudiante_list': estudiante_list,
+        'periodo_solicitud':periodo_solicitud,
+    }
+
+    return render(
+        request,
+        'proyecto/EstudiantesPorPeriodo.html', context
+    )
+
+class consultaEstudiantesPorPeriodo(TemplateView):
+    template_name='proyecto/EstudiantesPorPeriodo.html'
+    def post(self,request,*args,**kwargs):
+        fechainicio=request.POST['fechaInicio']
+        periodo=Solicitud.objects.filter(fecha_inicio=fechainicio)
+        fechafin=request.POST['fechaFin']
+        periodo=Solicitud.objects.filter(fecha_fin=fechafin)
+
+        
+        return render(request,'proyecto/EstudiantesPorPeriodo.html',{'periodo':periodo})
+
+
+class reporteSolicitudAprobada(View):
+    def get(self,request,*args,**kwargs):
+        servicios=EstadoSolicitud.objects.filter(aceptado="Si")
+        servicios=EstadoSolicitud.objects.filter(aceptado="No")
+        template = get_template('reportes/ReporteSolicitudAprobada.html')
+        context={'title':'Reporte de estudiantes por solicitudes aprobadas',
+        'servicios':servicios}
+        html = template.render(context)
+        response = HttpResponse(content_type='application/pdf')
+        #response['Content-Disposition'] = 'attachment; filename="Estudiantes por porcentaje de carrera aprobado.pdf"'
+        pisa_status = pisa.CreatePDF(html, dest=response)
+        if pisa_status.err:
+            return HttpResponse('We had some errors <pre>'+ html + '</pre>')
+        return response

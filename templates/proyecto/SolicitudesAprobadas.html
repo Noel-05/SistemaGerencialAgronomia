@@ -25,9 +25,12 @@ Solicitudes Aprobadas
                 <option value="No">No</option>
             </select>
             <input class="btn-buscar btn-busqueda" type = "submit" value = "Buscar">
-             <a  type="submit" class="btn btn-success" href="{% url 'sistemaGerencialAgro:export_csv' %}">Exportar CSV</a>
         </form>
-        <a href="" target="__blank"><button type="submit" class="btn btn-busqueda">Generar PDF</button></a>
+        <br>
+        <a href="{% url 'sistemaGerencialAgro:reporte_estado' %}" target="__blank"><button type="submit" class="btn btn-busqueda">Generar PDF</button></a>
+        <a  type="submit" class="btn btn-success" href="{% url 'sistemaGerencialAgro:export_csv' %}">Exportar CSV</a>
+    </br>
+
     </div>
     </br></br>
 
