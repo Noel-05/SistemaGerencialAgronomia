@@ -17,14 +17,14 @@ Estudiantes por género
 
     <!-- Boton Buscar Texto -->
     <div align="center" class="busqueda">
-        <form method="POST" action="">
+        <form method="POST" action="{% url 'sistemaGerencialAgro:buscar_genero' %}">
             {% csrf_token %} 
             <input type="radio" name=sexo value="F">Femenino
             <input type="radio" name=sexo value="M">Masculino
             <input class="btn-buscar btn-busqueda" type = "submit" value = "Buscar">
              <a  type="submit" class="btn btn-success" href="{% url 'sistemaGerencialAgro:export_csv' %}">Exportar CSV</a>
         </form>
-        <a href="{% url 'sistemaGerencialAgro:reporte_genero' %}" target="__blank"><button type="submit" class="btn btn-busqueda">Generar PDF</button></a>
+        <a href="{% url 'sistemaGerencialAgro:buscar_genero' %}" target="__blank"><button type="submit" class="btn btn-busqueda">Generar PDF</button></a>
     </div>
     </br></br>
 
