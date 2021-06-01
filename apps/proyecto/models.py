@@ -107,3 +107,19 @@ class ServicioSocial(models.Model):
 
     def __str__(self):
         return self.carnet_estudiante.__str__()
+
+
+
+class Bitacora(models.Model):
+    usuario = models.CharField(max_length=25, null=False, blank=False)
+    fecha_modificacion = models.DateField(null=False)
+    hora_modificacion = models.TimeField(null=False)
+    descripcion = models.CharField(max_length=100, null=False, blank=False)
+
+    def __str__(self):
+        return self.descripcion.__str__()
+
+
+
+class Document(models.Model):
+    docfile = models.FileField(upload_to='db')

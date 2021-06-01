@@ -1,0 +1,48 @@
+{% extends 'base/base.html' %}
+{%block title%}
+Actualizar Base de Datos Gerencial
+{%endblock%}
+{% block content %}
+
+  <header>
+    <div class="container">
+        
+        </br>
+        <h2 align="center" class="form-titulo" style ="margin-left: 5px;">Actualizar Base de Datos Gerencial</h2>
+        </br></br></br>
+        
+    </div>
+  </header>
+
+<div class="container">
+
+    <a href = "{% url 'sistemaGerencialAgro:lista' %}"><input class = "btn-buscar btn-busqueda"  type="button" href = "{% url 'sistemaGerencialAgro:lista' %}" onclick = "return '{% url 'sistemaGerencialAgro:lista' %}' )" value="Actualizar BD" style="background-color:red; border-color:red;"></a>
+    </br></br>
+
+    <div>
+        {% if documents %}
+            <ul>
+                {% for document in documents %}
+                    <li><a href="{{ document.docfile.url }}">{{ document.docfile.name }}</a></li>
+                {% endfor %}
+            </ul>
+        {% else %}
+                <p>No documents.</p>
+        {% endif %}
+
+        <!-- Upload form. Note enctype attribute! -->
+        <form action="{% url 'sistemaGerencialAgro:lista' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <p>{{ form.non_field_errors }}</p>
+            <p>{{ form.docfile.label_tag }} {{ form.docfile.help_text }}</p>
+            <p>
+                {{ form.docfile.errors }}
+                {{ form.docfile }}</br>
+            </p>
+            
+            <input class="btn-buscar btn-busqueda" type="submit" value="Upload" />
+            <a href = "{% url 'sistemaGerencialAgro:consulta_estudiante_departamento' %}"><input class = "btn-buscar btn-busqueda"  type="button" href = "{% url 'sistemaGerencialAgro:consulta_estudiante_departamento' %}" onclick = "return '{% url 'sistemaGerencialAgro:consulta_estudiante_departamento' %}' )" value="Regresar" ></a>
+        </form>
+    </div>
+
+{% endblock %}
