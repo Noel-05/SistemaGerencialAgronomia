@@ -9,44 +9,433 @@ from django.contrib import messages
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
-
+from datetime import datetime
 from .models import *
+from .forms import *
+import sqlite3
+import mechanize
+import time
+from mechanize import Browser
 
 
-#------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------
 
 
 """
-Función para mostrar la página de inicio del sistema
+Función para mostrar la página de inicio del sistema.
 @param      una solicitud de petición (request)
 @return     retorna el template base del sistema
 @author     Noel Renderos
 """
 
 def index(request):
+
     return render(
         request,
         'base/base.html',
     )
 
 
-#------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------
 
 
-# ESTA VISTA SOLO ES PARA QUE FUNCIONE EL EJEMPLO, LUEGO SE BORRARA
+"""
+Función para recuperar y mostrar el listado de departamentos para su selección y realización del 
+filtro correspondiente y de la recuperación de todos los proyectos agrupados por departamento.
+@param      una solicitud de petición (request)
+@return     retorna el template estudiantesServSocDepartamento con el diccionario detallado en la descripción.
+@author     Noel Renderos
+"""
 
-def consultaEstudiante(request):
+def consultaEstudiantesDepartamento(request):
 
-    estudiante_list=Estudiante.objects.order_by('carnet_estudiante')
+    departamentos = Departamento.objects.all()
+
+    # Se usa doble subrayado para que funcione como el "." en el template (osea un join)
+    proyectos_departamento = ServicioSocial.objects.order_by('carnet_estudiante__carnet_estudiante__codigo_carrera__departamento')
     
     context = {
-        'estudiante_list': estudiante_list,
+        'proyectos_departamento': proyectos_departamento,
+        'departamentos': departamentos,
     }
 
     return render(
         request,
-        'proyecto/EjemploConsulta.html', context
+        'proyecto/estudiantesServSocDepartamento.html', 
+        context,
     )
 
 
+"""
+Función para realizar el filtro correspondiente de los proyectos por departamento.
+@param      una solicitud de petición (request)
+@return     retorna el template estudiantesServSocDepartamento con los proyectos filtrados por departamento.
+@author     Noel Renderos
+"""
+
+def filtrarEstudiantesDepartamento(request):
+    if request.method == 'POST':
+        depto = request.POST['departamento']
+
+        # Se usa doble subrayado para que funcione como el "." en el template (osea un join)
+        proyectos_departamento_filtro = ServicioSocial.objects.filter(carnet_estudiante__carnet_estudiante__codigo_carrera__departamento=depto)
+        departamentos = Departamento.objects.all()
+
+        context = {
+            'proyectos_departamento_filtro': proyectos_departamento_filtro,
+            'departamentos': departamentos,
+        }
+
+        return render(
+            request,
+            'proyecto/estudiantesServSocDepartamento.html', 
+            context,
+        )
+
+
+#---------------------------------------------------------------------------------------------------------------
+
+
+"""
+Función para mostrar la bitacora de procedimientos ETL ejecutados para su debida administración.
+@param      una solicitud de petición (request)
+@return     retorna el template procesoETL junto al diccionario de datos con los datos de la bitacora.
+@author     Noel Renderos
+"""
+
+def procedimientoETL(request):
+
+    bitacora = Bitacora.objects.order_by('-fecha_modificacion', '-hora_modificacion')
+
+    context = {
+        'bitacora': bitacora,
+    }
+
+    return render(
+        request,
+        'proyecto/procesoETL.html',
+        context
+    )
+
+
+"""
+Función para realizar el proceso de Extracción, Transformación y Carga de los datos de la BD Transaccional a la BD Gerencial.
+@param      una solicitud de petición (request)
+@return     retorna un mensaje de confirmación del procedimiento realizado, junto a la bitacora correspondiente como administración de dichas acciones.
+@author     Noel Renderos
+"""
+
+def procesoETL(request):
+
+    # ----- PARTE DE LA EXTRACCION (E) -----
+
+    # Creamos navegador.
+    browser = Browser()
+    
+    # Definimos que No somos un robot para no activar el robot.txt de la pagina.
+    browser.set_handle_robots(False)
+
+    # Definimos la URL que posee el Login.
+    browser.open("https://www.pythonanywhere.com/login/")
+    
+    # Seleccionamos el formulario correspondiente al Login.
+    browser.select_form(nr=0)
+    
+    # Rellenar los campos correspondientes del formulario.
+    browser["auth-username"] = "ProyeccionSocialAgronomiaUES"
+    browser["auth-password"] = "agronomia2020"
+    
+    # Enviamos el formulario.
+    response = browser.submit()
+    
+    # Definimos la URL que queremos acceder, en este caso la de descarga de la BD.
+    browser.retrieve('https://www.pythonanywhere.com/user/ProyeccionSocialAgronomiaUES/files/home/ProyeccionSocialAgronomiaUES/SistemaAgronomia/db.sqlite3','BDTransaccional.sqlite3')[0] 
+
+
+    # ----- PARTE DE LA TRANSFORMACIÓN Y CARGA (TL) -----
+
+    # Creamos un objeto de conexión a la base de datos SQLite que acabamos de descargar en la raiz del proyecto
+    con = sqlite3.connect("BDTransaccional.sqlite3")
+
+    # Con la conexión hecha, creamos un objeto cursor para iterar dicha base
+    cur = con.cursor()
+
+    # El resultado de "cursor.execute" puede ser iterado fila por fila de cada tabla
+
+    # Para la Tabla Departamento
+    queryset = Departamento.objects.all()
+    if len(queryset) == 0:
+        for row in cur.execute('SELECT * FROM app1_departamento;'):
+            departamento = Departamento(codigoDepartamento=row[0], nombreDepartamento=row[1], nombreJefeDepartamento=row[2], apellidoJefeDepartamento=row[3])
+            departamento.save()
+    else:
+        i=0
+        while i < len(queryset):
+            prueba = " "
+            for row in cur.execute('SELECT * FROM app1_departamento where codigoDepartamento = "'+str(queryset[i].codigoDepartamento)+'";'):
+                prueba = row[0]
+            if prueba == " ":
+                obtener = Departamento.objects.get(codigoDepartamento=queryset[i].codigoDepartamento)
+                obtener.delete()
+            else:
+                for row in cur.execute('SELECT * FROM app1_departamento;'):
+                    departamento = Departamento(codigoDepartamento=row[0], nombreDepartamento=row[1], nombreJefeDepartamento=row[2], apellidoJefeDepartamento=row[3])
+                    departamento.save()
+            i+=1
+    
+    # Para la Tabla Carrera
+    queryset = Carrera.objects.all()
+    if len(queryset) == 0:
+        for row in cur.execute('SELECT * FROM app1_carrera;'):
+            carrera = Carrera(codigo_carrera=row[0], nombre_carrera=row[1], departamento_id=row[2])
+            carrera.save()
+    else:
+        i=0
+        while i < len(queryset):
+            prueba = " "
+            for row in cur.execute('SELECT * FROM app1_carrera where codigo_carrera = "'+str(queryset[i].codigo_carrera)+'";'):
+                prueba = row[0]
+            if prueba == " ":
+                obtener = Carrera.objects.get(codigo_carrera=queryset[i].codigo_carrera)
+                obtener.delete()
+            else:
+                for row in cur.execute('SELECT * FROM app1_carrera;'):
+                    carrera = Carrera(codigo_carrera=row[0], nombre_carrera=row[1], departamento_id=row[2])
+                    carrera.save()
+            i+=1
+
+    # Para la Tabla Estudiante
+    queryset = Estudiante.objects.all()
+    if len(queryset) == 0:
+        for row in cur.execute('SELECT * FROM app1_estudiante;'):
+            estudiante = Estudiante(carnet_estudiante=row[0], nombre_estudiante=row[1], apellido_estudiante=row[2], sexo_estudiante=row[3], telefono_estudiante=row[4], correo_estudiante=row[5], direccion_estudiante=row[6])
+            estudiante.save()
+    else:
+        i=0
+        while i < len(queryset):
+            prueba = " "
+            for row in cur.execute('SELECT * FROM app1_estudiante where carnet_estudiante = "'+str(queryset[i].carnet_estudiante)+'";'):
+                prueba = row[0]
+            if prueba == " ":
+                obtener = Estudiante.objects.get(carnet_estudiante=queryset[i].carnet_estudiante)
+                obtener.delete()
+            else:
+                for row in cur.execute('SELECT * FROM app1_estudiante;'):
+                    estudiante = Estudiante(carnet_estudiante=row[0], nombre_estudiante=row[1], apellido_estudiante=row[2], sexo_estudiante=row[3], telefono_estudiante=row[4], correo_estudiante=row[5], direccion_estudiante=row[6])
+                    estudiante.save()
+            i+=1
+    
+    # Para la Tabla Estudio Universitario
+    queryset = EstudioUniversitario.objects.all()
+    if len(queryset) == 0:
+        for row in cur.execute('SELECT * FROM app1_estudiouniversitario;'):
+            estudioUniversitario = EstudioUniversitario(carnet_estudiante_id=row[0], porc_carrerar_aprob=row[1], unidades_valorativas=row[2], experiencia_areas_conoc=row[3], codigo_carrera_id=row[4], codigo_ciclo=row[5])
+            estudioUniversitario.save()
+    else:
+        i=0
+        while i < len(queryset):
+            prueba = " "
+            for row in cur.execute('SELECT * FROM app1_estudiouniversitario where carnet_estudiante_id = "'+str(queryset[i].carnet_estudiante)+'";'):
+                prueba = row[0]
+            if prueba == " ":
+                obtener = EstudioUniversitario.objects.get(carnet_estudiante_id=queryset[i].carnet_estudiante)
+                obtener.delete()
+            else:
+                for row in cur.execute('SELECT * FROM app1_estudiouniversitario;'):
+                    estudioUniversitario = EstudioUniversitario(carnet_estudiante_id=row[0], porc_carrerar_aprob=row[1], unidades_valorativas=row[2], experiencia_areas_conoc=row[3], codigo_carrera_id=row[4], codigo_ciclo=row[5])
+                    estudioUniversitario.save()
+            i+=1
+    
+    # Para la Tabla Solicitud
+    queryset = Solicitud.objects.all()
+    if len(queryset) == 0:
+        for row in cur.execute('SELECT * FROM app1_solicitud;'):
+            solicitud = Solicitud(carnet_estudiante_id=row[0], horas_semana=row[1], dias_semana=row[2], modalidad=row[3], fecha_inicio=row[4], fecha_fin=row[5], codigo_entidad=row[6])
+            solicitud.save()
+    else:
+        i=0
+        while i < len(queryset):
+            prueba = " "
+            for row in cur.execute('SELECT * FROM app1_solicitud where carnet_estudiante_id = "'+str(queryset[i].carnet_estudiante)+'";'):
+                prueba = row[0]
+            if prueba == " ":
+                obtener = Solicitud.objects.get(carnet_estudiante_id=queryset[i].carnet_estudiante)
+                obtener.delete()
+            else:
+                for row in cur.execute('SELECT * FROM app1_solicitud;'):
+                    solicitud = Solicitud(carnet_estudiante_id=row[0], horas_semana=row[1], dias_semana=row[2], modalidad=row[3], fecha_inicio=row[4], fecha_fin=row[5], codigo_entidad=row[6])
+                    solicitud.save()
+            i+=1
+    
+    # Para la Tabla Estado Solicitud
+    queryset = EstadoSolicitud.objects.all()
+    if len(queryset) == 0:
+        for row in cur.execute('SELECT * FROM app1_estadosolicitud;'):
+            estadosolicitud = EstadoSolicitud(carnet_estudiante_id=row[0], aceptado =row[1], motivo=row[2], observaciones=row[3])
+            estadosolicitud.save()
+    else:
+        i=0
+        while i < len(queryset):
+            prueba = " "
+            for row in cur.execute('SELECT * FROM app1_estadosolicitud where carnet_estudiante_id = "'+str(queryset[i].carnet_estudiante)+'";'):
+                prueba = row[0]
+            if prueba == " ":
+                obtener = EstadoSolicitud.objects.get(carnet_estudiante_id=queryset[i].carnet_estudiante)
+                obtener.delete()
+            else:
+                for row in cur.execute('SELECT * FROM app1_estadosolicitud;'):
+                    estadosolicitud = EstadoSolicitud(carnet_estudiante_id=row[0], aceptado =row[1], motivo=row[2], observaciones=row[3])
+                    estadosolicitud.save()
+            i+=1
+
+    # Para la Tabla Docente
+    queryset = Docente.objects.all()
+    if len(queryset) == 0:
+        for row in cur.execute('SELECT * FROM app1_docente;'):
+            docente = Docente(carnet_docente=row[0], nombre_docente =row[1], apellido_docente=row[2], departamento_id=row[3], nombre_rol=row[4])
+            docente.save()
+    else:
+        i=0
+        while i < len(queryset):
+            prueba = " "
+            for row in cur.execute('SELECT * FROM app1_docente where carnet_docente = "'+str(queryset[i].carnet_docente)+'";'):
+                prueba = row[0]
+            if prueba == " ":
+                obtener = Docente.objects.get(carnet_docente=queryset[i].carnet_docente)
+                obtener.delete()
+            else:
+                for row in cur.execute('SELECT * FROM app1_docente;'):
+                    docente = Docente(carnet_docente=row[0], nombre_docente =row[1], apellido_docente=row[2], departamento_id=row[3], nombre_rol=row[4])
+                    docente.save()
+            i+=1
+
+    # Para la Tabla Proyecto
+    queryset = Proyecto.objects.all()
+    if len(queryset) == 0:
+        for row in cur.execute('SELECT * FROM app1_proyecto;'):
+            proyecto = Proyecto(codigo_proyecto=row[0], descripcion_proyecto =row[1])
+            proyecto.save()
+    else:
+        i=0
+        while i < len(queryset):
+            prueba = " "
+            for row in cur.execute('SELECT * FROM app1_proyecto where codigo_proyecto = "'+str(queryset[i].codigo_proyecto)+'";'):
+                prueba = row[0]
+            if prueba == " ":
+                obtener = Proyecto.objects.get(codigo_proyecto=queryset[i].codigo_proyecto)
+                obtener.delete()
+            else:
+                for row in cur.execute('SELECT * FROM app1_proyecto;'):
+                    proyecto = Proyecto(codigo_proyecto=row[0], descripcion_proyecto =row[1])
+                    proyecto.save()
+            i+=1
+    
+    # Para la Tabla ServicioSocial
+    queryset = ServicioSocial.objects.all()
+    if len(queryset) == 0:
+        for row in cur.execute('SELECT * FROM app1_serviciosocial;'):
+            serviciosocial = ServicioSocial(carnet_estudiante_id=row[0], carnet_docente_id =row[1], codigo_proyecto_id=row[2])
+            serviciosocial.save()
+    else:
+        i=0
+        while i < len(queryset):
+            prueba = " "
+            for row in cur.execute('SELECT * FROM app1_serviciosocial where carnet_estudiante_id = "'+str(queryset[i].carnet_estudiante)+'";'):
+                prueba = row[0]
+            if prueba == " ":
+                obtener = ServicioSocial.objects.get(carnet_estudiante=queryset[i].carnet_estudiante)
+                obtener.delete()
+            else:
+                for row in cur.execute('SELECT * FROM app1_serviciosocial;'):
+                    serviciosocial = ServicioSocial(carnet_estudiante_id=row[0], carnet_docente_id =row[1], codigo_proyecto_id=row[2])
+                    serviciosocial.save()
+            i+=1
+
+    # Registramos en la bítacora el día que se registro el procedimiento ETL
+    now = datetime.now()
+    now2 = now.date()
+    now3 = time.strftime('%H:%M:%S', time.localtime())
+    desc = "Procedimiento ETL ejecutado."
+    bitacora = Bitacora(usuario="Prueba", fecha_modificacion=now2, hora_modificacion=now3, descripcion=desc)
+    bitacora.save()
+
+    # Cerramos la conexión
+    con.close()
+
+
+    # ----- FIN DEL PROCESO ETL -----
+
+    # Mandamo un mensaje para identificar que se realizo el procedimiento
+    mensaje = "Procedimiento ETL Completado."
+
+    bitacora = Bitacora.objects.order_by('fecha_modificacion', 'hora_modificacion').desc()
+
+    context = {
+        'mensaje': mensaje,
+        'bitacora': bitacora,
+    }
+
+    return render(
+        request,
+        'proyecto/procesoETL.html', 
+        context
+    )
+
+
+#---------------------------------------------------------------------------------------------------------------
+
+# def actualizarBD(request):
+#     # Handle file upload
+#     if request.method == 'POST':
+#         form = DocumentForm(request.POST, request.FILES)
+        
+#         if form.is_valid():
+#             archivo = request.FILES['docfile']
+
+#             handle_uploaded_file(archivo)
+            
+#             #newdoc = Document(docfile = archivo)
+#             #newdoc.save()
+
+#             # Redirect to the document list after POST
+#             return HttpResponseRedirect(reverse_lazy('sistemaGerencialAgro:actualizarBD'))
+    
+#     else:
+#         form = DocumentForm() # A empty, unbound form
+
+#     # Load documents for the list page
+#     documents = Document.objects.all()
+
+#     # Render list page with the documents and the form
+#     return render(
+#         request,
+#         'proyecto/actualizarBD.html',
+#         {
+#             'documents': documents, 
+#             'form': form
+#         }
+#     )
+
+# def handle_uploaded_file(f):
+#     filename = f.name
+
+#     if filename != 'db.sqlite3':
+#         filename = 'db.sqlite3'
+
+#     destination = open('media/db/'+filename, 'wb+')
+
+#     for chunk in f.chunks(): 
+#         destination.write(chunk)
+
+#     destination.close()
+
 #------------------------------------------------------------------------------
+
+
+# proy = ServicioSocial.objects.raw('SELECT D.nombreDepartamento, C.nombre_carrera, P.descripcion_proyecto,  S.carnet_estudiante_id, E.nombre_estudiante FROM proyecto_serviciosocial SS'+
+    # 'INNER JOIN proyecto_solicitud S ON SS.carnet_estudiante_id = S.carnet_estudiante_id'+
+    # 'INNER JOIN proyecto_estudiouniversitario EU ON S.carnet_estudiante_id = EU.carnet_estudiante_id'+
+    # 'INNER JOIN proyecto_estudiante E ON EU.carnet_estudiante_id = E.carnet_estudiante'+
+    # 'INNER JOIN proyecto_carrera C ON EU.codigo_carrera_id = C.codigo_carrera'+
+    # 'INNER JOIN proyecto_departamento D ON C.departamento_id = D.codigoDepartamento'+
+    # 'INNER JOIN proyecto_proyecto P ON SS.codigo_proyecto_id = P.codigo_proyecto;')

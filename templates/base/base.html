@@ -65,17 +65,16 @@
 <body>
 
   <header id="header">
-    <div class="container-fluid navbar navbar-light">
+    <div class="container-fluid navbar navbar-light" style="height:90px;">
 
       <div id="logo" class="pull-left">
         <a  href=" {% url 'sistemaGerencialAgro:index' %}"><img src="{% static 'img/logoUPSAgro.png' %} " class ="imglogo"></a>
         <h1>Sistema Gerencial de Servicio Social - Agronom&iacute;a.</h1>
       </div>
 
-      <div id="logo" class="pull-rigth">
 				<input type="button" href="{% url 'sistemaGerencialAgro:index' %}" class="btn-success btn" name="submit" disabled style="background-color:transparent; border:none;"></a> 
-        <a href="" style="text-decoration:none"><input type="button" href="" class="btn btn-success btn-sm" name="submit" value="Cerrar Sesi&oacute;n" style="background:green;"></a> 
-			</div>
+        <a href="" style="text-decoration:none"><input type="button" href="" class="btn btn-success btn-sm pull-right" name="submit" value="Cerrar Sesi&oacute;n" style="background:green; width:auto;"></a> 
+			
 
     </div>
 
@@ -84,7 +83,35 @@
 
         <li class="list-group-item" onclick="window.location.href='{% url 'sistemaGerencialAgro:index' %}'"><a style="text-decoration:none" href="{% url 'sistemaGerencialAgro:index' %}">Inicio</a></li>
         
-        <li class="list-group-item" onclick="window.location.href='{% url 'sistemaGerencialAgro:consulta_estudiante' %}'"><a style="text-decoration:none" href="{% url 'sistemaGerencialAgro:consulta_estudiante' %}">Ejemplo</a></li>
+        {% comment %} <li class="list-group-item" onclick="window.location.href='{% url 'sistemaGerencialAgro:consulta_estudiante' %}'"><a style="text-decoration:none" href="{% url 'sistemaGerencialAgro:consulta_estudiante' %}">Ejemplo</a></li> {% endcomment %}
+
+        <li class="list-group-item menu-has-children"><a style="text-decoration:none" href="#intro">Reportes T&aacute;cticos</a>
+          <ul>
+            <li><a href = "">Solicitudes de Servicio Social Aprobadas</a></li>
+             
+            <li><a href = "">Estudiantes en Servicio Social por Per&iacute;odo</a></li>
+            
+            <li><a href = "">Estudiantes en Servicio Social por Porcentaje</a></li>
+          
+            <li><a href = "">Estudiantes en Servicio Social por Genero</a></li>
+
+            <li><a href = "{% url 'sistemaGerencialAgro:consulta_estudiante_departamento' %}">Proyectos de Estudiantes en Servicio Social por Departamento</a></li>
+          </ul>
+        </li>
+
+        <li class="list-group-item menu-has-children"><a style="text-decoration:none" href="#intro">Reportes Gerenciales</a>
+          <ul>
+            <li><a href = "">Estudiantes en Servicio Social por Modalidad</a></li>
+             
+            <li><a href = "">Estudiantes en Servicio Social por Carrera</a></li>
+            
+            <li><a href = "">Docentes Tutores de Servicio Social</a></li>
+          </ul>
+        </li>
+
+        <li class="list-group-item" onclick="window.location.href='{% url 'sistemaGerencialAgro:procedimientoETL' %}'"><a style="text-decoration:none" href="{% url 'sistemaGerencialAgro:procedimientoETL' %}">Actualizar BD</a></li>
+
+        {% comment %} <li class="list-group-item" onclick="window.location.href='{% url 'sistemaGerencialAgro:actualizarBD' %}'"><a style="text-decoration:none" href="{% url 'sistemaGerencialAgro:actualizarBD' %}">Actualizar BD Ej.</a></li> {% endcomment %}
 
       </ul>
     </div>
