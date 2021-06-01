@@ -379,7 +379,7 @@ def procesoETL(request):
     # Mandamo un mensaje para identificar que se realizo el procedimiento
     mensaje = "Procedimiento ETL Completado."
 
-    bitacora = Bitacora.objects.order_by('fecha_modificacion', 'hora_modificacion').desc()
+    bitacora = Bitacora.objects.order_by('-fecha_modificacion', '-hora_modificacion')
 
     context = {
         'mensaje': mensaje,
