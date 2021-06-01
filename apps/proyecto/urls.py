@@ -14,7 +14,7 @@ urlpatterns = [
     
     # ESTA URL ES SOLO PARA QUE FUNCIONE EL EJEMPLO, LUEGO SE BORRARA
     path('istemaGerencialAgro/consultaEstudiante/', consultaEstudiante, name="consulta_estudiante"),
-	path('sistemaGerencialAgro/listarEstudiantes/', listarEstudiantes.as_view(), name="listar_estudiantes"),
+	path('sistemaGerencialAgro/listarEstudiantes/', listarEstudiantes, name="listar_estudiantes"),
 	path('sistemaGerencialAgro/buscar/', buscarCriterio.as_view(), name="buscar_criterio"),
     path('sistemaGerencialAgro/porcentaje/', consultaEstudiantesPorcentajeCarrera.as_view(), name="buscar_porcentaje"),
     path('sistemaGerencialAgro/genero/', consultaEstudiantesPorGenero.as_view(), name="buscar_genero"),

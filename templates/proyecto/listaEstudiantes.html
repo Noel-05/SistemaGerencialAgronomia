@@ -19,7 +19,7 @@ Estudiantes por porcentaje de carrera aprobado
     <div align="center" class="busqueda">
         <form method="POST" action="{% url 'sistemaGerencialAgro:buscar_criterio' %}">
             {% csrf_token %} 
-            <input type="radio" name="criterio" value="carrera">Por carrera
+            <input type="radio" name="criterio" value="carrera">Por porcentaje de carrera aprobado
             <input type="radio" name="criterio" value="genero">Por genéro
             <input type="radio" name="criterio" value="modalidad">Por modalidad
 
@@ -36,18 +36,14 @@ Estudiantes por porcentaje de carrera aprobado
                     <th>Carnet</th>
             		<th>Nombre</th>
                     <th>Apellido</th>
-            	    <th>Carrera</th>
-            	    <th>Porcentaje</th>
         		</tr>
             </thead>
-            {% if object_list %}
-            {% for estudios in object_list %}
+            {% if estudiantes %}
+            {% for estudiante in estudiantes %}
         		<tr class="etiqueta-tr">
-                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ estudios.carnet_estudiante }}</td>
-            		<td class="th-borde width-th-xx" style = "text-align:center;">{{ estudios.carnet_estudiante.nombre_estudiante}}</td>
-                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ estudios.carnet_estudiante.apellido_estudiante}}</td>
-            		<td class="th-borde width-th-xx" style = "text-align:center;">{{ estudios.codigo_carrera.nombre_carrera }}</td>
-                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ estudios.porc_carrerar_aprob}}</td>
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ estudiante.carnet_estudiante }}</td>
+            		<td class="th-borde width-th-xx" style = "text-align:center;">{{ estudiante.nombre_estudiante}}</td>
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ estudiante.apellido_estudiante}}</td>
         		</tr>
             {% endfor %}
             {% endif %}     

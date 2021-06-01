@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
-from django.views.generic import TemplateView,View,ListView
+from django.views.generic import TemplateView,View
 from django.http import HttpResponse
 #Libreriías agregadas por Huiza
 from django.template.loader import get_template
@@ -53,9 +53,9 @@ def consultaEstudiante(request):
 
 #------------------------------------------------------------------------------
 
-class listarEstudiantes(ListView):
-    model=Estudiante
-    template_name='proyecto/listaEstudiantes.html'
+def listarEstudiantes(request):
+    estudiantes=Estudiante.objects.all()
+    return render(request,'proyecto/listaEstudiantes.html',{'estudiantes':estudiantes})
 
 class buscarCriterio(TemplateView):
     template_name='proyecto/listarEstudiantes.html'
@@ -63,21 +63,29 @@ class buscarCriterio(TemplateView):
         criterio=request.POST['criterio']
         if criterio=="carrera":
             estudios_universitarios=EstudioUniversitario.objects.all()
-            return render(request,'proyecto/EstudiantesPorcentajeCarrera.html')
+            return render(request,'proyecto/EstudiantesPorcentajeCarrera.html',{'estudios_universitarios':estudios_universitarios})
 
         elif criterio=="genero":
-            return render(request,'proyecto/EstudiantesPorGenero.html')
+            estudiantes=Solicitud.objects.all()
+            return render(request,'proyecto/EstudiantesPorGenero.html',{'estudiantes':estudiantes})
 
         else:
-            return render(request,'proyecto/EstudiantesPorModalidad.html')
+            servicios=ServicioSocial.objects.all()
+            return render(request,'proyecto/EstudiantesPorModalidad.html',{'servicios':servicios})
+            
 
 class consultaEstudiantesPorcentajeCarrera(TemplateView):
     template_name='proyecto/EstudiantesPorcentajeCarrera.html'
     def post(self,request,*args,**kwargs):
         global porcentaje
         porcentaje=request.POST['porcentaje']
-        estudios_universitarios=EstudioUniversitario.objects.filter(porc_carrerar_aprob=porcentaje)
-        return render(request,'proyecto/EstudiantesPorcentajeCarrera.html',{'estudios_universitarios':estudios_universitarios})
+        if porcentaje=="":
+            estudiantes=Estudiante.objects.all()
+            return render(request,'proyecto/listaEstudiantes.html',{'estudiantes':estudiantes})
+
+        else:
+            estudios_universitarios=EstudioUniversitario.objects.filter(porc_carrerar_aprob=porcentaje)
+            return render(request,'proyecto/EstudiantesPorcentajeCarrera.html',{'estudios_universitarios':estudios_universitarios})
  
  
     def get(self,request,*args,**kwargs):
