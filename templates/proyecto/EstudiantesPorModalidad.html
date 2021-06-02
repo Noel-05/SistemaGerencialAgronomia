@@ -7,7 +7,7 @@ Estudiantes por modalidad
   <header>
     <div class="container">
 
-        <h2 align="center" class="form-titulo" style ="margin-left: 5px;">Ejemplo de Consultas</h2>
+        <h2 align="center" class="form-titulo" style ="margin-left: 5px;">Estudiantes en Servicio Social por Modalidad de Realizaci&oacute;n</h2>
         </br></br></br>
         
     </div>
@@ -17,12 +17,15 @@ Estudiantes por modalidad
     <div align="center" class="busqueda">
         <form method="POST" action="{% url 'sistemaGerencialAgro:buscar_modalidad' %}">
             {% csrf_token %} 
-            <select name="modalidad" class="form-control col-4 col-sm-2 input-style" title="Selecciona la modalidad.Por Favor" required>
+            
+            <select name="modalidad" class="form-control col-4 col-sm-3 input-style" title="Selecciona la modalidad.Por Favor" required>
                 <option selected value=""> Selecciona la modalidad </option>
                 <option value="Presencial">Presencial</option>
                 <option value="Presencial">Virtual</option>
             </select>
+            
             </br></br>
+            
             <input class="btn-buscar btn-busqueda" type = "submit" value = "Buscar" id = "modalidadBuscar"></br></br>
         </form>
     </div>
@@ -33,8 +36,6 @@ Estudiantes por modalidad
     </div>
 
     </br></br>
-    </br></br>
-
 
     <div>
         <table>

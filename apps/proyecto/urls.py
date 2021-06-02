@@ -14,6 +14,25 @@ urlpatterns = [
     path('sistemaGerencialAgro/index/', login_required(index), name = 'index'),
 
 
+    # Ejecución del Procedimiento ETL.
+    path('sistemaGerencialAgro/procesoETL/<str:username>', login_required(procesoETL), name='procesoETL'),
+    path('sistemaGerencialAgro/procedimientoETL/', login_required(procedimientoETL), name='procedimientoETL'),
+
+    
+    # --------- REPORTES TACTICOS --------- 
+
+    # Soliictudes de Servicio Social Aprobadas.
+
+    # Estudiantes en Servicio Social por Período.
+
+    # Estudiantes en Servicio Social por Porcentaje.
+    path('sistemaGerencialAgro/porcentaje/', consultaEstudiantesPorcentajeCarrera.as_view(), name="buscar_porcentaje"),
+    path('sistemaGerencialAgro/reportePorcentaje/', reporteEstudiantesPorcentajeCarrera.as_view(), name="reporte_porcentaje"),
+
+    # Estudiantes en Servicio Social por Genero.
+    path('sistemaGerencialAgro/genero/', consultaEstudiantesPorGenero.as_view(), name="buscar_genero"),
+    path('sistemaGerencialAgro/reporteGenero/', reporteEstudiantesPorGenero.as_view(), name="reporte_genero"),
+
     # Proyectos de Estudiante en Servicio Social por Departamento.
     path('sistemaGerencialAgro/consultaProyectosEstudianteDepartamento/', consultaEstudiantesDepartamento, name="consulta_estudiante_departamento"),
     path('sistemaGerencialAgro/filtrarProyectosEstudiantesDepartamento/', filtrarEstudiantesDepartamento, name="filtrar_estudiante_departamento"),
@@ -21,18 +40,22 @@ urlpatterns = [
     path('sistemaGerencialAgro/exportarProyectosEstudiantesDepartamento/<str:depto>/', exportarEstudiantesDepartamento, name="exportar_estudiante_departamento"),
 
 
-    # Ejecución del Procedimiento ETL.
-    path('sistemaGerencialAgro/procesoETL/', procesoETL, name='procesoETL'),
-    path('sistemaGerencialAgro/procedimientoETL/', procedimientoETL, name='procedimientoETL'),
+    # --------- REPORTES GERENCIALES --------- 
 
-    
-    # ESTA URL ES SOLO PARA QUE FUNCIONE EL EJEMPLO, LUEGO SE BORRARA
-    path('sistemaGerencialAgro/porcentaje/', consultaEstudiantesPorcentajeCarrera.as_view(), name="buscar_porcentaje"),
-    path('sistemaGerencialAgro/genero/', consultaEstudiantesPorGenero.as_view(), name="buscar_genero"),
+    # Estudiantes en Servicio Social por Modalidad.
     path('sistemaGerencialAgro/modalidad/', consultaEstudiantesPorModalidad.as_view(), name="buscar_modalidad"),
-    path('sistemaGerencialAgro/reportePorcentaje/', reporteEstudiantesPorcentajeCarrera.as_view(), name="reporte_porcentaje"),
-    path('sistemaGerencialAgro/reporteGenero/', reporteEstudiantesPorGenero.as_view(), name="reporte_genero"),
     path('sistemaGerencialAgro/reporteModalidad/', reporteEstudiantesPorModalidad.as_view(), name="reporte_modalidad"),
+
+    # Estudiantes en Servicio Social por Carrera.
+
+    # Docentes Tutores de Servicio Social.
+
+
+
+
+    # ->->->->->->->  NOTA: <-<-<-<-<-<-<-
+    # LA PERSONA QUE HIZO ESTAS URL DE ABAJO AGREGARLAS A LA SECCION DE ARRIBA QUE CORRESPONDA.
+
     path('export/excel', export_estudiantes_csv, name='export_csv'),
     path('sistemaGerencialAgro/consultaSolicitudAprobadas/', consultaSolicitud, name="consulta_solicitud"),
     path('sistemaGerencialAgro/estado/', consultaSolicitudesAprobadas.as_view(), name="buscar_estado"),
@@ -40,8 +63,7 @@ urlpatterns = [
     path('sistemaGerencialAgro/periodo/', consultaEstudiantesPorPeriodo.as_view(), name="buscar_periodo"),
     path('reporte/estado', reporteSolicitudAprobada.as_view(), name="reporte_estado"),
 
-    # ESTA URL ES SOLO PARA QUE FUNCIONE EL EJEMPLO, LUEGO SE BORRARA.
-    #path('sistemaGerencialAgro/consultaEstudiantes/', consultaEstudiante, name="consulta_estudiante"),
+    
     # Actualizar la BD por medio de la subida del archivo.
     #path('sistemaGerencialAgro/list/', lista, name='lista'),
     #path('sistemaGerencialAgro/actualizarBD/', actualizarBD, name='actualizarBD'),

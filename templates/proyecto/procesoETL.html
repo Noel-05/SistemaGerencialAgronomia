@@ -48,7 +48,7 @@ ETL - Actualizar Base de Datos
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary btn-sm tableButton" data-dismiss="modal" style="border-color:red; background-color:red"> Cancelar </button>
-                    <button type="button" class="btn btn-primary btn-sm tableButton" onclick="location.href='{% url 'sistemaGerencialAgro:procesoETL' %}'" style="border-color:green; background-color:green;"> Comenzar </button>
+                    <button type="button" class="btn btn-primary btn-sm tableButton" onclick="location.href='{% url 'sistemaGerencialAgro:procesoETL' user.username %}'" style="border-color:green; background-color:green;"> Comenzar </button>
                 </div>
             </div>
         </div>
