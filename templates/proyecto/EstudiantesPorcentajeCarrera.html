@@ -14,18 +14,22 @@ Estudiantes por porcentaje de carrera aprobado
   </header>
 
 <div class="container">
-
-    <!-- Boton Buscar Texto -->
     <div align="center" class="busqueda">
         <form method="POST" action="{% url 'sistemaGerencialAgro:buscar_porcentaje' %}">
             {% csrf_token %} 
-            <input type="number" name="porcentaje" class = "input-style" placeholder="Porfavor Ingrese el Porcentaje." min="60" max="100">
-            <button type="submit" class="btn btn-busqueda">Buscar</button>
-            <a  type="submit" class="btn btn-success" href="{% url 'sistemaGerencialAgro:export_csv' %}">Exportar CSV</a>  
-        </form> 
-        <a href="{% url 'sistemaGerencialAgro:buscar_porcentaje' %}" target="__blank"><button type="submit" class="btn btn-busqueda">Generar PDF</button></a>
-        
+            <input type="number" name="porcentaje"  id = "porcentaje" class = "input-style" min="60", max="100">
+            
+            <input class="btn-buscar btn-busqueda" type = "submit" value = "Buscar" id = "porcentajeBuscar"></br></br>
+             
+        </form>
     </div>
+
+    <div align="center" class="busqueda">
+        <a href="{% url 'sistemaGerencialAgro:reporte_porcentaje' %}" target="__blank"><input class="btn-buscar btn-busqueda" type = "submit" value = "Imprimir PDF" id = "">
+        <a href="{% url 'sistemaGerencialAgro:export_csv' %}" target="__blank"></a><input class="btn-buscar btn-busqueda" type = "submit" value = "Exportar CSV" id = "">
+    </div>
+
+
     </br></br>
     </br></br>
     <div>

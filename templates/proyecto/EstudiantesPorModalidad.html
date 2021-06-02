@@ -14,21 +14,27 @@ Estudiantes por modalidad
   </header>
 
 <div class="container">
-
-    <!-- Boton Buscar Texto -->
     <div align="center" class="busqueda">
         <form method="POST" action="{% url 'sistemaGerencialAgro:buscar_modalidad' %}">
             {% csrf_token %} 
-            <select name="modalidad">
+            <select name="modalidad" class="form-control col-4 col-sm-2 input-style" title="Selecciona la modalidad.Por Favor" required>
+                <option selected value=""> Selecciona la modalidad </option>
                 <option value="Presencial">Presencial</option>
-                <option value="Virtual">Virtual</option>
+                <option value="Presencial">Virtual</option>
             </select>
-            <input class="btn-buscar btn-busqueda" type = "submit" value = "Buscar">
-             <a  type="submit" class="btn btn-success" href="{% url 'sistemaGerencialAgro:export_csv' %}">Exportar CSV</a>
+            </br></br>
+            <input class="btn-buscar btn-busqueda" type = "submit" value = "Buscar" id = "modalidadBuscar"></br></br>
         </form>
-        <a href="{% url 'sistemaGerencialAgro:buscar_modalidad' %}" target="__blank"><button type="submit" class="btn btn-busqueda">Generar PDF</button></a>
     </div>
+
+     <div align="center" class="busqueda">
+        <a href="{% url 'sistemaGerencialAgro:reporte_modalidad' %}" target="__blank"><input class="btn-buscar btn-busqueda" type = "submit" value = "Imprimir PDF" id = "">
+        <a href="{% url 'sistemaGerencialAgro:export_csv' %}" target="__blank"></a><input class="btn-buscar btn-busqueda" type = "submit" value = "Exportar CSV" id = "">
+    </div>
+
     </br></br>
+    </br></br>
+
 
     <div>
         <table>

@@ -27,18 +27,18 @@ urlpatterns = [
 
     
     # ESTA URL ES SOLO PARA QUE FUNCIONE EL EJEMPLO, LUEGO SE BORRARA
-	path('sistemaGerencialAgro/listarEstudiantes/', listarEstudiantes, name="listar_estudiantes"),
-	path('sistemaGerencialAgro/buscar/', buscarCriterio.as_view(), name="buscar_criterio"),
     path('sistemaGerencialAgro/porcentaje/', consultaEstudiantesPorcentajeCarrera.as_view(), name="buscar_porcentaje"),
     path('sistemaGerencialAgro/genero/', consultaEstudiantesPorGenero.as_view(), name="buscar_genero"),
     path('sistemaGerencialAgro/modalidad/', consultaEstudiantesPorModalidad.as_view(), name="buscar_modalidad"),
+    path('sistemaGerencialAgro/reportePorcentaje/', reporteEstudiantesPorcentajeCarrera.as_view(), name="reporte_porcentaje"),
+    path('sistemaGerencialAgro/reporteGenero/', reporteEstudiantesPorGenero.as_view(), name="reporte_genero"),
+    path('sistemaGerencialAgro/reporteModalidad/', reporteEstudiantesPorModalidad.as_view(), name="reporte_modalidad"),
     path('export/excel', export_estudiantes_csv, name='export_csv'),
     path('sistemaGerencialAgro/consultaSolicitudAprobadas/', consultaSolicitud, name="consulta_solicitud"),
     path('sistemaGerencialAgro/estado/', consultaSolicitudesAprobadas.as_view(), name="buscar_estado"),
     path('sistemaGerencialAgro/consultaSolicitudPeriodo/', consultaSolicitudPeriodo, name="solicitud_periodo"),
     path('sistemaGerencialAgro/periodo/', consultaEstudiantesPorPeriodo.as_view(), name="buscar_periodo"),
     path('reporte/estado', reporteSolicitudAprobada.as_view(), name="reporte_estado"),
- 
 
     # ESTA URL ES SOLO PARA QUE FUNCIONE EL EJEMPLO, LUEGO SE BORRARA.
     #path('sistemaGerencialAgro/consultaEstudiantes/', consultaEstudiante, name="consulta_estudiante"),

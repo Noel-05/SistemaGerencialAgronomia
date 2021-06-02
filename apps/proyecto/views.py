@@ -491,19 +491,13 @@ class buscarCriterio(TemplateView):
 class consultaEstudiantesPorcentajeCarrera(TemplateView):
     template_name='proyecto/EstudiantesPorcentajeCarrera.html'
     def post(self,request,*args,**kwargs):
-        global porcentaje
         porcentaje=request.POST['porcentaje']
-        if porcentaje=="":
-            estudiantes=Estudiante.objects.all()
-            return render(request,'proyecto/listaEstudiantes.html',{'estudiantes':estudiantes})
-
-        else:
-            estudios_universitarios=EstudioUniversitario.objects.filter(porc_carrerar_aprob=porcentaje)
-            return render(request,'proyecto/EstudiantesPorcentajeCarrera.html',{'estudios_universitarios':estudios_universitarios})
- 
- 
-    def get(self,request,*args,**kwargs):
         estudios_universitarios=EstudioUniversitario.objects.filter(porc_carrerar_aprob=porcentaje)
+        return render(request,'proyecto/EstudiantesPorcentajeCarrera.html',{'estudios_universitarios':estudios_universitarios})
+
+class reporteEstudiantesPorcentajeCarrera(View):
+    def get(self,request,*args,**kwargs):
+        estudios_universitarios=EstudioUniversitario.objects.all()
         template = get_template('reportes/ReportePorcentajeCarrera.html')
         context={'title':'Reporte de estudiantes por porcentaje carrera aprobado','estudios_universitarios':estudios_universitarios}
         html = template.render(context)
@@ -512,18 +506,18 @@ class consultaEstudiantesPorcentajeCarrera(TemplateView):
         pisa_status = pisa.CreatePDF(html, dest=response)
         if pisa_status.err:
             return HttpResponse('We had some errors <pre>'+ html + '</pre>')
-        return response
+        return response   
 
 class consultaEstudiantesPorGenero(TemplateView):
     template_name='proyecto/EstudiantesPorGenero.html'
     def post(self,request,*args,**kwargs):
-        global sexo
         sexo=request.POST['sexo']
         estudiantes=Solicitud.objects.filter(carnet_estudiante__carnet_estudiante__sexo_estudiante=sexo)
         return render(request,'proyecto/EstudiantesPorGenero.html',{'estudiantes':estudiantes})
-    
+
+class reporteEstudiantesPorGenero(View):
     def get(self,request,*args,**kwargs):
-        estudiantes=Solicitud.objects.filter(carnet_estudiante__carnet_estudiante__sexo_estudiante=sexo)
+        estudiantes=Solicitud.objects.all()
         template = get_template('reportes/ReporteGenero.html')
         context={'title':'Reporte de estudiantes por género','estudiantes':estudiantes}
         html = template.render(context)
@@ -534,16 +528,17 @@ class consultaEstudiantesPorGenero(TemplateView):
             return HttpResponse('We had some errors <pre>'+ html + '</pre>')
         return response
 
+
 class consultaEstudiantesPorModalidad(TemplateView):
     template_name='proyecto/EstudiantesPorModalidad.html'
     def post(self,request,*args,**kwargs):
-        global servicios
         modalidad=request.POST['modalidad']
         servicios=ServicioSocial.objects.filter(carnet_estudiante__modalidad=modalidad)
         return render(request,'proyecto/EstudiantesPorModalidad.html',{'servicios':servicios})
 
+class reporteEstudiantesPorModalidad(View):
     def get(self,request,*args,**kwargs):
-        servicios=ServicioSocial.objects.filter(carnet_estudiante__modalidad="Presencial")
+        servicios=ServicioSocial.objects.all()
         template = get_template('reportes/ReporteModalidad.html')
         context={'title':'Reporte de estudiantes por modalidad','servicios':servicios}
         html = template.render(context)
