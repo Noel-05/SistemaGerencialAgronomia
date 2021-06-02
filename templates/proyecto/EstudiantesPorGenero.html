@@ -14,20 +14,23 @@ Estudiantes por género
   </header>
 
 <div class="container">
-
-    <!-- Boton Buscar Texto -->
     <div align="center" class="busqueda">
         <form method="POST" action="{% url 'sistemaGerencialAgro:buscar_genero' %}">
             {% csrf_token %} 
-            <input type="radio" name=sexo value="F">Femenino
-            <input type="radio" name=sexo value="M">Masculino
-            <input class="btn-buscar btn-busqueda" type = "submit" value = "Buscar">
-             <a  type="submit" class="btn btn-success" href="{% url 'sistemaGerencialAgro:export_csv' %}">Exportar CSV</a>
+            <input type="radio" name="sexo"  id = "sexo" value="F">Femenino
+            <input type="radio" name="sexo"  id = "sexo" value="M">Masculino
+            
+            <input class="btn-buscar btn-busqueda" type = "submit" value = "Buscar" id = "generoBuscar"></br></br>
         </form>
-        <a href="{% url 'sistemaGerencialAgro:buscar_genero' %}" target="__blank"><button type="submit" class="btn btn-busqueda">Generar PDF</button></a>
     </div>
-    </br></br>
 
+     <div align="center" class="busqueda">
+        <a href="{% url 'sistemaGerencialAgro:reporte_genero' %}" target="__blank"><input class="btn-buscar btn-busqueda" type = "submit" value = "Imprimir PDF" id = "">
+        <a href="{% url 'sistemaGerencialAgro:export_csv' %}" target="__blank"></a><input class="btn-buscar btn-busqueda" type = "submit" value = "Exportar CSV" id = "">
+    </div>
+
+    </br></br>
+    </br></br>
     <div>
         <table>
             <thead>

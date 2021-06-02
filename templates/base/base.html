@@ -92,9 +92,9 @@
              
             <li><a href = "">Estudiantes en Servicio Social por Per&iacute;odo</a></li>
             
-            <li><a href = "">Estudiantes en Servicio Social por Porcentaje</a></li>
+            <li><a href = "{% url 'sistemaGerencialAgro:buscar_porcentaje' %}">Estudiantes en Servicio Social por Porcentaje</a></li>
           
-            <li><a href = "">Estudiantes en Servicio Social por Genero</a></li>
+            <li><a href = "{% url 'sistemaGerencialAgro:buscar_genero' %}">Estudiantes en Servicio Social por Genero</a></li>
 
             <li><a href = "{% url 'sistemaGerencialAgro:consulta_estudiante_departamento' %}">Proyectos de Estudiantes en Servicio Social por Departamento</a></li>
           </ul>
@@ -102,7 +102,7 @@
 
         <li class="list-group-item menu-has-children"><a style="text-decoration:none" href="#intro">Reportes Gerenciales</a>
           <ul>
-            <li><a href = "">Estudiantes en Servicio Social por Modalidad</a></li>
+            <li><a href = "{% url 'sistemaGerencialAgro:buscar_modalidad' %}">Estudiantes en Servicio Social por Modalidad</a></li>
              
             <li><a href = "">Estudiantes en Servicio Social por Carrera</a></li>
             
@@ -113,9 +113,6 @@
         <li class="list-group-item" onclick="window.location.href='{% url 'sistemaGerencialAgro:procedimientoETL' %}'"><a style="text-decoration:none" href="{% url 'sistemaGerencialAgro:procedimientoETL' %}">Actualizar BD</a></li>
 
         {% comment %} <li class="list-group-item" onclick="window.location.href='{% url 'sistemaGerencialAgro:actualizarBD' %}'"><a style="text-decoration:none" href="{% url 'sistemaGerencialAgro:actualizarBD' %}">Actualizar BD Ej.</a></li> {% endcomment %}
-
-
-        <li class="list-group-item" onclick="window.location.href='{% url 'sistemaGerencialAgro:listar_estudiantes' %}'"><a style="text-decoration:none" href="{% url 'sistemaGerencialAgro:listar_estudiantes' %}">Estudiantes</a></li>
 
         <li class="list-group-item" onclick="window.location.href='{% url 'usuario:inicio_usuarios' %}'"><a style="text-decoration:none" href="{% url 'usuario:inicio_usuarios' %}">Usuarios</a></li>
         
