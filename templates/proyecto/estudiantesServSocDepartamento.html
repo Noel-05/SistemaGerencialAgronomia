@@ -20,9 +20,8 @@ Estudiantes en Servicio Social por Departamento
     <div align="center" class="busqueda">
         <form method="POST" action="{% url 'sistemaGerencialAgro:filtrar_estudiante_departamento' %}">
             {% csrf_token %} 
-            <input type="date" name="fecha"  id = "fecha" class = "input-style" placeholder="Porfavor Seleccione la Fecha." maxlength="7">
             
-            <select name="departamento" class="form-control col-4 col-sm-2 input-style" title="Selecciona el Departamento Por Favor" required>
+            <select name="departamento" class="form-control col-4 col-sm-3 input-style" title="Selecciona el Departamento Por Favor" required>
                 <option selected value=""> Selecciona el Departamento </option>
                     {% if departamentos %}
                         {% for dep in departamentos %}
@@ -37,10 +36,12 @@ Estudiantes en Servicio Social por Departamento
         </form>
     </div>
 
-    <div align="center" class="busqueda">
-        <input class="btn-buscar btn-busqueda" type = "submit" value = "Imprimir PDF" id = "">
-        <input class="btn-buscar btn-busqueda" type = "submit" value = "Exportar CSV" id = "">
-    </div>
+    {% if depto %}
+        <div align="center" class="busqueda">
+            <input class="btn-buscar btn-busqueda" type = "submit" value = "Imprimir PDF" id = "ImprimirPDF" onclick="window.location.href='{% url 'sistemaGerencialAgro:reporte_estudiante_departamento' depto %}'">
+            <input class="btn-buscar btn-busqueda" type = "submit" value = "Exportar CSV" id = "ExportarCSV" onclick="window.location.href='{% url 'sistemaGerencialAgro:exportar_estudiante_departamento' depto %}'">
+        </div>
+    {% endif %}
     
     </br></br>
 

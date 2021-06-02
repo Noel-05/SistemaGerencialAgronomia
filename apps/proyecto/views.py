@@ -7,11 +7,9 @@ from django.contrib import messages
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
-
 from django.views.generic import TemplateView,View
 from django.http import HttpResponse
 
-#Libreriías agregadas por Huiza
 from django.template.loader import get_template
 from xhtml2pdf import pisa
 from django.contrib.staticfiles import finders
@@ -19,14 +17,13 @@ from .models import *
 import xlwt
 import os
 
-# Librerias agregadas por Noel
+import sqlite3
+import time
+import mechanize
+from mechanize import Browser
 from datetime import datetime
 from .models import *
 from .forms import *
-import sqlite3
-import mechanize
-import time
-from mechanize import Browser
 
 
 #---------------------------------------------------------------------------------------------------------------
@@ -85,6 +82,7 @@ Función para realizar el filtro correspondiente de los proyectos por departamen
 """
 
 def filtrarEstudiantesDepartamento(request):
+
     if request.method == 'POST':
         depto = request.POST['departamento']
 
@@ -95,6 +93,7 @@ def filtrarEstudiantesDepartamento(request):
         context = {
             'proyectos_departamento_filtro': proyectos_departamento_filtro,
             'departamentos': departamentos,
+            'depto': depto,
         }
 
         return render(
@@ -102,6 +101,78 @@ def filtrarEstudiantesDepartamento(request):
             'proyecto/estudiantesServSocDepartamento.html', 
             context,
         )
+
+
+"""
+Función para realizar el PDF correspondiente con los datos recuperados a partir del filtro.
+@param      una solicitud de petición (request) y el departamento a filtrar en la sentencia SQL.
+@return     retorna la vista previa del pdf por medio de una peticion request.
+@author     Noel Renderos
+"""
+
+def reporteEstudiantesDepartamento(request, depto):
+
+    proyectos_departamento_filtro = ServicioSocial.objects.filter(carnet_estudiante__carnet_estudiante__codigo_carrera__departamento=depto)
+
+    template = get_template('reportes/ReporteProyectosDepartamento.html')
+
+    context = {
+        'proyectos_departamento_filtro': proyectos_departamento_filtro
+    }
+
+    html = template.render(context)
+    
+    response = HttpResponse(content_type = 'application/pdf')
+    response['Content-Disposition'] = 'inline; filename="ProyectosPorDepartamento.pdf"'
+    
+    pisa_status = pisa.CreatePDF(html, dest = response)
+    
+    if pisa_status.err:
+        return HttpResponse('We had some errors <pre>'+ html + '</pre>')
+    
+    return response
+
+
+"""
+Función para realizar el CSV correspondiente con los datos recuperados a partir del filtro.
+@param      una solicitud de petición (request) y el departamento a filtrar en la sentencia SQL.
+@return     descarga el archivo CSV con el nombre indicado por medio de una peticion request.
+@author     Noel Renderos
+"""
+
+def exportarEstudiantesDepartamento(request, depto):
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="RT-ProyectosPorDepartamento.csv"'
+
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('Proyectos por Departamento') 
+
+    row_num = 0
+
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = ['Departamento', 'Proyecto', 'Carnet', 'Nombre', 'Apellido', 'Carrera']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style) 
+
+    # Sheet body, remaining rows
+    font_style = xlwt.XFStyle()
+
+    proyectos_departamento_filtro = ServicioSocial.objects.filter(carnet_estudiante__carnet_estudiante__codigo_carrera__departamento=depto)
+
+    for proyDepto in proyectos_departamento_filtro:
+        row_num += 1
+        row = [proyDepto.carnet_estudiante.carnet_estudiante.codigo_carrera.departamento.nombreDepartamento, proyDepto.codigo_proyecto.descripcion_proyecto, proyDepto.carnet_estudiante.carnet_estudiante.carnet_estudiante.carnet_estudiante, proyDepto.carnet_estudiante.carnet_estudiante.carnet_estudiante.nombre_estudiante, proyDepto.carnet_estudiante.carnet_estudiante.carnet_estudiante.apellido_estudiante, proyDepto.carnet_estudiante.carnet_estudiante.codigo_carrera.nombre_carrera]
+        
+        for col_num in range(len(row)):
+            ws.write(row_num, col_num, row[col_num], font_style)
+
+    wb.save(response)
+
+    return response
 
 
 #---------------------------------------------------------------------------------------------------------------
@@ -394,6 +465,7 @@ def procesoETL(request):
 
 
 #------------------------------------------------------------------------------
+
 
 def listarEstudiantes(request):
     estudiantes=Estudiante.objects.all()

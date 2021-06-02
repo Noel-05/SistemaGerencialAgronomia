@@ -17,6 +17,8 @@ urlpatterns = [
     # Proyectos de Estudiante en Servicio Social por Departamento.
     path('sistemaGerencialAgro/consultaProyectosEstudianteDepartamento/', consultaEstudiantesDepartamento, name="consulta_estudiante_departamento"),
     path('sistemaGerencialAgro/filtrarProyectosEstudiantesDepartamento/', filtrarEstudiantesDepartamento, name="filtrar_estudiante_departamento"),
+    path('sistemaGerencialAgro/reporteProyectosEstudiantesDepartamento/<str:depto>/', reporteEstudiantesDepartamento, name="reporte_estudiante_departamento"),
+    path('sistemaGerencialAgro/exportarProyectosEstudiantesDepartamento/<str:depto>/', exportarEstudiantesDepartamento, name="exportar_estudiante_departamento"),
 
 
     # Ejecución del Procedimiento ETL.
