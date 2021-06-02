@@ -1,0 +1,110 @@
+{% extends 'base/base.html' %}
+{%block title%}
+Estudiantes por periodo y carrera
+{%endblock%}
+{% block content %}
+
+  <header>
+    <div class="container">
+
+        <h2 align="center" class="form-titulo" style ="margin-left: 5px;">Estudiantes en Servicio  Social a partir de un Periodo Determinado</h2>
+        </br></br></br>
+        
+    </div>
+  </header>
+
+<div class="container">
+
+    <!-- Boton Buscar Texto -->
+    <div align="center" class="busqueda">
+        <form method="POST" action="{% url 'sistemaGerencialAgro:buscar_periodo' %}">
+            {% csrf_token %} 
+            <input type="date" name="fechaInicio"  id = "fecha" class = "input-style" placeholder="Porfavor Seleccione la Fecha de inicio." maxlength="7">
+            <input type="date" name="fechaFin"  id = "fecha" class = "input-style" placeholder="Porfavor Seleccione la Fecha de Fin." maxlength="7">
+            <input class="btn-buscar btn-busqueda" type = "submit" value = "Buscar" id = "fechaBuscar">
+        </form>
+        <a href="" target="__blank"><button type="submit" class="btn btn-busqueda">Generar PDF</button></a>
+    </div>
+    </br></br>
+
+    <div>
+
+    <div align="center" class="busqueda">
+            <form method="POST" action=" ">
+                {% csrf_token %} 
+                <select name="carrera">
+                    <option select value="Carrera">Elegir carrera</option>
+                    {% if carrera_list %}
+                    {% for carr in carrera_list %}
+                    <option value="carrera">{{ carr.nombre_carrera}} </option>
+                    {% endfor %}
+                    {% endif %} 
+                </select>
+                <input class="btn-buscar btn-busqueda" type = "submit" value = "Buscar">
+                
+            </form>
+        
+
+        <table>
+            <thead>
+        	   <tr>
+                    <th>Carnet</th>
+            		<th>Nombre</th>
+                    <th>Apellido</th>
+            	    <th>Fecha de inicio</th>
+            	    <th>Fecha de finalizacion</th>
+        		</tr>
+            </thead>
+
+            {% if not periodo %}
+            {% for est in estado_solicitud %}
+        		<tr class="etiqueta-tr">
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ est.carnet_estudiante}}</td>
+            		<td class="th-borde width-th-xx" style = "text-align:center;">{{ est.carnet_estudiante.carnet_estudiante.nombre_estudiante}}</td>
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ est.carnet_estudiante.carnet_estudiante.apellido_estudiante }}</td>
+            		<td class="th-borde width-th-xx" style = "text-align:center;">{{ est.fecha_inicio }}</td>
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ est.fecha_fin }}</td>
+        		</tr>
+            {% endfor %}
+            {% endif %}     
+
+
+            {% if periodo%}
+            {% for est in periodo %}
+                <tr class="etiqueta-tr">
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ est.carnet_estudiante}}</td>
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ est.carnet_estudiante.carnet_estudiante.nombre_estudiante}}</td>
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ est.carnet_estudiante.carnet_estudiante.apellido_estudiante }}</td>
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ est.fecha_inicio }}</td>
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ est.fecha_fin }}</td>
+                </tr>
+            {% endfor %}
+            {% endif %}     
+
+    	</table>
+    </div>
+
+</div>
+
+    <div id = "popup"> 
+  
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+    <script>
+        var modal;
+        function abrir_modal(url, titulo)
+        {
+            modal = $('#popup').dialog({
+                title :titulo,
+                modal :true,
+                width :500,
+                resizable :false
+            }).dialog('open').load(url)
+        }
+    </script>
+
+{% endblock %}

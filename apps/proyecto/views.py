@@ -186,6 +186,21 @@ def consultaSolicitudPeriodo(request):
         'proyecto/EstudiantesPorPeriodo.html', context
     )
 
+
+def consultaCarrera(request):
+
+    carrera_list = Carrera.objects.all()
+    
+    context = {
+        
+        'carrera_list':carrera_list,
+    }
+
+    return render(
+        request,
+        'proyecto/EstudiantesPorPeriodoCarrera.html', context
+    )   
+
 class consultaEstudiantesPorPeriodo(TemplateView):
     template_name='proyecto/EstudiantesPorPeriodo.html'
     def post(self,request,*args,**kwargs):
@@ -196,6 +211,7 @@ class consultaEstudiantesPorPeriodo(TemplateView):
 
         
         return render(request,'proyecto/EstudiantesPorPeriodo.html',{'periodo':periodo})
+    
 
 
 class reporteSolicitudAprobada(View):
@@ -212,3 +228,16 @@ class reporteSolicitudAprobada(View):
         if pisa_status.err:
             return HttpResponse('We had some errors <pre>'+ html + '</pre>')
         return response
+
+class consultaEstudiantesPorPeriodoCarrera(TemplateView):
+    template_name='proyecto/EstudiantesPorPeriodoCarrera.html'
+    def post(self,request,*args,**kwargs):
+        fechainicio=request.POST['fechaInicio']
+        periodo=Solicitud.objects.filter(fecha_inicio=fechainicio)
+        fechafin=request.POST['fechaFin']
+        periodo=Solicitud.objects.filter(fecha_fin=fechafin)
+        carrera=request.POST['carrera']
+        periodo=Solicitud.objects.filter(carnet_estudiante_codigo_carrera_nombre_carrera=carrera)
+
+        
+        return render(request,'proyecto/EstudiantesPorPeriodoCarrera.html',{'periodo':periodo})

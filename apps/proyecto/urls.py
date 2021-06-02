@@ -26,7 +26,9 @@ urlpatterns = [
     path('sistemaGerencialAgro/estado/', consultaSolicitudesAprobadas.as_view(), name="buscar_estado"),
     path('sistemaGerencialAgro/consultaSolicitudPeriodo/', consultaSolicitudPeriodo, name="solicitud_periodo"),
     path('sistemaGerencialAgro/periodo/', consultaEstudiantesPorPeriodo.as_view(), name="buscar_periodo"),
-     path('reporte/estado', reporteSolicitudAprobada.as_view(), name="reporte_estado"),
+    path('reporte/estado', reporteSolicitudAprobada.as_view(), name="reporte_estado"),
+    path('sistemaGerencialAgro/consultaCarrera/', consultaCarrera, name="consulta_carrera"),
+    path('sistemaGerencialAgro/periodocarrera/', consultaEstudiantesPorPeriodoCarrera.as_view(), name="consulta_periodo_carrera"),
  
 
 
