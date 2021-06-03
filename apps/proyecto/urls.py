@@ -26,8 +26,11 @@ urlpatterns = [
     
     # ESTA URL ES SOLO PARA QUE FUNCIONE EL EJEMPLO, LUEGO SE BORRARA
     path('sistemaGerencialAgro/porcentaje/', consultaEstudiantesPorcentajeCarrera.as_view(), name="buscar_porcentaje"),
+    path('sistemaGerencialAgro/listarEstudiosUniversitarios/', listarEstudioUniversitario, name="listar_estudios_universitarios"),
     path('sistemaGerencialAgro/genero/', consultaEstudiantesPorGenero.as_view(), name="buscar_genero"),
+    path('sistemaGerencialAgro/listarSolicitudes/', listarSolicitudes, name="listar_solicitudes"),
     path('sistemaGerencialAgro/modalidad/', consultaEstudiantesPorModalidad.as_view(), name="buscar_modalidad"),
+    path('sistemaGerencialAgro/listarServicios/', listarServicios, name="listar_servicios"),
     path('sistemaGerencialAgro/reportePorcentaje/', reporteEstudiantesPorcentajeCarrera.as_view(), name="reporte_porcentaje"),
     path('sistemaGerencialAgro/reporteGenero/', reporteEstudiantesPorGenero.as_view(), name="reporte_genero"),
     path('sistemaGerencialAgro/reporteModalidad/', reporteEstudiantesPorModalidad.as_view(), name="reporte_modalidad"),

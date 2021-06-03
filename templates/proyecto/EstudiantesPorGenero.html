@@ -20,13 +20,15 @@ Estudiantes por género
             <input type="radio" name="sexo"  id = "sexo" value="F">Femenino
             <input type="radio" name="sexo"  id = "sexo" value="M">Masculino
             
-            <input class="btn-buscar btn-busqueda" type = "submit" value = "Buscar" id = "generoBuscar"></br></br>
+            <input class="btn-buscar btn-busqueda" type = "submit" value = "Buscar" id = "generoBuscar"  onclick="hacerVisible()"></br></br>
         </form>
     </div>
 
      <div align="center" class="busqueda">
-        <a href="{% url 'sistemaGerencialAgro:reporte_genero' %}" target="__blank"><input class="btn-buscar btn-busqueda" type = "submit" value = "Imprimir PDF" id = "">
-        <a href="{% url 'sistemaGerencialAgro:export_csv' %}" target="__blank"></a><input class="btn-buscar btn-busqueda" type = "submit" value = "Exportar CSV" id = "">
+        <a href="{% url 'sistemaGerencialAgro:reporte_genero' %}" target="__blank"><input class="btn-buscar btn-busqueda" type = "submit" value = "Imprimir PDF" id = "btnImprimirPDF" hidden="">
+        <a href="{% url 'sistemaGerencialAgro:export_csv' %}" target="__blank"></a><input class="btn-buscar btn-busqueda" type = "submit" value = "Exportar CSV" id = "btnExportarCSV" hidden="">
+
+
     </div>
 
     </br></br>
@@ -66,6 +68,12 @@ Estudiantes por género
   
 </div>
 
+
+
+
+
+
+
 {% endblock %}
 
 {% block js %}
@@ -80,6 +88,13 @@ Estudiantes por género
                 width :500,
                 resizable :false
             }).dialog('open').load(url)
+        }
+    </script>
+
+    <script>
+         function hacerVisible(){
+            document.getElementById("btnImprimirPDF").hidden=false;
+            document.getElementById("btnExportarCSV").hidden=false;
         }
     </script>
 
