@@ -1,0 +1,106 @@
+{% extends 'base/base.html' %}
+{%block title%}
+Docentes Tutores
+{%endblock%}
+{% block content %}
+
+  <header>
+    <div class="container">
+        
+        </br>
+        <h2 align="center" class="form-titulo" style ="margin-left: 5px;"> Reporte Docentes tutores</h2>
+        </br></br></br>
+        
+    </div>
+  </header>
+
+<div class="container">
+
+    <!-- Boton Buscar Fech-->
+    <div align="center" class="busqueda">
+        <form method="POST" action="{% url 'sistemaGerencialAgro:filtrar_estudiante_docente' %}">
+            {% csrf_token %} 
+
+            <input name="fecha_inic"  id = "date" onfocus="(this.type='date')" class = "form-control col-4 col-sm-3 input-style input-lg" placeholder="Selecciona la Fecha Inicial del filtro." maxlength="7"><br><br>
+            
+            <select name="docent" class="form-control col-4 col-sm-3 input-style input-lg" title="Selecciona el Docente Por Favor" required>
+                <option selected value=""> Selecciona el Docente Tutor </option>
+                    {% if docentes %}
+                        {% for doc in docentes %}
+                            <option value="{{ doc.carnet_docente }}">{{ doc.carnet_docente }} - {{ doc.nombre_docente }} {{ doc.apellido_docente }}</option>
+                        {% endfor %}
+                    {% endif %}
+                </option> 
+            </select>
+            </br></br>            
+            <input class="btn-buscar btn-busqueda" type = "submit" value = "Buscar" id = "fechaBuscar" required></br></br>
+        </form>
+    </div>
+
+    {% if docent %}
+
+        {% if fecha_inic == '' %}
+        <div align="center" class="busqueda">
+            <input class="btn-buscar btn-busqueda" type = "submit" value = "Imprimir PDF" id = "ImprimirPDF" onclick="window.location.href='{% url 'sistemaGerencialAgro:reporte_estudiante_docente_uno' docent %}'">
+        </div>        
+        {% endif %}
+
+        {% if fecha_inic != '' %}
+        <div align="center" class="busqueda">
+            <input class="btn-buscar btn-busqueda" type = "submit" value = "Imprimir PDF" id = "ImprimirPDF" onclick="window.location.href='{% url 'sistemaGerencialAgro:reporte_estudiante_docente_dos' fecha_inic docent %}'">
+        </div>        
+        {% endif %}
+    {% endif %}
+    
+    </br>
+
+    <div>
+        <table>
+            <thead>
+        	   <tr>
+                    <th>Carnet</th>
+                    <th>Nombre</th>
+            	    <th>Apellido</th>
+            		<th>Fecha Inicio SS</th>
+        		</tr>
+            </thead>
+
+            {% if estudiantes_docentes_filtro %}
+                    {% for fil in estudiantes_docentes_filtro %}
+                        {% if fil.carnet_docente_id == docent %}
+                            {% if fecha_inic <= fil.carnet_estudiante.fecha_inicio|date:"Y-m-d"  %}
+                                <tr class="etiqueta-tr">
+                                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ fil.carnet_estudiante.carnet_estudiante.carnet_estudiante }}</td>
+                                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ fil.carnet_estudiante.carnet_estudiante.carnet_estudiante.nombre_estudiante }}</td>
+                                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ fil.carnet_estudiante.carnet_estudiante.carnet_estudiante.apellido_estudiante }}</td>
+                                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ fil.carnet_estudiante.fecha_inicio }}</td>
+                                </tr>
+                            {% endif %}                       
+                        {% endif %}
+                    {% endfor %}
+                    
+                {% if fecha_inic != '' %}
+                   <h4>Desde la fecha de {{fecha_inic}}, Al Docente {{ docent }} se le han asignado los siguientes estudiantes, para ser el tutor</h4><br> 
+                {% endif %}
+                
+                {% if fecha_inic == '' %}
+                   <h4>El Docente {{ docent }} apoya como tutor a los siguientes estudiantes</h4><br> 
+                {% endif %}
+
+            
+            {% elif estudiantes_docentes %}
+                {% for est in estudiantes_docentes %}
+                    <tr class="etiqueta-tr">
+                        <td class="th-borde width-th-xx" style = "text-align:center;">{{ est.carnet_estudiante.carnet_estudiante }}</td>
+                        <td class="th-borde width-th-xx" style = "text-align:center;">{{ est.carnet_estudiante.carnet_estudiante.nombre_estudiante }}</td>
+                        <td class="th-borde width-th-xx" style = "text-align:center;">{{ est.carnet_estudiante.carnet_estudiante.apellido_estudiante }}</td>
+                        <td class="th-borde width-th-xx" style = "text-align:center;">{{ est.fecha_inicio }}</td>
+                    </tr>
+                {% endfor %}
+            {% endif %}     
+
+    	</table>
+    </div>
+    </br></br>
+
+{% endblock %}

@@ -1,0 +1,48 @@
+{%block title%}
+{% if fecha_inic != '' %}
+	<strong> Reporte del Docente {{ docent }}, de todos los estudiantes asignados para ser tutelados, a partir de la fecha {{ fecha_inic }}. </strong>
+{% endif %}
+
+{% if fecha_inic == '' %}
+	<strong> Reporte del Docente {{ docent }}, de todos los estudiantes asignados para ser tutelados. </strong>
+{% endif %}
+{%endblock%}
+{% block content %}
+
+<div class="container">
+    <div>
+
+    </br>
+
+        <table>
+            <thead>
+        	   <tr>
+                    <th>Carnet</th>
+                    <th>Nombre</th>
+            	    <th>Apellido</th>
+            		<th>Fecha Inicio SS</th>
+        		</tr>
+            </thead>
+
+            {% if estudiantes_docentes_filtro %}
+                    {% for fil in estudiantes_docentes_filtro %}
+                        {% if fil.carnet_docente_id == docent %}
+                            {% if fecha_inic <= fil.carnet_estudiante.fecha_inicio|date:"Y-m-d"  %}
+                                <tr class="etiqueta-tr">
+                                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ fil.carnet_estudiante.carnet_estudiante.carnet_estudiante }}</td>
+                                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ fil.carnet_estudiante.carnet_estudiante.carnet_estudiante.nombre_estudiante }}</td>
+                                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ fil.carnet_estudiante.carnet_estudiante.carnet_estudiante.apellido_estudiante }}</td>
+                                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ fil.carnet_estudiante.fecha_inicio }}</td>
+                                </tr>
+                            {% endif %}                       
+                        {% endif %}
+                    {% endfor %}
+                    
+
+
+            {% endif %}   
+
+    	</table>
+    </div>
+
+{% endblock %}

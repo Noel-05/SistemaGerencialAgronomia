@@ -62,8 +62,10 @@ urlpatterns = [
     # Estudiantes en Servicio Social por Carrera.
 
     # Docentes Tutores de Servicio Social.
-
-
+    path('sistemaGerencialAgro/consultaEstudiantesPorDocente/', consultaEstudiantesDocente, name="consulta_estudiante_docente"),
+    path('sistemaGerencialAgro/filtrarEstudiantesPorDocente/', filtrarEstudiantesDocentes, name="filtrar_estudiante_docente"),
+    path('sistemaGerencialAgro/reporteEstudiantesPorDocente1/<str:docent>/', reporteEstudiantesPorDocentes1, name="reporte_estudiante_docente_uno"),
+    path('sistemaGerencialAgro/reporteEstudiantesPorDocente2/<str:fecha_inic>/<str:docent>/', reporteEstudiantesPorDocentes2, name="reporte_estudiante_docente_dos"),
 
 
     # ->->->->->->->  NOTA: <-<-<-<-<-<-<-

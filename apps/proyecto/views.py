@@ -174,6 +174,127 @@ def exportarEstudiantesDepartamento(request, depto):
 
     return response
 
+"""
+Función para recuperar y mostrar el listado de departamentos para su selección y realización del 
+filtro correspondiente y de la recuperación de todos los proyectos agrupados por departamento.
+@param      una solicitud de petición (request)
+@return     retorna el template estudiantesServSocDepartamento con el diccionario detallado en la descripción.
+@author     Noel Renderos
+"""
+
+def consultaEstudiantesDocente(request):
+
+    docentes = Docente.objects.all()
+
+    # Se usa doble subrayado para que funcione como el "." en el template (osea un join)
+    estudiantes_docentes = Solicitud.objects.order_by('carnet_estudiante__carnet_estudiante')
+    
+    context = {
+        'estudiantes_docentes': estudiantes_docentes,
+        'docentes': docentes,
+    }
+
+    return render(
+        request,
+        'proyecto/docentesServSocDepartamento.html', 
+        context,
+    )
+
+"""
+Función para realizar el filtro correspondiente de los proyectos por departamento.
+@param      una solicitud de petición (request)
+@return     retorna el template estudiantesServSocDepartamento con los proyectos filtrados por departamento.
+@author     Noel Renderos
+"""
+
+def filtrarEstudiantesDocentes(request):
+
+    if request.method == 'POST':
+        docent = request.POST['docent']
+        fecha_inic = request.POST['fecha_inic'] 
+
+        # Se usa doble subrayado para que funcione como el "." en el template (osea un join)
+        estudiantes_docentes_filtro = ServicioSocial.objects.order_by('carnet_estudiante__carnet_estudiante__carnet_estudiante')
+        docentes = Docente.objects.all()
+
+        context = {
+            'estudiantes_docentes_filtro': estudiantes_docentes_filtro,
+            'docentes': docentes,
+            'docent': docent,
+            'fecha_inic': fecha_inic,
+        }
+
+        return render(
+            request,
+            'proyecto/docentesServSocDepartamento.html', 
+            context,
+        )
+
+"""
+Función para realizar el PDF correspondiente con los datos recuperados a partir del filtro.
+@param      una solicitud de petición (request) y el departamento a filtrar en la sentencia SQL.
+@return     retorna la vista previa del pdf por medio de una peticion request.
+@author     Noel Renderos
+"""
+
+def reporteEstudiantesPorDocentes1(request, docent):
+
+    estudiantes_docentes_filtro = ServicioSocial.objects.order_by('carnet_estudiante__carnet_estudiante__carnet_estudiante')
+    fecha_inic = ""
+    docent = docent
+
+    template = get_template('reportes/ReporteEstudianteDocente.html')
+
+    context = {
+        'estudiantes_docentes_filtro': estudiantes_docentes_filtro,
+        'fecha_inic': fecha_inic,
+        'docent': docent,
+    }
+
+    html = template.render(context)
+    
+    response = HttpResponse(content_type = 'application/pdf')
+    response['Content-Disposition'] = 'inline; filename="RGEstudiantesPorDocente.pdf"'
+    
+    pisa_status = pisa.CreatePDF(html, dest = response)
+    
+    if pisa_status.err:
+        return HttpResponse('We had some errors <pre>'+ html + '</pre>')
+    
+    return response
+
+"""
+Función para realizar el PDF correspondiente con los datos recuperados a partir del filtro.
+@param      una solicitud de petición (request) y el departamento a filtrar en la sentencia SQL.
+@return     retorna la vista previa del pdf por medio de una peticion request.
+@author     Noel Renderos
+"""
+
+def reporteEstudiantesPorDocentes2(request, fecha_inic, docent):
+
+    estudiantes_docentes_filtro = ServicioSocial.objects.order_by('carnet_estudiante__carnet_estudiante__carnet_estudiante')
+    fecha_inic = fecha_inic
+    docent = docent
+
+    template = get_template('reportes/ReporteEstudianteDocente.html')
+
+    context = {
+        'estudiantes_docentes_filtro': estudiantes_docentes_filtro,
+        'fecha_inic': fecha_inic,
+        'docent': docent,
+    }
+
+    html = template.render(context)
+    
+    response = HttpResponse(content_type = 'application/pdf')
+    response['Content-Disposition'] = 'inline; filename="RG-EstudiantesPorDocente.pdf"'
+    
+    pisa_status = pisa.CreatePDF(html, dest = response)
+    
+    if pisa_status.err:
+        return HttpResponse('We had some errors <pre>'+ html + '</pre>')
+    
+    return response
 
 #---------------------------------------------------------------------------------------------------------------
 
