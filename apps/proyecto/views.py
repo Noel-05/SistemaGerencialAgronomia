@@ -250,8 +250,9 @@ def exportarEstudiantesDocente2(request, docent):
 
     for fil in estudiantes_docentes_filtro:
         if fil.carnet_docente_id == docent:
+            fecha_formato = datetime.strftime(fil.carnet_estudiante.fecha_inicio, '%Y-%m-%d')  # trasformar
             row_num += 1
-            row = [fil.carnet_estudiante.carnet_estudiante.carnet_estudiante_id, fil.carnet_estudiante.carnet_estudiante.carnet_estudiante.nombre_estudiante, fil.carnet_estudiante.carnet_estudiante.carnet_estudiante.apellido_estudiante, fil.carnet_estudiante.fecha_inicio]
+            row = [fil.carnet_estudiante.carnet_estudiante.carnet_estudiante_id, fil.carnet_estudiante.carnet_estudiante.carnet_estudiante.nombre_estudiante, fil.carnet_estudiante.carnet_estudiante.carnet_estudiante.apellido_estudiante, fecha_formato]
             print(row)
             
             for col_num in range(len(row)):
