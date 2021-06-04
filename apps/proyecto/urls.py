@@ -66,6 +66,8 @@ urlpatterns = [
     path('sistemaGerencialAgro/filtrarEstudiantesPorDocente/', filtrarEstudiantesDocentes, name="filtrar_estudiante_docente"),
     path('sistemaGerencialAgro/reporteEstudiantesPorDocente1/<str:docent>/', reporteEstudiantesPorDocentes1, name="reporte_estudiante_docente_uno"),
     path('sistemaGerencialAgro/reporteEstudiantesPorDocente2/<str:fecha_inic>/<str:docent>/', reporteEstudiantesPorDocentes2, name="reporte_estudiante_docente_dos"),
+    path('sistemaGerencialAgro/exportarEstudiantesPorDocente1/<str:fecha_inic>/<str:docent>/', exportarEstudiantesDocente1, name="exportar_estudiante_docente_uno"),
+    path('sistemaGerencialAgro/exportarEstudiantesPorDocente2/<str:docent>/', exportarEstudiantesDocente2, name="exportar_estudiante_docente_dos"),
 
 
     # ->->->->->->->  NOTA: <-<-<-<-<-<-<-

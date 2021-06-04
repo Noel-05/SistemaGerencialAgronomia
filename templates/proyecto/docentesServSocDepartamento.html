@@ -38,18 +38,25 @@ Docentes Tutores
     </div>
 
     {% if docent %}
-
-        {% if fecha_inic == '' %}
         <div align="center" class="busqueda">
-            <input class="btn-buscar btn-busqueda" type = "submit" value = "Imprimir PDF" id = "ImprimirPDF" onclick="window.location.href='{% url 'sistemaGerencialAgro:reporte_estudiante_docente_uno' docent %}'">
-        </div>        
-        {% endif %}
+            {% if fecha_inic == '' %}
+                <input class="btn-buscar btn-busqueda" type = "submit" value = "Imprimir PDF" id = "ImprimirPDF" onclick="window.location.href='{% url 'sistemaGerencialAgro:reporte_estudiante_docente_uno' docent %}'">
+            {% endif %}
 
-        {% if fecha_inic != '' %}
-        <div align="center" class="busqueda">
-            <input class="btn-buscar btn-busqueda" type = "submit" value = "Imprimir PDF" id = "ImprimirPDF" onclick="window.location.href='{% url 'sistemaGerencialAgro:reporte_estudiante_docente_dos' fecha_inic docent %}'">
+            {% if fecha_inic != '' %}
+                <input class="btn-buscar btn-busqueda" type = "submit" value = "Imprimir PDF" id = "ImprimirPDF" onclick="window.location.href='{% url 'sistemaGerencialAgro:reporte_estudiante_docente_dos' fecha_inic docent %}'">
+            {% endif %}
+
+
+            {% if fecha_inic != '' %}
+                <input class="btn-buscar btn-busqueda" type = "submit" value = "Exportar CSV" id = "ExportarCSV" onclick="window.location.href='{% url 'sistemaGerencialAgro:exportar_estudiante_docente_uno' fecha_inic docent %}'">
+            {% endif %}
+
+            {% if fecha_inic == '' %}
+                <input class="btn-buscar btn-busqueda" type = "submit" value = "Exportar CSV" id = "ExportarCSV" onclick="window.location.href='{% url 'sistemaGerencialAgro:exportar_estudiante_docente_dos' docent %}'">
+            {% endif %}
         </div>        
-        {% endif %}
+
     {% endif %}
     
     </br>
