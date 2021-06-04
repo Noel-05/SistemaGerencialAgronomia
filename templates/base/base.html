@@ -88,9 +88,10 @@
 
         <li class="list-group-item menu-has-children"><a style="text-decoration:none" href="#intro">Reportes T&aacute;cticos</a>
           <ul>
-            <li><a href = "">Solicitudes de Servicio Social Aprobadas</a></li>
+
+            <li><a href = "{% url 'sistemaGerencialAgro:consulta_solicitud' %}">Solicitudes de Servicio Social Aprobadas</a></li>
              
-            <li><a href = "">Estudiantes en Servicio Social por Per&iacute;odo</a></li>
+            <li><a href = "{% url 'sistemaGerencialAgro:consulta_periodo_servsocial' %}">Estudiantes en Servicio Social por Per&iacute;odo</a></li>
             
             <li><a href = "{% url 'sistemaGerencialAgro:listar_estudios_universitarios' %}">Estudiantes en Servicio Social por Porcentaje</a></li>
           
@@ -115,10 +116,7 @@
         {% comment %} <li class="list-group-item" onclick="window.location.href='{% url 'sistemaGerencialAgro:actualizarBD' %}'"><a style="text-decoration:none" href="{% url 'sistemaGerencialAgro:actualizarBD' %}">Actualizar BD Ej.</a></li> {% endcomment %}
 
         <li class="list-group-item" onclick="window.location.href='{% url 'usuario:inicio_usuarios' %}'"><a style="text-decoration:none" href="{% url 'usuario:inicio_usuarios' %}">Usuarios</a></li>
-        
-        <li class="list-group-item" onclick="window.location.href='{% url 'sistemaGerencialAgro:buscar_estado' %}'"><a style="text-decoration:none" href="{% url 'sistemaGerencialAgro:buscar_estado' %}">Solicitudes aprobadas</a></li>
 
-        <li class="list-group-item" onclick="window.location.href='{% url 'sistemaGerencialAgro:buscar_estado' %}'"><a style="text-decoration:none" href="{% url 'sistemaGerencialAgro:buscar_periodo' %}">Servicio Social por periodo</a></li>
 
       </ul>
     </div>

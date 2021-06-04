@@ -23,7 +23,17 @@ urlpatterns = [
 
     # Soliictudes de Servicio Social Aprobadas.
 
+    path('sistemaGerencialAgro/consultaSolicitudAprobada/', consultaSolicitud, name="consulta_solicitud"),
+    path('sistemaGerencialAgro/filtroSolicitudAprobada/', consultaEstudiantesSolicitudAprobada, name="filtrar_estado_solicitud"),
+    path('sistemaGerencialAgro/reporteSolicitudAprobada/<str:estado>/', reporteSolicitudAprobada, name="reporte_solicitud_aprobada"),
+    path('sistemaGerencialAgro/exportarSolicitudAprobada/<str:estado>/', exportarEstudiantesSolicitudAprobada, name="exportar_solicitud_aprobada"),
+
     # Estudiantes en Servicio Social por Período.
+    path('sistemaGerencialAgro/consultaServicioSocialPeriodo/', consultaEstudiantesPeriodo, name="consulta_periodo_servsocial"),
+    path('sistemaGerencialAgro/filtroServicioSocialPeriodo/', consultaEstudiantesServSocialPeriodo, name="filtrar_periodo_servsocial"),
+    path('sistemaGerencialAgro/reporteServicioSocialPeriodo/<str:fecha>/', reporteEstudiantesServSocialPeriodo, name="reporte_periodo_servsocial"),
+    path('sistemaGerencialAgro/exportarServicioSocialPeriodo/<str:fecha>/', exportarEstudiantesServSocialPeriodo, name="exportar_periodo_servsocial"),
+
 
     # Estudiantes en Servicio Social por Porcentaje.
     path('sistemaGerencialAgro/porcentaje/', consultaEstudiantesPorcentajeCarrera.as_view(), name="buscar_porcentaje"),
@@ -60,11 +70,7 @@ urlpatterns = [
     # LA PERSONA QUE HIZO ESTAS URL DE ABAJO AGREGARLAS A LA SECCION DE ARRIBA QUE CORRESPONDA.
 
     path('export/excel', export_estudiantes_csv, name='export_csv'),
-    path('sistemaGerencialAgro/consultaSolicitudAprobadas/', consultaSolicitud, name="consulta_solicitud"),
-    path('sistemaGerencialAgro/estado/', consultaSolicitudesAprobadas.as_view(), name="buscar_estado"),
-    path('sistemaGerencialAgro/consultaSolicitudPeriodo/', consultaSolicitudPeriodo, name="solicitud_periodo"),
-    path('sistemaGerencialAgro/periodo/', consultaEstudiantesPorPeriodo.as_view(), name="buscar_periodo"),
-    path('reporte/estado', reporteSolicitudAprobada.as_view(), name="reporte_estado"),
+    
 
     
     # Actualizar la BD por medio de la subida del archivo.

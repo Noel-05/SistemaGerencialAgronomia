@@ -711,102 +711,16 @@ def export_estudiantes_csv(request):
     return response
 
 
-#Muestra todos las solicitudes, tanto aprobadas como no aprobadas
+#---------------------------------------------------------------------------------------------------------------
 
-def consultaSolicitud(request):
-
-    #estudiante_list=Estudiante.objects.order_by('carnet_estudiante')
-    estado_solicitud = EstadoSolicitud.objects.order_by('carnet_estudiante')
-    
-    context = {
-        #'estudiante_list': estudiante_list,
-        'estado_solicitud':estado_solicitud,
-    }
-
-    return render(
-        request,
-        'proyecto/SolicitudesAprobadas.html', context
-    )
-
-
-class consultaSolicitudesAprobadas(TemplateView):
-    template_name = 'proyecto/SolicitudesAprobadas.html'
-    
-    def post(self,request,*args,**kwargs):
-        estado = request.POST['estado']
-        
-        estado_solici = EstadoSolicitud.objects.filter(aceptado=estado)
-        
-        return render(
-            request,
-            'proyecto/SolicitudesAprobadas.html',
-            {'estado_solici':estado_solici}
-        )
-
-        
-def consultaSolicitudPeriodo(request):
-
-    #estudiante_list=Estudiante.objects.order_by('carnet_estudiante')
-    periodo_solicitud = Solicitud.objects.order_by('carnet_estudiante')
-    
-    context = {
-        #'estudiante_list': estudiante_list,
-        'periodo_solicitud':periodo_solicitud,
-    }
-
-    return render(
-        request,
-        'proyecto/EstudiantesPorPeriodo.html', context
-    )
-
-
-class consultaEstudiantesPorPeriodo(TemplateView):
-    template_name = 'proyecto/EstudiantesPorPeriodo.html'
-    
-    def post(self,request,*args,**kwargs):
-        fechainicio = request.POST['fechaInicio']
-        
-        periodo = Solicitud.objects.filter(fecha_inicio=fechainicio)
-        
-        fechafin = request.POST['fechaFin']
-        
-        periodo = Solicitud.objects.filter(fecha_fin=fechafin)
-        
-        return render(
-            request,
-            'proyecto/EstudiantesPorPeriodo.html',
-            {'periodo':periodo}
-        )
-
-
-class reporteSolicitudAprobada(View):
-    def get(self,request,*args,**kwargs):
-        servicios = EstadoSolicitud.objects.filter(aceptado="Si")
-        
-        servicios = EstadoSolicitud.objects.filter(aceptado="No")
-        
-        template = get_template('reportes/ReporteSolicitudAprobada.html')
-        
-        context = {
-            'title':'Reporte de estudiantes por solicitudes aprobadas',
-            'servicios':servicios
-        }
-        
-        html = template.render(context)
-        
-        response = HttpResponse(content_type='application/pdf')
-        #response['Content-Disposition'] = 'attachment; filename="Estudiantes por porcentaje de carrera aprobado.pdf"'
-        
-        pisa_status = pisa.CreatePDF(html, dest=response)
-        
-        if pisa_status.err:
-            return HttpResponse('We had some errors <pre>'+ html + '</pre>')
-        
-        return response
-
-
-#Muestra todos las solicitudes, tanto aprobadas como no aprobadas
-
+"""
+Función para recuperar y mostrar el listado de todas las solicitudes aceptadas o denegadas 
+para su selección y realización del filtro correspondiente y de la recuperación de todas las 
+solicitudes por estado
+@param      una solicitud de petición (request)
+@return     retorna el template estudiantesSolicitudesAprobadas con el diccionario detallado en la descripción.
+@author     Karla Abrego
+"""
 def consultaSolicitud(request):
 
     #estudiante_list=Estudiante.objects.order_by('carnet_estudiante')
@@ -819,83 +733,227 @@ def consultaSolicitud(request):
 
     return render(
         request,
-        'proyecto/SolicitudesAprobadas.html', context
+        'proyecto/estudiantesSolicitudesAprobadas.html', context
     )
 
+"""
+Función para realizar el filtro correspondiente de las solicitudes por estado.
+@param      una solicitud de petición (request)
+@return     retorna el template estudiantesSolicitudesAprobadas con los proyectos filtrados por departamento.
+@author     Karla Abrego
+"""
 
-class consultaSolicitudesAprobadas(TemplateView):
-    template_name='proyecto/SolicitudesAprobadas.html'
+def consultaEstudiantesSolicitudAprobada(request):
+    if request.method == 'POST':
+        estado = request.POST['estado']
 
-    def post(self,request,*args,**kwargs):
-        estado=request.POST['estado']
-
-        estado_solici = EstadoSolicitud.objects.filter(aceptado=estado)
+        estado_solicitud_filtro = EstadoSolicitud.objects.filter(aceptado = estado)
+        context = {
+            'estado_solicitud_filtro': estado_solicitud_filtro,
+            'estado' : estado,
+        }
 
         return render(
             request,
-            'proyecto/SolicitudesAprobadas.html',
-            {'estado_solici':estado_solici}
+            'proyecto/estudiantesSolicitudesAprobadas.html', 
+            context,
         )
 
+
+"""
+Función para realizar el PDF correspondiente con los datos recuperados a partir del filtro.
+@param      una solicitud de petición (request) y el estado a filtrar en la sentencia SQL.
+@return     retorna la vista previa del pdf por medio de una peticion request.
+@author     Karla Abrego
+"""
+
+def reporteSolicitudAprobada(request, estado):
+
+    estado_solicitud_filtro = EstadoSolicitud.objects.filter(aceptado = estado)
+
+    template = get_template('reportes/ReporteSolicitudAprobada.html')
+
+    context = {
+        'estado_solicitud_filtro': estado_solicitud_filtro
+    }
+
+    html = template.render(context)
+    
+    response = HttpResponse(content_type = 'application/pdf')
+    response['Content-Disposition'] = 'inline; filename="SolicitudesAprobadas.pdf"'
+    
+    pisa_status = pisa.CreatePDF(html, dest = response)
+    
+    if pisa_status.err:
+        return HttpResponse('We had some errors <pre>'+ html + '</pre>')
+    
+    return response
+
+"""
+Función para realizar el CSV correspondiente con los datos recuperados a partir del filtro.
+@param      una solicitud de petición (request) y el departamento a filtrar en la sentencia SQL.
+@return     descarga el archivo CSV con el nombre indicado por medio de una peticion request.
+@author     Karla Abrego
+"""   
+
+def exportarEstudiantesSolicitudAprobada(request, estado):
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="RT-SolicitudesAprobadas.csv"'
+
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('Solicitudes Aprobadas') 
+
+    row_num = 0
+
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = ['Carnet', 'Nombre', 'Apellido', 'Estado', 'Observaciones']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style) 
+
+    # Sheet body, remaining rows
+    font_style = xlwt.XFStyle()
+
+    estado_solicitud_filtro = EstadoSolicitud.objects.filter(aceptado = estado)
+
+    for estadoSol in  estado_solicitud_filtro:
+        row_num += 1
+        row = [estadoSol.carnet_estudiante_id,estadoSol.carnet_estudiante.carnet_estudiante.carnet_estudiante.nombre_estudiante,estadoSol.carnet_estudiante.carnet_estudiante.carnet_estudiante.apellido_estudiante,estadoSol.aceptado,estadoSol.observaciones]
         
-def consultaSolicitudPeriodo(request):
+        for col_num in range(len(row)):
+            ws.write(row_num, col_num, row[col_num], font_style)
+
+    wb.save(response)
+
+    return response
+
+
+#---------------------------------------------------------------------------------------------------- 
+
+"""
+Función para recuperar y mostrar el listado de todos los estudiantes en servicio social 
+para su selección y realización del filtro correspondiente y de la recuperación de todas los servicios social 
+por periodo
+@param      una solicitud de petición (request)
+@return     retorna el template estudiantesServSocPeriodo con el diccionario detallado en la descripción.
+@author     Karla Abrego
+"""
+
+def consultaEstudiantesPeriodo(request):
 
     #estudiante_list=Estudiante.objects.order_by('carnet_estudiante')
-    periodo_solicitud=Solicitud.objects.order_by('carnet_estudiante')
+    consulta_periodo=Solicitud.objects.order_by('carnet_estudiante')
     
     context = {
-        #'estudiante_list': estudiante_list,
-        'periodo_solicitud':periodo_solicitud,
+        
+        'consulta_periodo':consulta_periodo,
     }
 
     return render(
         request,
-        'proyecto/EstudiantesPorPeriodo.html', context
+        'proyecto/estudiantesServSocPeriodo.html', context
     )
 
-class consultaEstudiantesPorPeriodo(TemplateView):
-    template_name='proyecto/EstudiantesPorPeriodo.html'
-    
-    def post(self,request,*args,**kwargs):
-        fechainicio = request.POST['fechaInicio']
-        
-        periodo = Solicitud.objects.filter(fecha_inicio=fechainicio)
-        
-        fechafin = request.POST['fechaFin']
-        
-        periodo = Solicitud.objects.filter(fecha_fin=fechafin)
-        
+"""
+Función para realizar el filtro correspondiente del servicio social por periodo.
+@param      una solicitud de petición (request)
+@return     retorna el template estudiantesServSocPeriodo con los proyectos filtrados por departamento.
+@author     Karla Abrego
+"""
+
+def consultaEstudiantesServSocialPeriodo(request):
+    if request.method == 'POST':
+        fecha = request.POST['fechaInicio']
+        periodo_servicio_filtro = Solicitud.objects.filter(fecha_inicio = fecha)
+        fecha = request.POST['fechaFin']
+        periodo_servicio_filtro = Solicitud.objects.filter(fecha_fin = fecha)
+        context = {
+            'periodo_servicio_filtro': periodo_servicio_filtro,
+            'fecha' : fecha,
+
+        }
+
         return render(
             request,
-            'proyecto/EstudiantesPorPeriodo.html',
-            {'periodo':periodo}
+            'proyecto/estudiantesServSocPeriodo.html', 
+            context,
         )
 
+"""
+Función para realizar el PDF correspondiente con los datos recuperados a partir del filtro.
+@param      una solicitud de petición (request) y el estado a filtrar en la sentencia SQL.
+@return     retorna la vista previa del pdf por medio de una peticion request.
+@author     Karla Abrego
+"""        
 
-class reporteSolicitudAprobada(View):
-    def get(self,request,*args,**kwargs):
-        servicios = EstadoSolicitud.objects.filter(aceptado="Si")
+def reporteEstudiantesServSocialPeriodo(request, fecha):
+
+    periodo_servicio_filtro = Solicitud.objects.filter(fecha_inicio = fecha)
+    periodo_servicio_filtro = Solicitud.objects.filter(fecha_fin = fecha)
+
+    template = get_template('reportes/ReporteServicioSocialPeriodo.html')
+
+    context = {
+        'periodo_servicio_filtro': periodo_servicio_filtro,
+
+    }
+
+    html = template.render(context)
+    
+    response = HttpResponse(content_type = 'application/pdf')
+    response['Content-Disposition'] = 'inline; filename="ServicioSocialPorPeriodo.pdf"'
+    
+    pisa_status = pisa.CreatePDF(html, dest = response)
+    
+    if pisa_status.err:
+        return HttpResponse('We had some errors <pre>'+ html + '</pre>')
+    
+    return response
+
+"""
+Función para realizar el CSV correspondiente con los datos recuperados a partir del filtro.
+@param      una solicitud de petición (request) y el departamento a filtrar en la sentencia SQL.
+@return     descarga el archivo CSV con el nombre indicado por medio de una peticion request.
+@author     Karla Abrego
+"""   
+
+def exportarEstudiantesServSocialPeriodo(request, fecha):
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="RT-ServicioSocialPorPeriodo.csv"'
+
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('Servicio Social Periodo ') 
+
+    row_num = 0
+
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = ['Carnet', 'Nombre', 'Apellido', 'Fecha Inicio', 'Fecha Fin']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style) 
+
+    # Sheet body, remaining rows
+    font_style = xlwt.XFStyle()
+
+    periodo_servicio_filtro = Solicitud.objects.filter(fecha_inicio = fecha)
+    periodo_servicio_filtro = Solicitud.objects.filter(fecha_fin = fecha)
+
+    for periodo in  periodo_servicio_filtro:
+        row_num += 1
+        row = [periodo.carnet_estudiante_id,periodo.carnet_estudiante.carnet_estudiante.nombre_estudiante,periodo.carnet_estudiante.carnet_estudiante.apellido_estudiante,periodo.fecha_inicio,periodo.fecha_fin]
         
-        servicios = EstadoSolicitud.objects.filter(aceptado="No")
-        
-        template = get_template('reportes/ReporteSolicitudAprobada.html')
-        
-        context = {
-            'title':'Reporte de estudiantes por solicitudes aprobadas',
-            'servicios':servicios
-        }
-        
-        html = template.render(context)
-        
-        response = HttpResponse(content_type='application/pdf')
-        #response['Content-Disposition'] = 'attachment; filename="Estudiantes por porcentaje de carrera aprobado.pdf"'
-        
-        pisa_status = pisa.CreatePDF(html, dest=response)
-        
-        if pisa_status.err:
-            return HttpResponse('We had some errors <pre>'+ html + '</pre>')
-        
-        return response
+        for col_num in range(len(row)):
+            ws.write(row_num, col_num, row[col_num], font_style)
+
+    wb.save(response)
+
+    return response   
 
 
 #---------------------------------------------------------------------------------------------------------------

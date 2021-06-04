@@ -17,21 +17,28 @@ Solicitudes Aprobadas
 
     <!-- Boton Buscar Texto -->
     <div align="center" class="busqueda">
-        <form method="POST" action="">
+        <form method="POST" action="{% url 'sistemaGerencialAgro:filtrar_estado_solicitud' %}">
             {% csrf_token %} 
-            <select name="estado">
+    
+            <select name="estado" class="form-control col-4 col-sm-2 input-style" title="Selecciona el estardo por favor" required>
                 <option selected value=""> Selecciona estado </option>
-                <option value="Si">Si</option>
-                <option value="No">No</option>
+                <option value="Aceptado">Aceptado</option>
+                <option value="Denegado">Denegado</option>
             </select>
-            <input class="btn-buscar btn-busqueda" type = "submit" value = "Buscar">
-        </form>
-        <br>
-        <a href="{% url 'sistemaGerencialAgro:reporte_estado' %}" target="__blank"><button type="submit" class="btn btn-busqueda">Generar PDF</button></a>
-        <a  type="submit" class="btn btn-success" href="{% url 'sistemaGerencialAgro:export_csv' %}">Exportar CSV</a>
-    </br>
+        </br></br>
+        <input class="btn-buscar btn-busqueda" type = "submit" value = "Buscar"></br></br>
+    </form>
 
-    </div>
+</div>
+
+    {% if estado %}
+        <div align="center" class="busqueda">
+            <input class="btn-buscar btn-busqueda" type = "submit" value = "Imprimir PDF" id = "ImprimirPDF" onclick="window.location.href='{% url 'sistemaGerencialAgro:reporte_solicitud_aprobada' estado %}'">
+            <input class="btn-buscar btn-busqueda" type = "submit" value = "Exportar CSV" id = "ExportarCSV" onclick="window.location.href='{% url 'sistemaGerencialAgro:exportar_solicitud_aprobada' estado %}'">
+        </div>
+    {% endif %}    
+        
+    
     </br></br>
 
     <div>
@@ -46,8 +53,8 @@ Solicitudes Aprobadas
         		</tr>
             </thead>
 
-            {% if not estado_solici%}
-            {% for est in estado_solicitud %}
+    {% if estado_solicitud_filtro %}
+        {% for est in estado_solicitud_filtro %}
         		<tr class="etiqueta-tr">
                     <td class="th-borde width-th-xx" style = "text-align:center;">{{ est.carnet_estudiante}}</td>
             		<td class="th-borde width-th-xx" style = "text-align:center;">{{ est.carnet_estudiante.carnet_estudiante.carnet_estudiante.nombre_estudiante}}</td>
@@ -55,12 +62,11 @@ Solicitudes Aprobadas
             		<td class="th-borde width-th-xx" style = "text-align:center;">{{ est.aceptado }}</td>
                     <td class="th-borde width-th-xx" style = "text-align:center;">{{ est.observaciones }}</td>
         		</tr>
-            {% endfor %}
-            {% endif %}     
+        {% endfor %}
+           
 
-
-            {% if estado_solici%}
-            {% for est in estado_solici %}
+    {% elif estado_solicitud%}
+        {% for est in estado_solicitud %}
         		<tr class="etiqueta-tr">
                     <td class="th-borde width-th-xx" style = "text-align:center;">{{ est.carnet_estudiante}}</td>
             		<td class="th-borde width-th-xx" style = "text-align:center;">{{ est.carnet_estudiante.carnet_estudiante.carnet_estudiante.nombre_estudiante}}</td>
@@ -68,8 +74,8 @@ Solicitudes Aprobadas
             		<td class="th-borde width-th-xx" style = "text-align:center;">{{ est.aceptado }}</td>
                     <td class="th-borde width-th-xx" style = "text-align:center;">{{ est.observaciones }}</td>
         		</tr>
-            {% endfor %}
-            {% endif %}     
+        {% endfor %}
+    {% endif %}     
 
     	</table>
     </div>
