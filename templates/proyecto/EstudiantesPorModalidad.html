@@ -16,9 +16,15 @@ Estudiantes por modalidad
 <div class="container">
     <div align="center" class="busqueda">
         <form method="POST" action="{% url 'sistemaGerencialAgro:buscar_modalidad' %}">
+<<<<<<< HEAD
             {% csrf_token %} 
             
             <select name="modalidad" class="form-control col-4 col-sm-3 input-style" title="Selecciona la modalidad.Por Favor" required>
+=======
+            {% csrf_token %}
+            <input type="date" name="fecha"  id = "fecha" class = "input-style" placeholder="Porfavor Seleccione la Fecha." maxlength="7">
+            <select name="modalidad" class="form-control col-4 col-sm-2 input-style" title="Selecciona la modalidad.Por Favor" required>
+>>>>>>> origin/master
                 <option selected value=""> Selecciona la modalidad </option>
                 <option value="Presencial">Presencial</option>
                 <option value="Presencial">Virtual</option>
@@ -26,13 +32,14 @@ Estudiantes por modalidad
             
             </br></br>
             
-            <input class="btn-buscar btn-busqueda" type = "submit" value = "Buscar" id = "modalidadBuscar"></br></br>
+            <input class="btn-buscar btn-busqueda" type = "submit" value = "Buscar" id = "modalidadBuscar" onclick="hacerVisible()"></br></br>
+            
         </form>
     </div>
 
      <div align="center" class="busqueda">
-        <a href="{% url 'sistemaGerencialAgro:reporte_modalidad' %}" target="__blank"><input class="btn-buscar btn-busqueda" type = "submit" value = "Imprimir PDF" id = "">
-        <a href="{% url 'sistemaGerencialAgro:export_csv' %}" target="__blank"></a><input class="btn-buscar btn-busqueda" type = "submit" value = "Exportar CSV" id = "">
+        <a href="{% url 'sistemaGerencialAgro:reporte_modalidad' %}" target="__blank"><input class="btn-buscar btn-busqueda" type = "submit" value = "Imprimir PDF" id = "btnImprimirPDF" hidden>
+        <a href="{% url 'sistemaGerencialAgro:export_csv' %}" target="__blank"></a><input class="btn-buscar btn-busqueda" type = "submit" value = "Exportar CSV" id = "btnExportarCSV" hidden>
     </div>
 
     </br></br>
@@ -41,6 +48,7 @@ Estudiantes por modalidad
         <table>
             <thead>
         	   <tr>
+                    <th>Modalidad</th>
                     <th>Carnet</th>
             		<th>Nombre</th>
                     <th>Apellido</th>
@@ -52,6 +60,7 @@ Estudiantes por modalidad
             {% if servicios %}
             {% for servicio in servicios %}
         		<tr class="etiqueta-tr">
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ servicio.carnet_estudiante.modalidad}}</td>
                     <td class="th-borde width-th-xx" style = "text-align:center;">{{ servicio.carnet_estudiante.carnet_estudiante.carnet_estudiante}}</td>
             		<td class="th-borde width-th-xx" style = "text-align:center;">{{ servicio.carnet_estudiante.carnet_estudiante.carnet_estudiante.nombre_estudiante}}</td>
                     <td class="th-borde width-th-xx" style = "text-align:center;">{{ servicio.carnet_estudiante.carnet_estudiante.carnet_estudiante.apellido_estudiante }}</td>
@@ -84,6 +93,13 @@ Estudiantes por modalidad
                 width :500,
                 resizable :false
             }).dialog('open').load(url)
+        }
+    </script>
+
+    <script>
+         function hacerVisible(){
+            document.getElementById("btnImprimirPDF").hidden=false;
+            document.getElementById("btnExportarCSV").hidden=false;
         }
     </script>
 

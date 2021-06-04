@@ -45,6 +45,9 @@ urlpatterns = [
     # Estudiantes en Servicio Social por Modalidad.
     path('sistemaGerencialAgro/modalidad/', consultaEstudiantesPorModalidad.as_view(), name="buscar_modalidad"),
     path('sistemaGerencialAgro/reporteModalidad/', reporteEstudiantesPorModalidad.as_view(), name="reporte_modalidad"),
+    path('sistemaGerencialAgro/listarEstudiosUniversitarios/', listarEstudioUniversitario, name="listar_estudios_universitarios"),
+    path('sistemaGerencialAgro/listarSolicitudes/', listarSolicitudes, name="listar_solicitudes"),
+    path('sistemaGerencialAgro/listarServicios/', listarServicios, name="listar_servicios"),
 
     # Estudiantes en Servicio Social por Carrera.
 
