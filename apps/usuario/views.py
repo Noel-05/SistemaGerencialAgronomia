@@ -22,7 +22,12 @@ def index(request):
         'base/base.html',
     )
 
-
+"""
+Clase para el Login del Sistema.
+@param      el formulario por defecto de Django
+@return     retorna el template login.
+@author     Roberto Paz
+"""
 class Login(FormView):
     template_name = 'usuario/login1.html'
     form_class = FormularioLogin
@@ -40,15 +45,32 @@ class Login(FormView):
         login(self.request, form.get_user())
         return super(Login, self).form_valid(form)
 
+"""
+Funcion para cerrar sesion del Sistema.
+@param      una solicitud de petición (request)
+@return     retorna al template login.
+@author     Roberto Paz
+"""
+
 def logoutUsuario(request):
     logout(request)
     return HttpResponseRedirect(reverse_lazy('usuario:login'))  
 
-
+"""
+Clase para redirigir a la lista de los usuarios.
+@param      el TemplateView por defecto de Django
+@return     retorna a la plantilla de listar_usuario.
+@author     Roberto Paz
+"""
 class InicioListadoUsuario(LoginPAMixin, TemplateView):
     template_name='usuario/listar_usuario.html'
 
-
+"""
+Clase para listar los usuarios del sistema.
+@param      el ListView por defecto de Django
+@return     retorna la lista de los usuarios del sistema.
+@author     Roberto Paz
+"""
 class ListadoUsuario(LoginPAMixin, ListView):
     model=Usuario
 
@@ -60,14 +82,13 @@ class ListadoUsuario(LoginPAMixin, ListView):
             return HttpResponse(serialize('json', self.get_queryset()), 'application/json')
         else:
             return redirect('usuario:inicio_usuarios')
-            
 
-            #Genera bug
-            #return render(request, self.template_name)
-
-            #return render(request,self.template_name)
-
-
+"""
+Clase para registrar los usuarios en el sistema.
+@param      el CreateView por defecto de Django
+@return     retorna a la lista de los usuarios del sistema, con el usuario creado.
+@author     Roberto Paz
+"""
 
 class RegistrarUsuario(LoginAMixin, CreateView):
     model = Usuario
@@ -101,8 +122,6 @@ class RegistrarUsuario(LoginAMixin, CreateView):
         else:
             return redirect('usuario:inicio_usuarios')
 
-
-
 class RegistrarUsuarioLogin(CreateView):
     model=Usuario
     form_class=FormularioUsuarioLogin
@@ -125,6 +144,13 @@ class RegistrarUsuarioLogin(CreateView):
         else:
             return render(request, self.template_name,{'form':form})
 
+"""
+Clase para Editar los usuarios registrados en el sistema.
+@param      el UpdateView por defecto de Django
+@return     retorna a la lista de los usuarios del sistema, con los cambios realizados al 
+usuario seleccionado.
+@author     Roberto Paz
+"""
 
 class EditarUsuario(LoginAMixin, UpdateView):
     model = Usuario
@@ -150,6 +176,13 @@ class EditarUsuario(LoginAMixin, UpdateView):
                 return response
         else:
             return redirect('usuario:inicio_usuarios')
+
+"""
+Clase para Eliminar un usuario del sistema.
+@param      el DeleteView por defecto de Django
+@return     retorna a la lista de los usuarios del sistema.
+@author     Roberto Paz
+"""
 
 class EliminarUsuario(LoginAMixin, DeleteView):
     model = Usuario

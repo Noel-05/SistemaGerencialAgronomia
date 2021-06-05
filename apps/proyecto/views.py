@@ -174,100 +174,13 @@ def exportarEstudiantesDepartamento(request, depto):
 
     return response
 
-"""
-Función para realizar el CSV correspondiente con los datos recuperados a partir del filtro.
-@param      una solicitud de petición (request) y el departamento a filtrar en la sentencia SQL.
-@return     descarga el archivo CSV con el nombre indicado por medio de una peticion request.
-@author     Noel Renderos
-"""
-
-def exportarEstudiantesDocente1(request, fecha_inic, docent):
-
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="RG-EstudiantesPorDocente.csv"'
-
-    wb = xlwt.Workbook(encoding='utf-8')
-    ws = wb.add_sheet('Estudiantes por Docente') 
-
-    row_num = 0
-
-    font_style = xlwt.XFStyle()
-    font_style.font.bold = True
-
-    columns = ['Carnet', 'Nombre', 'Apellido', 'Fecha Inicial']
-
-    for col_num in range(len(columns)):
-        ws.write(row_num, col_num, columns[col_num], font_style) 
-
-    # Sheet body, remaining rows
-    font_style = xlwt.XFStyle()
-
-    estudiantes_docentes_filtro = ServicioSocial.objects.order_by('carnet_estudiante__carnet_estudiante__carnet_estudiante')
-
-    for fil in estudiantes_docentes_filtro:
-        if fil.carnet_docente_id == docent:
-            fecha_formato = datetime.strftime(fil.carnet_estudiante.fecha_inicio, '%Y-%m-%d')  # trasformar
-            if fecha_inic <= fecha_formato:
-                row_num += 1
-                row = [fil.carnet_estudiante.carnet_estudiante.carnet_estudiante_id, fil.carnet_estudiante.carnet_estudiante.carnet_estudiante.nombre_estudiante, fil.carnet_estudiante.carnet_estudiante.carnet_estudiante.apellido_estudiante, fecha_formato]
-                    
-                for col_num in range(len(row)):
-                    ws.write(row_num, col_num, row[col_num], font_style)
-
-    wb.save(response)
-
-    return response
 
 """
-Función para realizar el CSV correspondiente con los datos recuperados a partir del filtro.
-@param      una solicitud de petición (request) y el departamento a filtrar en la sentencia SQL.
-@return     descarga el archivo CSV con el nombre indicado por medio de una peticion request.
-@author     Noel Renderos
-"""
-
-def exportarEstudiantesDocente2(request, docent):
-
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="RG-EstudiantesPorDocente.csv"'
-
-    wb = xlwt.Workbook(encoding='utf-8')
-    ws = wb.add_sheet('Estudiantes por Docente') 
-
-    row_num = 0
-
-    font_style = xlwt.XFStyle()
-    font_style.font.bold = True
-
-    columns = ['Carnet', 'Nombre', 'Apellido', 'Fecha Inicial']
-
-    for col_num in range(len(columns)):
-        ws.write(row_num, col_num, columns[col_num], font_style) 
-
-    # Sheet body, remaining rows
-    font_style = xlwt.XFStyle()
-
-    estudiantes_docentes_filtro = ServicioSocial.objects.order_by('carnet_estudiante__carnet_estudiante__carnet_estudiante')
-
-    for fil in estudiantes_docentes_filtro:
-        if fil.carnet_docente_id == docent:
-            fecha_formato = datetime.strftime(fil.carnet_estudiante.fecha_inicio, '%Y-%m-%d')  # trasformar
-            row_num += 1
-            row = [fil.carnet_estudiante.carnet_estudiante.carnet_estudiante_id, fil.carnet_estudiante.carnet_estudiante.carnet_estudiante.nombre_estudiante, fil.carnet_estudiante.carnet_estudiante.carnet_estudiante.apellido_estudiante, fecha_formato]
-            print(row)
-            
-            for col_num in range(len(row)):
-                ws.write(row_num, col_num, row[col_num], font_style)
-
-    wb.save(response)
-
-    return response
-
-"""
-Función para recuperar y mostrar el listado de departamentos para su selección y realización del 
-filtro correspondiente y de la recuperación de todos los proyectos agrupados por departamento.
+Función para recuperar y mostrar el listado de estudiantes que tienen a cargo los docentes tutores 
+agrupados por el carnet del estudiante.
 @param      una solicitud de petición (request)
-@return     retorna el template estudiantesServSocDepartamento con el diccionario detallado en la descripción.
-@author     Noel Renderos
+@return     retorna el template docentesServSocDepartamento con el diccionario detallado en la descripción.
+@author     Roberto Paz
 """
 
 def consultaEstudiantesDocente(request):
@@ -289,10 +202,12 @@ def consultaEstudiantesDocente(request):
     )
 
 """
-Función para realizar el filtro correspondiente de los proyectos por departamento.
+Función para realizar el filtro correspondiente de los estudiantes que son tutelados por el docente 
+seleccionado.
 @param      una solicitud de petición (request)
-@return     retorna el template estudiantesServSocDepartamento con los proyectos filtrados por departamento.
-@author     Noel Renderos
+@return     retorna el template docentesServSocDepartamento con los estudiantes filtrados de a cuerdo
+al Docente seleccionado.
+@author     Roberto Paz
 """
 
 def filtrarEstudiantesDocentes(request):
@@ -320,9 +235,9 @@ def filtrarEstudiantesDocentes(request):
 
 """
 Función para realizar el PDF correspondiente con los datos recuperados a partir del filtro.
-@param      una solicitud de petición (request) y el departamento a filtrar en la sentencia SQL.
+@param      una solicitud de petición (request) y el docente para filtrar en la sentencia SQL.
 @return     retorna la vista previa del pdf por medio de una peticion request.
-@author     Noel Renderos
+@author     Roberto Paz
 """
 
 def reporteEstudiantesPorDocentes1(request, docent):
@@ -342,7 +257,7 @@ def reporteEstudiantesPorDocentes1(request, docent):
     html = template.render(context)
     
     response = HttpResponse(content_type = 'application/pdf')
-    response['Content-Disposition'] = 'inline; filename="RGEstudiantesPorDocente.pdf"'
+    response['Content-Disposition'] = 'inline; filename="RG-EstudiantesPorDocente.pdf"'
     
     pisa_status = pisa.CreatePDF(html, dest = response)
     
@@ -353,9 +268,10 @@ def reporteEstudiantesPorDocentes1(request, docent):
 
 """
 Función para realizar el PDF correspondiente con los datos recuperados a partir del filtro.
-@param      una solicitud de petición (request) y el departamento a filtrar en la sentencia SQL.
+@param      una solicitud de petición (request), la fecha inicial del SS
+y el docente a filtrar en la sentencia SQL.
 @return     retorna la vista previa del pdf por medio de una peticion request.
-@author     Noel Renderos
+@author     Roberto Paz
 """
 
 def reporteEstudiantesPorDocentes2(request, fecha_inic, docent):
@@ -382,6 +298,97 @@ def reporteEstudiantesPorDocentes2(request, fecha_inic, docent):
     if pisa_status.err:
         return HttpResponse('We had some errors <pre>'+ html + '</pre>')
     
+    return response
+
+
+"""
+Función para realizar el CSV correspondiente con los datos recuperados a partir del filtro.
+@param      una solicitud de petición (request), la fecha inicial del SS y el docente a 
+filtrar en la sentencia SQL.
+@return     descarga el archivo CSV con el nombre indicado por medio de una peticion request.
+@author     Roberto Paz
+"""
+
+def exportarEstudiantesDocente1(request, fecha_inic, docent):
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="RG-EstudiantesPorDocente.csv"'
+
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('Estudiantes por Docente') 
+
+    row_num = 0
+
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = ['Carnet', 'Nombre', 'Apellido', 'Fecha Inicial']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style) 
+
+    # Sheet body, remaining rows
+    font_style = xlwt.XFStyle()
+
+    estudiantes_docentes_filtro = ServicioSocial.objects.order_by('carnet_estudiante__carnet_estudiante__carnet_estudiante')
+
+    for fil in estudiantes_docentes_filtro:
+        if fil.carnet_docente_id == docent:
+            fecha_formato_com = datetime.strftime(fil.carnet_estudiante.fecha_inicio, '%Y-%m-%d')  # trasformar
+            fecha_formato_imp = datetime.strftime(fil.carnet_estudiante.fecha_inicio, '%d-%m-%Y')  # trasformar
+            if fecha_inic <= fecha_formato_com:
+                row_num += 1
+                row = [fil.carnet_estudiante.carnet_estudiante.carnet_estudiante_id, fil.carnet_estudiante.carnet_estudiante.carnet_estudiante.nombre_estudiante, fil.carnet_estudiante.carnet_estudiante.carnet_estudiante.apellido_estudiante, fecha_formato_imp]
+                    
+                for col_num in range(len(row)):
+                    ws.write(row_num, col_num, row[col_num], font_style)
+
+    wb.save(response)
+
+    return response
+
+"""
+Función para realizar el CSV correspondiente con los datos recuperados a partir del filtro.
+@param      una solicitud de petición (request) y el docente a filtrar en la sentencia SQL.
+@return     descarga el archivo CSV con el nombre indicado por medio de una peticion request.
+@author     Roberto Paz
+"""
+
+def exportarEstudiantesDocente2(request, docent):
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="RG-EstudiantesPorDocente.csv"'
+
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('Estudiantes por Docente') 
+
+    row_num = 0
+
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = ['Carnet', 'Nombre', 'Apellido', 'Fecha Inicial']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style) 
+
+    # Sheet body, remaining rows
+    font_style = xlwt.XFStyle()
+
+    estudiantes_docentes_filtro = ServicioSocial.objects.order_by('carnet_estudiante__carnet_estudiante__carnet_estudiante')
+
+    for fil in estudiantes_docentes_filtro:
+        if fil.carnet_docente_id == docent:
+            fecha_formato_imp = datetime.strftime(fil.carnet_estudiante.fecha_inicio, '%d-%m-%Y')  # trasformar
+            row_num += 1
+            row = [fil.carnet_estudiante.carnet_estudiante.carnet_estudiante_id, fil.carnet_estudiante.carnet_estudiante.carnet_estudiante.nombre_estudiante, fil.carnet_estudiante.carnet_estudiante.carnet_estudiante.apellido_estudiante, fecha_formato_imp]
+            print(row)
+            
+            for col_num in range(len(row)):
+                ws.write(row_num, col_num, row[col_num], font_style)
+
+    wb.save(response)
+
     return response
 
 #---------------------------------------------------------------------------------------------------------------
