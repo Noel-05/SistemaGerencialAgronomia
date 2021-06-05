@@ -27,11 +27,12 @@ Estudiantes por porcentaje de carrera aprobado
         </form>
     </div>
 
-    <div align="center" class="busqueda">
-        <a href="{% url 'sistemaGerencialAgro:reporte_porcentaje' %}" target="__blank"><input class="btn-buscar btn-busqueda" type = "submit" value = "Imprimir PDF" id = "btnImprimirPDF" hidden>
-        <a href="{% url 'sistemaGerencialAgro:export_csv' %}" target="__blank"></a><input class="btn-buscar btn-busqueda" type = "submit" value = "Exportar CSV" id = "btnExportarCSV" hidden>
-        
-    </div>
+    {% if porcentaje %}
+        <div align="center" class="busqueda">
+            <input class="btn-buscar btn-busqueda" type = "submit" value = "Imprimir PDF" id = "ImprimirPDF" onclick="window.location.href='{% url 'sistemaGerencialAgro:reporte_porcentaje' porcentaje %}'">
+            <input class="btn-buscar btn-busqueda" type = "submit" value = "Exportar CSV" id = "ExportarCSV" onclick="window.location.href='{% url 'sistemaGerencialAgro:exportar_estudiantes_porcentaje' porcentaje %}'">
+        </div>
+    {% endif %}
 
     </br></br>
 

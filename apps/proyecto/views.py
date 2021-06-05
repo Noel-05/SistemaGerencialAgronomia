@@ -681,49 +681,12 @@ def procesoETL(request, username):
 
 
 #------------------------------------------------------------------------------
-
-
-def listarEstudiantes(request):
-    estudiantes = Estudiante.objects.all()
-    
-    return render(
-        request,
-        'proyecto/listaEstudiantes.html',
-        {'estudiantes':estudiantes}
-    )
-
-
-class buscarCriterio(TemplateView):
-    template_name='proyecto/listarEstudiantes.html'
-    
-    def post(self,request,*args,**kwargs):
-        criterio=request.POST['criterio']
-        
-        if criterio == "carrera":
-            estudios_universitarios = EstudioUniversitario.objects.all()
-            return render(
-                request,
-                'proyecto/EstudiantesPorcentajeCarrera.html',
-                {'estudios_universitarios':estudios_universitarios}
-            )
-
-        elif criterio == "genero":
-            estudiantes = Solicitud.objects.all()
-            return render(
-                request,
-                'proyecto/EstudiantesPorGenero.html',
-                {'estudiantes':estudiantes}
-            )
-
-        else:
-            servicios = ServicioSocial.objects.all()
-            return render(
-                request,
-                'proyecto/EstudiantesPorModalidad.html',
-                {'servicios':servicios}
-            )
-            
-
+"""
+Función para recuperar y mostrar el listado de estudios universitarios 
+@param      una solicitud de petición (request)
+@return     retorna el template EstudiantesPorcentajeCarrera con el diccionario detallado en la descripción.
+@author     Elmer Huiza
+"""
 def listarEstudioUniversitario(request):
     estudios_universitarios = EstudioUniversitario.objects.all()
 
@@ -732,46 +695,99 @@ def listarEstudioUniversitario(request):
         'proyecto/EstudiantesPorcentajeCarrera.html',
         {'estudios_universitarios':estudios_universitarios}
     )
-
-
-class consultaEstudiantesPorcentajeCarrera(TemplateView):
-    template_name='proyecto/EstudiantesPorcentajeCarrera.html'
-    
-    def post(self,request,*args,**kwargs):
+"""
+Función para realizar el filtro correspondiente de los estudiantes por porcentaje de  carrrera aprobado.
+@param      una solicitud de petición (request)
+@return     retorna el template EstudiantesPorcentajeCarrera con los estudiantes filtrados por porcentaje de carrera aprobado.
+@author     Elmer Huiza
+"""
+def consultaEstudiantesPorcentajeCarrera(request):
+    if request.method == 'POST':
         porcentaje = request.POST['porcentaje']
-        
         estudios_universitarios = EstudioUniversitario.objects.filter(porc_carrerar_aprob=porcentaje)
-        
-        return render(
-            request,
-            'proyecto/EstudiantesPorcentajeCarrera.html',
-            {'estudios_universitarios':estudios_universitarios}
-        )
+
+    return render(
+        request,
+        'proyecto/EstudiantesPorcentajeCarrera.html',
+        {'estudios_universitarios':estudios_universitarios,
+        'porcentaje':porcentaje
+        }
+    )
 
 
-class reporteEstudiantesPorcentajeCarrera(View):
-    def get(self,request,*args,**kwargs):
-        porcentaje=request.POST['porcentaje']
-        estudios_universitarios=EstudioUniversitario.objects.filter(porc_carrerar_aprob=porcentaje)
-        template = get_template('reportes/ReportePorcentajeCarrera.html')
+"""Función para realizar el PDF correspondiente con los datos recuperados a partir del filtro.
+@param      una solicitud de petición (request) y el porcentaje para filtrar en la sentencia SQL.
+@return     retorna la vista previa del pdf por medio de una peticion request.
+@author     Elmer Huiza
+"""
+def reporteEstudiantesPorcentajeCarrera(request, porcentaje):
+
+    estudios_universitarios = EstudioUniversitario.objects.filter(porc_carrerar_aprob=porcentaje)
+
+    template = get_template('reportes/ReportePorcentajeCarrera.html')
         
-        context = {
+    context = {
             'title':'Reporte de estudiantes por porcentaje carrera aprobado','estudios_universitarios':estudios_universitarios,
         }
         
-        html = template.render(context)
+    html = template.render(context)
         
-        response = HttpResponse(content_type='application/pdf')
-        #response['Content-Disposition'] = 'attachment; filename="Estudiantes por porcentaje de carrera aprobado.pdf"'
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="RT-EstudiantesPorPorcentaje.pdf"'
         
-        pisa_status = pisa.CreatePDF(html, dest=response)
+    pisa_status = pisa.CreatePDF(html, dest=response)
         
-        if pisa_status.err:
-            return HttpResponse('We had some errors <pre>'+ html + '</pre>')
+    if pisa_status.err:
+        return HttpResponse('We had some errors <pre>'+ html + '</pre>')
         
-        return response   
+    return response
+"""
+Función para realizar el CSV correspondiente con los datos recuperados a partir del filtro.
+@param      una solicitud de petición (request) y el porcentaje a filtrar en la sentencia SQL.
+@return     descarga el archivo CSV con el nombre indicado por medio de una peticion request.
+@author     Elmer Huiza
+"""
 
 
+def exportarEstudiantesPorcentaje(request, porcentaje):
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="RT-EstudiantesPorPorcentaje.csv"'
+
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('Estudiante por Porcentaje') 
+
+    row_num = 0
+
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = ['Porcentaje','Carnet', 'Nombre', 'Apellido', 'Carrera']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style) 
+
+    # Sheet body, remaining rows
+    font_style = xlwt.XFStyle()
+
+    estudios_universitarios = EstudioUniversitario.objects.filter(porc_carrerar_aprob=porcentaje)
+
+    for estudio in estudios_universitarios:
+        row_num += 1
+        row = [estudio.porc_carrerar_aprob,estudio.carnet_estudiante_id,estudio.carnet_estudiante.nombre_estudiante,estudio.carnet_estudiante.apellido_estudiante,estudio.codigo_carrera.nombre_carrera]
+        
+        for col_num in range(len(row)):
+            ws.write(row_num, col_num, row[col_num], font_style)
+
+    wb.save(response)
+
+    return response
+"""
+Función para recuperar y mostrar el listado de solictudes
+@param      una solicitud de petición (request)
+@return     retorna el template EstudiantesPorGenero.html con el diccionario detallado en la descripción.
+@author     Elmer Huiza
+"""
 def listarSolicitudes(request):
     estudiantes = Solicitud.objects.all()
     
@@ -781,44 +797,93 @@ def listarSolicitudes(request):
         {'estudiantes':estudiantes}
     )
 
-
-class consultaEstudiantesPorGenero(TemplateView):
-    template_name='proyecto/EstudiantesPorGenero.html'
-    
-    def post(self,request,*args,**kwargs):
+"""
+Función para realizar el filtro correspondiente de los estudiantes por género.
+@param      una solicitud de petición (request)
+@return     retorna el template EstudiantesPorGenero con los estudiantes filtrados por género.
+@author     Elmer Huiza
+"""
+def  consultaEstudiantesPorGenero(request):
+    if request.method=='POST':
         sexo=request.POST['sexo']
-    
         estudiantes=Solicitud.objects.filter(carnet_estudiante__carnet_estudiante__sexo_estudiante=sexo)
     
-        return render(
-            request,
-            'proyecto/EstudiantesPorGenero.html',
-            {'estudiantes':estudiantes}
-        )
+    return render(
+        request,
+        'proyecto/EstudiantesPorGenero.html',
+        {'estudiantes':estudiantes,'sexo':sexo}
+    )
 
+"""Función para realizar el PDF correspondiente con los datos recuperados a partir del filtro.
+@param      una solicitud de petición (request) y el sexo para filtrar en la sentencia SQL.
+@return     retorna la vista previa del pdf por medio de una peticion request.
+@author     Elmer Huiza
+"""
+def  reporteEstudiantesPorGenero(request,sexo):
+    estudiantes=Solicitud.objects.filter(carnet_estudiante__carnet_estudiante__sexo_estudiante=sexo)
 
-class reporteEstudiantesPorGenero(View):
-    def get(self,request,*args,**kwargs):
-        estudiantes=Solicitud.objects.all()
+    template = get_template('reportes/ReporteGenero.html')
         
-        template = get_template('reportes/ReporteGenero.html')
+    context = {
+        'title':'Reporte de estudiantes por género','estudiantes':estudiantes
+    }
         
-        context = {
-            'title':'Reporte de estudiantes por género','estudiantes':estudiantes
-        }
+    html = template.render(context)
         
-        html = template.render(context)
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="RT-EstudiantesPorGenero.pdf"'
         
-        response = HttpResponse(content_type='application/pdf')
-        #response['Content-Disposition'] = 'attachment; filename="Estudiantes por porcentaje de carrera aprobado.pdf"'
+    pisa_status = pisa.CreatePDF(html, dest=response)
         
-        pisa_status = pisa.CreatePDF(html, dest=response)
+    if pisa_status.err:
+        return HttpResponse('We had some errors <pre>'+ html + '</pre>')
         
-        if pisa_status.err:
-            return HttpResponse('We had some errors <pre>'+ html + '</pre>')
-        
-        return response
+    return response
+"""
+Función para realizar el CSV correspondiente con los datos recuperados a partir del filtro.
+@param      una solicitud de petición (request) y el género filtrar en la sentencia SQL.
+@return     descarga el archivo CSV con el nombre indicado por medio de una peticion request.
+@author     Elmer Huiza
+"""
+def exportarEstudiantesPorGenero(request,sexo):
 
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="RT-EstudiantesPorGenero.csv"'
+
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('Estudiantes por Género') 
+
+    row_num = 0
+
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = ['Genero','Carnet', 'Nombre', 'Apellido', 'Modalidad','Fecha de inicio']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style) 
+
+    # Sheet body, remaining rows
+    font_style = xlwt.XFStyle()
+
+    estudiantes=Solicitud.objects.filter(carnet_estudiante__carnet_estudiante__sexo_estudiante=sexo)
+    for estudiante in estudiantes:
+        row_num += 1
+        row = [estudiante.carnet_estudiante.carnet_estudiante.sexo_estudiante,estudiante.carnet_estudiante_id,estudiante.carnet_estudiante.carnet_estudiante.nombre_estudiante,estudiante.carnet_estudiante.carnet_estudiante.apellido_estudiante,estudiante.modalidad,estudiante.fecha_inicio]
+        
+        for col_num in range(len(row)):
+            ws.write(row_num, col_num, row[col_num], font_style)
+
+    wb.save(response)
+
+    return response
+
+    """
+Función para recuperar y mostrar el listado de servicios sociales 
+@param      una solicitud de petición (request)
+@return     retorna el template EstudiantesPorModalidad.html con el diccionario detallado en la descripción.
+@author     Elmer Huiza
+"""
 
 def listarServicios(request):
     servicios = ServicioSocial.objects.all()
@@ -828,87 +893,133 @@ def listarServicios(request):
         {'servicios':servicios}
     )
 
-
-class consultaEstudiantesPorModalidad(TemplateView):
-    template_name='proyecto/EstudiantesPorModalidad.html'
-    
-    def post(self,request,*args,**kwargs):
-        modalidad = request.POST['modalidad']
-        fecha = request.POST['fecha']
+"""
+Función para realizar el filtro correspondiente de los estudiantes por modalidad.
+@param      una solicitud de petición (request)
+@return     retorna el template EstudiantesPorModalidad con los estudiantes filtrados por modalidad.
+@author     Elmer Huiza
+"""
+def  consultaEstudiantesPorModalidad(request):
+    modalidad = request.POST['modalidad']
+    fecha = request.POST['fecha']
         
-        if modalidad != "" and fecha != "":
-            estudiantes = Solicitud.objects.all()
+    if modalidad != "" and fecha != "":
+        estudiantes = Solicitud.objects.all()
             
-            return render(
+        return render(
                 request,
                 'proyecto/EstudiantesPorModalidad.html',
-                {'estudiantes':estudiantes}
+                {'estudiantes':estudiantes,'modalidad':modalidad,'fecha':fecha}
             )
 
-        elif modalidad != "":
+    elif modalidad != "":
             servicios = ServicioSocial.objects.filter(carnet_estudiante__modalidad=modalidad)
             
             return render(
                 request,
                 'proyecto/EstudiantesPorModalidad.html',
-                {'servicios':servicios}
+                {'servicios':servicios,'modalidad':modalidad,'fecha':fecha}
             )
 
-        elif fecha != "":
+    elif fecha != "":
             servicios = ServicioSocial.objects.filter(carnet_estudiante__fecha_inicio=fecha)
             
             return render(
                 request,
                 'proyecto/EstudiantesPorModalidad.html',
-                {'servicios':servicios}
+                {'servicios':servicios,'modalidad':modalidad,'fecha':fecha}
             )
 
-        else:
+    else:
             estudiantes = Solicitud.objects.all()
             
             return render(
                 request,
                 'proyecto/EstudiantesPorModalidad.html',
-                {'estudiantes':estudiantes}
+                {'estudiantes':estudiantes,'modalidad':modalidad,'fecha':fecha}
             )
 
-class reporteEstudiantesPorModalidad(View):
-    def get(self,request,*args,**kwargs):
-        servicios = ServicioSocial.objects.all()
+"""Función para realizar el PDF correspondiente con los datos recuperados a partir del filtro.
+@param      una solicitud de petición (request) y el modalidad para filtrar en la sentencia SQL.
+@return     retorna la vista previa del pdf por medio de una peticion request.
+@author     Elmer Huiza
+"""
+
+def reporteEstudiantesPorModalidad(request, modalidad):
+
+    servicios = ServicioSocial.objects.filter(carnet_estudiante__modalidad=modalidad)
+    
+    template = get_template('reportes/ReporteModalidad.html')
+
+    context = {
+        'servicios': servicios,
+    }
+
+    html = template.render(context)
+    
+    response = HttpResponse(content_type = 'application/pdf')
+    response['Content-Disposition'] = 'inline; filename="RG-EstudiantesPorModalidad.pdf"'
+    
+    pisa_status = pisa.CreatePDF(html, dest = response)
+    
+    if pisa_status.err:
+        return HttpResponse('We had some errors <pre>'+ html + '</pre>')
+    
+    return response
+
+
+"""Función para realizar el PDF correspondiente con los datos recuperados a partir del filtro.
+@param      una solicitud de petición (request)   y los parametros modalidad y fecha  para filtrar en la sentencia SQL.
+@return     retorna la vista previa del pdf por medio de una peticion request.
+@author     Elmer Huiza
+"""
+
+def  reporteEstudiantesPorModalidadFecha(request, modalidad,fecha):
+    services=[]
+    servicios = ServicioSocial.objects.filter(carnet_estudiante__modalidad=modalidad)
+    for servicio in servicios:
+        if servicio.carnet_estudiante.fecha_inicio==fecha:
+            services.append(dict(servicio))
+
+    template = get_template('reportes/ReporteModalidad.html')
         
-        template = get_template('reportes/ReporteModalidad.html')
-        
-        context = {
-            'title':'Reporte de estudiantes por modalidad','servicios':servicios
+    context = {
+            'title':'Reporte de estudiantes por modalidad',
+            'services':services
         }
         
-        html = template.render(context)
+    html = template.render(context)
         
-        response = HttpResponse(content_type='application/pdf')
-        #response['Content-Disposition'] = 'attachment; filename="Estudiantes por porcentaje de carrera aprobado.pdf"'
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="RG-EstudiantesPorModalidad.pdf"'
         
-        pisa_status = pisa.CreatePDF(html, dest=response)
+    pisa_status = pisa.CreatePDF(html, dest=response)
         
-        if pisa_status.err:
-            return HttpResponse('We had some errors <pre>'+ html + '</pre>')
+    if pisa_status.err:
+        return HttpResponse('We had some errors <pre>'+ html + '</pre>')
         
-        return response
+    return response
 
+"""
+Función para realizar el CSV correspondiente con los datos recuperados a partir del filtro.
+@param      una solicitud de petición (request), la fecha y la modalidad a filtrar en la sentencia SQL.
+@return     descarga el archivo CSV con el nombre indicado por medio de una peticion request.
+@author     Elmer Huiza
+"""
+def exportarEstudiantesPorModalidadFecha(request, fecha, modalidad):
 
-def export_estudiantes_csv(request):
     response = HttpResponse(content_type='text/csv')
-    
-    response['Content-Disposition'] = 'attachment; filename="users.csv"'
+    response['Content-Disposition'] = 'attachment; filename="RG-EstudiantesPorModalidad.csv"'
 
     wb = xlwt.Workbook(encoding='utf-8')
-    ws = wb.add_sheet('Datos de estudiantes') 
-    
+    ws = wb.add_sheet('Estudiantes por Modalidad') 
+
     row_num = 0
 
     font_style = xlwt.XFStyle()
     font_style.font.bold = True
 
-    columns = ['Carnet', 'Nombre', 'Apellido']
+    columns = ['Modalidad','Carnet', 'Nombre', 'Apellido', 'Proyecto','Fecha de inicio']
 
     for col_num in range(len(columns)):
         ws.write(row_num, col_num, columns[col_num], font_style) 
@@ -916,9 +1027,52 @@ def export_estudiantes_csv(request):
     # Sheet body, remaining rows
     font_style = xlwt.XFStyle()
 
-    rows = Estudiante.objects.all().values_list('carnet_estudiante', 'nombre_estudiante', 'apellido_estudiante')
-    for row in rows:
+    estudiantes = ServicioSocial.objects.filter(carnet_estudiante__modalidad=modalidad).filter(carnet_estudiante__fecha_inicio=fecha)
+
+    for estudiante in estudiantes:
         row_num += 1
+        row = [estudiante.carnet_estudiante.modalidad,estudiante.carnet_estudiante_id,estudiante.carnet_estudiante.carnet_estudiante.carnet_estudiante.nombre_estudiante,estudiante.carnet_estudiante.carnet_estudiante.carnet_estudiante.apellido_estudiante,estudiante.codigo_proyecto_id,estudiante.carnet_estudiante.fecha_inicio]
+        
+        for col_num in range(len(row)):
+            ws.write(row_num, col_num, row[col_num], font_style)
+
+    wb.save(response)
+
+    return response
+
+"""
+Función para realizar el CSV correspondiente con los datos recuperados a partir del filtro.
+@param      una solicitud de petición (request) y la modalidad  a filtrar en la sentencia SQL.
+@return     descarga el archivo CSV con el nombre indicado por medio de una peticion request.
+@author     Elmer Huiza
+"""
+def exportarEstudiantesPorModalidad(request,modalidad):
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="RG-EstudiantesPorModalidad.csv"'
+
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('Estudiantes por Modalidad') 
+
+    row_num = 0
+
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = ['Modalidad','Carnet', 'Nombre', 'Apellido', 'Proyecto','Fecha de inicio']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style) 
+
+    # Sheet body, remaining rows
+    font_style = xlwt.XFStyle()
+
+    estudiantes = ServicioSocial.objects.filter(carnet_estudiante__modalidad=modalidad)
+
+    for estudiante in estudiantes:
+        row_num += 1
+        row = [estudiante.carnet_estudiante.modalidad,estudiante.carnet_estudiante_id,estudiante.carnet_estudiante.carnet_estudiante.carnet_estudiante.nombre_estudiante,estudiante.carnet_estudiante.carnet_estudiante.carnet_estudiante.apellido_estudiante,estudiante.codigo_proyecto_id,estudiante.carnet_estudiante.fecha_inicio]
+        
         for col_num in range(len(row)):
             ws.write(row_num, col_num, row[col_num], font_style)
 

@@ -24,18 +24,18 @@ Estudiantes por género
             
             </br></br></br>
             
-            <input class="btn-buscar btn-busqueda" type = "submit" value = "Buscar" id = "generoBuscar"  onclick="hacerVisible()"></br></br>
+            <input class="btn-buscar btn-busqueda" type = "submit" value = "Buscar" id = "generoBuscar"></br></br>
             
         </form>
     
     </div>
 
-     <div align="center" class="busqueda">
-        <a href="{% url 'sistemaGerencialAgro:reporte_genero' %}" target="__blank"><input class="btn-buscar btn-busqueda" type = "submit" value = "Imprimir PDF" id = "btnImprimirPDF" hidden="">
-        <a href="{% url 'sistemaGerencialAgro:export_csv' %}" target="__blank"></a><input class="btn-buscar btn-busqueda" type = "submit" value = "Exportar CSV" id = "btnExportarCSV" hidden="">
-
-
-    </div>
+    {% if sexo %}
+        <div align="center" class="busqueda">
+            <input class="btn-buscar btn-busqueda" type = "submit" value = "Imprimir PDF" id = "ImprimirPDF" onclick="window.location.href='{% url 'sistemaGerencialAgro:reporte_genero' sexo %}'">
+            <input class="btn-buscar btn-busqueda" type = "submit" value = "Exportar CSV" id = "ExportarCSV" onclick="window.location.href='{% url 'sistemaGerencialAgro:exportar_estudiantes_genero' sexo %}'">
+        </div>
+    {% endif %}
 
     </br></br>
 
@@ -88,13 +88,6 @@ Estudiantes por género
                 width :500,
                 resizable :false
             }).dialog('open').load(url)
-        }
-    </script>
-
-    <script>
-         function hacerVisible(){
-            document.getElementById("btnImprimirPDF").hidden=false;
-            document.getElementById("btnExportarCSV").hidden=false;
         }
     </script>
 

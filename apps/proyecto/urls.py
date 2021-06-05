@@ -34,14 +34,15 @@ urlpatterns = [
     path('sistemaGerencialAgro/reporteServicioSocialPeriodo/<str:fecha>/', reporteEstudiantesServSocialPeriodo, name="reporte_periodo_servsocial"),
     path('sistemaGerencialAgro/exportarServicioSocialPeriodo/<str:fecha>/', exportarEstudiantesServSocialPeriodo, name="exportar_periodo_servsocial"),
 
-
-    # Estudiantes en Servicio Social por Porcentaje.
-    path('sistemaGerencialAgro/porcentaje/', consultaEstudiantesPorcentajeCarrera.as_view(), name="buscar_porcentaje"),
-    path('sistemaGerencialAgro/reportePorcentaje/', reporteEstudiantesPorcentajeCarrera.as_view(), name="reporte_porcentaje"),
-
+        # Estudiantes en Servicio Social por Porcentaje.
+    path('sistemaGerencialAgro/porcentaje/', consultaEstudiantesPorcentajeCarrera, name="buscar_porcentaje"),
+    path('sistemaGerencialAgro/reportePorcentaje/<str:porcentaje>', reporteEstudiantesPorcentajeCarrera, name="reporte_porcentaje"),
+    path('sistemaGerencialAgro/exportarEstudiantesPorcentaje/<str:porcentaje>/', exportarEstudiantesPorcentaje, name="exportar_estudiantes_porcentaje"),
+    
     # Estudiantes en Servicio Social por Genero.
-    path('sistemaGerencialAgro/genero/', consultaEstudiantesPorGenero.as_view(), name="buscar_genero"),
-    path('sistemaGerencialAgro/reporteGenero/', reporteEstudiantesPorGenero.as_view(), name="reporte_genero"),
+    path('sistemaGerencialAgro/genero/', consultaEstudiantesPorGenero, name="buscar_genero"),
+    path('sistemaGerencialAgro/reporteGenero/<str:sexo>', reporteEstudiantesPorGenero, name="reporte_genero"),
+    path('sistemaGerencialAgro/exportarEstudiantesGenero/<str:sexo>',exportarEstudiantesPorGenero, name="exportar_estudiantes_genero"),
 
     # Proyectos de Estudiante en Servicio Social por Departamento.
     path('sistemaGerencialAgro/consultaProyectosEstudianteDepartamento/', consultaEstudiantesDepartamento, name="consulta_estudiante_departamento"),
@@ -53,8 +54,11 @@ urlpatterns = [
     # --------- REPORTES GERENCIALES --------- 
 
     # Estudiantes en Servicio Social por Modalidad.
-    path('sistemaGerencialAgro/modalidad/', consultaEstudiantesPorModalidad.as_view(), name="buscar_modalidad"),
-    path('sistemaGerencialAgro/reporteModalidad/', reporteEstudiantesPorModalidad.as_view(), name="reporte_modalidad"),
+    path('sistemaGerencialAgro/modalidad/', consultaEstudiantesPorModalidad, name="buscar_modalidad"),
+    path('sistemaGerencialAgro/reporteModalidad/<str:modalidad>/', reporteEstudiantesPorModalidad, name="reporte_modalidad"),
+    path('sistemaGerencialAgro/reporteModalidad/<str:modalidad>/<str:fecha>/', reporteEstudiantesPorModalidadFecha, name="reporte_modalidad_fecha"),
+    path('sistemaGerencialAgro/exportarEstudiantesModalidad/<str:modalidad>', exportarEstudiantesPorModalidad,name="exportar_estudiantes_modalidad"),
+    path('sistemaGerencialAgro/exportarEstudiantesModalidad/<str:fecha>/<str:modalidad>', exportarEstudiantesPorModalidadFecha,name="exportar_estudiantes_modalidad_fecha"),
     path('sistemaGerencialAgro/listarEstudiosUniversitarios/', listarEstudioUniversitario, name="listar_estudios_universitarios"),
     path('sistemaGerencialAgro/listarSolicitudes/', listarSolicitudes, name="listar_solicitudes"),
     path('sistemaGerencialAgro/listarServicios/', listarServicios, name="listar_servicios"),
@@ -80,8 +84,6 @@ urlpatterns = [
 
     # ->->->->->->->  NOTA: <-<-<-<-<-<-<-
     # LA PERSONA QUE HIZO ESTAS URL DE ABAJO AGREGARLAS A LA SECCION DE ARRIBA QUE CORRESPONDA.
-
-    path('export/excel', export_estudiantes_csv, name='export_csv'),
     
 
     
