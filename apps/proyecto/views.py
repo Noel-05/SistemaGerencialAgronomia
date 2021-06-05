@@ -1161,8 +1161,11 @@ def exportarEstudiantesServSocialPeriodo(request, fecha):
     periodo_servicio_filtro = Solicitud.objects.filter(fecha_fin = fecha)
 
     for periodo in  periodo_servicio_filtro:
+        fecha_formato = datetime.strftime(periodo.fecha_inicio, '%Y-%m-%d')  # trasformar
         row_num += 1
-        row = [periodo.carnet_estudiante_id,periodo.carnet_estudiante.carnet_estudiante.nombre_estudiante,periodo.carnet_estudiante.carnet_estudiante.apellido_estudiante,periodo.fecha_inicio,periodo.fecha_fin]
+        fecha_formato_final = datetime.strftime(periodo.fecha_fin, '%Y-%m-%d')  # trasformar
+        row_num += 1
+        row = [periodo.carnet_estudiante_id,periodo.carnet_estudiante.carnet_estudiante.nombre_estudiante,periodo.carnet_estudiante.carnet_estudiante.apellido_estudiante,fecha_formato, fecha_formato_final]
         
         for col_num in range(len(row)):
             ws.write(row_num, col_num, row[col_num], font_style)
@@ -1170,6 +1173,231 @@ def exportarEstudiantesServSocialPeriodo(request, fecha):
     wb.save(response)
 
     return response   
+
+#---------------------------------------------------------------------------------------------------
+
+"""
+Función para recuperar y mostrar el listado de todos los estudiantes en servicio social 
+para su selección y realización del filtro correspondiente y de la recuperación de todas los servicios social 
+por periodo y carrera
+@param      una solicitud de petición (request)
+@return     retorna el template estudiantesServSocPeriodo con el diccionario detallado en la descripción.
+@author     Karla Abrego
+"""
+
+def consultaEstudiantesCarrera(request):
+
+    carreras = Carrera.objects.all()
+    consulta_carrera=Solicitud.objects.order_by('carnet_estudiante')
+
+    # Se usa doble subrayado para que funcione como el "." en el template (osea un join)
+    #proyectos_departamento = ServicioSocial.objects.order_by('carnet_estudiante__carnet_estudiante__codigo_carrera__departamento')
+    
+    context = {
+        #'proyectos_departamento': proyectos_departamento,
+        'carreras': carreras,
+        'consulta_carrera': consulta_carrera,
+    }
+
+    return render(
+        request,
+        'proyecto/estudiantesPorPeriodoCarrera.html', 
+        context,
+    )
+
+"""
+Función para realizar el filtro correspondiente del servicio social por periodo.
+@param      una solicitud de petición (request)
+@return     retorna el template estudiantesServSocPeriodo con los proyectos filtrados por carrera y periodo.
+@author     Karla Abrego
+"""
+
+def consultaEstudiantesCarreraPeriodo(request):
+    if request.method == 'POST':
+        fecha = request.POST['fecha']
+        carrera = request.POST['carrera']
+
+        carrera_periodo_filtro = Solicitud.objects.filter(carnet_estudiante__codigo_carrera__nombre_carrera = carrera)
+        
+        carreras = Carrera.objects.all()
+
+        context = {
+
+            'carrera_periodo_filtro' : carrera_periodo_filtro,
+            'carreras': carreras,
+            'carrera' : carrera,
+            'fecha' : fecha,
+
+        }
+
+        return render(
+            request,
+            'proyecto/estudiantesPorPeriodoCarrera.html', 
+            context,
+        )
+
+"""
+Función para realizar el PDF correspondiente con los datos recuperados a partir del filtro.
+@param      una solicitud de petición (request) y el estado a filtrar en la sentencia SQL.
+@return     retorna la vista previa del pdf por medio de una peticion request.
+@author     Karla Abrego
+"""        
+def reporteEstudianteCarreraPeriodo1(request, carrera):
+
+    carrera_periodo_filtro = Solicitud.objects.filter(carnet_estudiante__codigo_carrera__nombre_carrera = carrera)
+    fecha = ""
+    carrera = carrera
+
+    template = get_template('reportes/ReporteCarreraPeriodo.html')
+
+    context = {
+        
+        'carrera_periodo_filtro' : carrera_periodo_filtro,
+        'fecha' : fecha,
+        'carrera': carrera,
+
+    }
+
+    html = template.render(context)
+    
+    response = HttpResponse(content_type = 'application/pdf')
+    response['Content-Disposition'] = 'inline; filename="ServicioSocialCarreraPeriodo.pdf"'
+    
+    pisa_status = pisa.CreatePDF(html, dest = response)
+    
+    if pisa_status.err:
+        return HttpResponse('We had some errors <pre>'+ html + '</pre>')
+    
+    return response
+
+"""
+Función para realizar el PDF correspondiente con los datos recuperados a partir del filtro.
+@param      una solicitud de petición (request) y el estado a filtrar en la sentencia SQL.
+@return     retorna la vista previa del pdf por medio de una peticion request.
+@author     Karla Abrego
+"""  
+
+def reporteEstudianteCarreraPeriodo2(request, fecha, carrera):
+
+    carrera_periodo_filtro = Solicitud.objects.filter()
+    fecha = fecha
+    carrera = carrera
+
+    template = get_template('reportes/ReporteCarreraPeriodo.html')
+
+    context = {
+        
+        'carrera_periodo_filtro' : carrera_periodo_filtro,
+        'fecha' : fecha,
+        'carrera': carrera,
+
+    }
+
+    html = template.render(context)
+    
+    response = HttpResponse(content_type = 'application/pdf')
+    response['Content-Disposition'] = 'inline; filename="ServicioSocialCarreraPeriodo.pdf"'
+    
+    pisa_status = pisa.CreatePDF(html, dest = response)
+    
+    if pisa_status.err:
+        return HttpResponse('We had some errors <pre>'+ html + '</pre>')
+    
+    return response
+
+"""
+Función para realizar el CSV correspondiente con los datos recuperados a partir del filtro.
+@param      una solicitud de petición (request) y el departamento a filtrar en la sentencia SQL.
+@return     descarga el archivo CSV con el nombre indicado por medio de una peticion request.
+@author     Karla Abrego
+"""   
+
+def exportarEstudianteCarreraPeriodo1(request,carrera):
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="RG-ServicioSocialCarreraPeriodo.csv"'
+
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('Servicio Social Carrera ') 
+
+    row_num = 0
+
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = ['Carnet', 'Nombre', 'Apellido', 'Fecha Inicio', 'Fecha Final']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style) 
+
+    # Sheet body, remaining rows
+    font_style = xlwt.XFStyle()
+
+    carrera_periodo_filtro = Solicitud.objects.filter(carnet_estudiante__codigo_carrera__nombre_carrera = carrera)
+    
+    for periodo in  carrera_periodo_filtro:
+        if periodo.carnet_estudiante.codigo_carrera.nombre_carrera == carrera:
+            fecha_formato = datetime.strftime(periodo.fecha_inicio, '%Y-%m-%d')  # trasformar
+            row_num += 1
+            fecha_formato_fin = datetime.strftime(periodo.fecha_fin, '%Y-%m-%d')  # trasformar
+            row_num += 1
+            row = [periodo.carnet_estudiante_id,periodo.carnet_estudiante.carnet_estudiante.nombre_estudiante,periodo.carnet_estudiante.carnet_estudiante.apellido_estudiante,fecha_formato,fecha_formato_fin]
+            print(row)
+
+            for col_num in range(len(row)):
+                ws.write(row_num, col_num, row[col_num], font_style)
+
+    wb.save(response)
+
+    return response   
+
+"""
+Función para realizar el CSV correspondiente con los datos recuperados a partir del filtro.
+@param      una solicitud de petición (request) y el departamento a filtrar en la sentencia SQL.
+@return     descarga el archivo CSV con el nombre indicado por medio de una peticion request.
+@author     Karla Abrego
+"""   
+def exportarEstudianteCarreraPeriodo2(request,fecha,carrera):
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="RG-ServicioSocialCarreraPeriodo.csv"'
+
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('Servicio Social Carrera ') 
+
+    row_num = 0
+
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = ['Carnet', 'Nombre', 'Apellido', 'Fecha Inicio', 'Fecha Final']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style) 
+
+    # Sheet body, remaining rows
+    font_style = xlwt.XFStyle()
+
+    carrera_periodo_filtro = Solicitud.objects.filter(carnet_estudiante__codigo_carrera__nombre_carrera = carrera)
+    
+    for periodo in  carrera_periodo_filtro:
+        if periodo.carnet_estudiante.codigo_carrera.nombre_carrera == carrera:
+            fecha_formato = datetime.strftime(periodo.fecha_inicio, '%Y-%m-%d')  # trasformar
+            if fecha <= fecha_formato:
+                row_num += 1
+            fecha_formato_fin = datetime.strftime(periodo.fecha_fin, '%Y-%m-%d')  # trasformar
+            if fecha <= fecha_formato_fin:
+                row_num += 1
+            row = [periodo.carnet_estudiante_id,periodo.carnet_estudiante.carnet_estudiante.nombre_estudiante,periodo.carnet_estudiante.carnet_estudiante.apellido_estudiante,fecha_formato,fecha_formato_fin]
+            
+
+            for col_num in range(len(row)):
+                ws.write(row_num, col_num, row[col_num], font_style)
+
+    wb.save(response)
+
+    return response   
+
 
 
 #---------------------------------------------------------------------------------------------------------------

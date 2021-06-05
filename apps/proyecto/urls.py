@@ -60,6 +60,14 @@ urlpatterns = [
     path('sistemaGerencialAgro/listarServicios/', listarServicios, name="listar_servicios"),
 
     # Estudiantes en Servicio Social por Carrera.
+    path('sistemaGerencialAgro/consultaCarreraPeriodo/', consultaEstudiantesCarrera, name="consulta_periodo_carrera"),
+    path('sistemaGerencialAgro/filtroCarreraPeriodo/', consultaEstudiantesCarreraPeriodo, name="filtrar_periodo_carrera"),
+    path('sistemaGerencialAgro/reporteCarreraPeriodo1/<str:carrera>/', reporteEstudianteCarreraPeriodo1, name="reporte_carrera_periodo_uno"),
+    path('sistemaGerencialAgro/reporteCarreraPeriodo2/<str:fecha>/<str:carrera>/', reporteEstudianteCarreraPeriodo2, name="reporte_carrera_periodo_dos"),
+    path('sistemaGerencialAgro/exportarCarreraPeriodo1/<str:carrera>/', exportarEstudianteCarreraPeriodo1, name="exportar_carrera_periodo_uno"),
+    path('sistemaGerencialAgro/exportarCarreraPeriodo2/<str:fecha>/<str:carrera>/', exportarEstudianteCarreraPeriodo2, name="exportar_carrera_periodo_dos"),
+
+
 
     # Docentes Tutores de Servicio Social.
     path('sistemaGerencialAgro/consultaEstudiantesPorDocente/', consultaEstudiantesDocente, name="consulta_estudiante_docente"),

@@ -1,0 +1,41 @@
+{%block title%}
+<strong> Reporte de Estudiantes en Servicio Social a partir de Carrera y un Periodo Determinado. </strong>
+{%endblock%}
+{% block content %}
+
+<div class="container">
+    <div>
+
+    </br>
+
+        <table>
+            <thead>
+               <tr>
+                <th>Carnet</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Fecha de inicio</th>
+                <th>Fecha de finalizacion</th>
+                </tr>
+            </thead>
+
+        {% if carrera_periodo_filtro %}
+            {% for periodo in carrera_periodo_filtro %}
+                {% if periodo.carnet_estudiante.codigo_carrera.nombre_carrera == carrera %}
+                    {% if fecha <= periodo.fecha_inicio|date:"Y-m-d"  %}
+        		    <tr class="etiqueta-tr">
+                        <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.carnet_estudiante}}</td>
+                        <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.carnet_estudiante.carnet_estudiante.nombre_estudiante }}</td>
+                        <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.carnet_estudiante.carnet_estudiante.apellido_estudiante }}</td>
+                        <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.fecha_inicio }}</td>
+                        <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.fecha_fin }}</td>
+                    </tr>
+                    {% endif %}                       
+                {% endif %}
+            {% endfor %}
+        {% endif %}   
+
+        </table>
+    </div>
+
+{% endblock %}

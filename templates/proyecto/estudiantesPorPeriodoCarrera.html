@@ -1,0 +1,110 @@
+{% extends 'base/base.html' %}
+{%block title%}
+Estudiantes por periodo y carrera
+{%endblock%}
+{% block content %}
+
+  <header>
+    <div class="container">
+
+        <h2 align="center" class="form-titulo" style ="margin-left: 5px;"></h2>
+        </br></br></br>
+        
+    </div>
+  </header>
+
+<div class="container">
+
+    <!-- Boton Buscar Texto -->
+   
+    <div align="center" class="busqueda">
+        <form method="POST" action="{% url 'sistemaGerencialAgro:filtrar_periodo_carrera' %}">
+            {% csrf_token %} 
+            <input name="fecha"  id = "date" onfocus="(this.type='date')" class = "form-control col-4 col-sm-3 input-style input-lg" placeholder="Selecciona la Fecha Inicial del filtro." maxlength="7">
+            
+            <select name="carrera" class="form-control col-4 col-sm-3 input-style input-lg" title="Selecciona la carrera por favor" required>
+                <option select value="Carrera">Elegir carrera</option>
+                    {% if carreras %}
+                        {% for carr in carreras %}
+                            <option value="{{ carr.nombre_carrera}}">{{ carr.nombre_carrera}} </option>
+                        {% endfor %}
+                {% endif %}
+                </option>  
+            </select>
+            </br></br>
+
+            <input class="btn-buscar btn-busqueda" type = "submit" value = "Buscar" id = "fechaBuscar" required></br></br>
+               
+        </form>
+    </div> 
+    
+    {% if carrera %}
+        <div align="center" class="busqueda">
+            {% if fecha == '' %}
+                <input class="btn-buscar btn-busqueda" type = "submit" value = "Imprimir PDF" id = "ImprimirPDF" onclick="window.location.href='{% url 'sistemaGerencialAgro:reporte_carrera_periodo_uno' carrera %}'">
+            {% endif %}
+
+            {% if fecha != '' %}
+                <input class="btn-buscar btn-busqueda" type = "submit" value = "Imprimir PDF" id = "ImprimirPDF" onclick="window.location.href='{% url 'sistemaGerencialAgro:reporte_carrera_periodo_dos' fecha carrera %}'">
+            {% endif %}
+
+            {% if fecha == '' %}
+                <input class="btn-buscar btn-busqueda" type = "submit" value = "Exportar CSV" id = "ExportarCSV" onclick="window.location.href='{% url 'sistemaGerencialAgro:exportar_carrera_periodo_uno' carrera %}'">    
+            {% endif %}
+
+            
+            {% if fecha != '' %}
+                <input class="btn-buscar btn-busqueda" type = "submit" value = "Exportar CSV" id = "ExportarCSV" onclick="window.location.href='{% url 'sistemaGerencialAgro:exportar_carrera_periodo_dos' fecha carrera %}'">    
+            {% endif %}
+
+    {% endif %}
+    
+    
+
+    </br></br>
+
+        <table>
+            <thead>
+        	   <tr>
+                    <th>Carnet</th>
+            		<th>Nombre</th>
+                    <th>Apellido</th>
+            	    <th>Fecha de inicio</th>
+            	    <th>Fecha de finalizacion</th>
+        		</tr>
+            </thead>
+
+        {% if carrera_periodo_filtro %}
+            {% for periodo in carrera_periodo_filtro %}
+                {% if periodo.carnet_estudiante.codigo_carrera.nombre_carrera == carrera %}
+                    {% if fecha <= periodo.fecha_inicio|date:"Y-m-d"  %}
+        		    <tr class="etiqueta-tr">
+                        <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.carnet_estudiante}}</td>
+                        <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.carnet_estudiante.carnet_estudiante.nombre_estudiante }}</td>
+                        <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.carnet_estudiante.carnet_estudiante.apellido_estudiante }}</td>
+                        <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.fecha_inicio }}</td>
+                        <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.fecha_fin }}</td>
+                    </tr>
+                    {% endif %}                       
+                {% endif %}
+            {% endfor %}
+                 
+
+
+        {% elif consulta_carrera%}
+            {% for periodo in consulta_carrera %}
+                <tr class="etiqueta-tr">
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.carnet_estudiante}}</td>
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.carnet_estudiante.carnet_estudiante.nombre_estudiante }}</td>
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.carnet_estudiante.carnet_estudiante.apellido_estudiante }}</td>
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.fecha_inicio }}</td>
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.fecha_fin }}</td>
+                </tr>
+            {% endfor %}
+        {% endif %}     
+
+    	</table>
+    </div>
+</br></br>
+
+{% endblock %}

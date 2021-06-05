@@ -104,9 +104,9 @@
         <li class="list-group-item menu-has-children"><a style="text-decoration:none" href="#intro">Reportes Gerenciales</a>
           <ul>
             <li><a href = "{% url 'sistemaGerencialAgro:listar_servicios' %}">Estudiantes en Servicio Social por Modalidad</a></li>
-             
-            <li><a href = "">Estudiantes en Servicio Social por Carrera</a></li>
-            
+
+            <li><a href = "{% url 'sistemaGerencialAgro:consulta_periodo_carrera' %}">Estudiantes en Servicio Social por Carrera</a></li>
+           
             <li><a href = "{% url 'sistemaGerencialAgro:consulta_estudiante_docente' %}">Docentes Tutores de Servicio Social</a></li>
           </ul>
         </li>
