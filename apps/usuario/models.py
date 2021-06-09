@@ -4,8 +4,8 @@ from apps.usuario.models import *
 
 roles=[
     ('ADM', 'Administrador'),
-    ('EST', 'Estudiante'),
-    ('DOC', 'Profesor')
+    ('GER', 'Gerente'),
+    ('TAC', 'Táctico')
 ]
 
 class UsuarioManager(BaseUserManager):

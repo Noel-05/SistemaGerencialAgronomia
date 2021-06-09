@@ -1,8 +1,13 @@
 {% extends 'base/base.html' %}
+{% load static %}
+
 {%block title%}
 Estudiantes por modalidad
 {%endblock%}
 {% block content %}
+
+{% if user.is_authenticated %}
+    {% if request.user.rol == 'ADM' or request.user.rol == 'GER' %}
 
   <header>
     <div class="container">
@@ -87,6 +92,22 @@ Estudiantes por modalidad
     <div id = "popup"> 
   
 </div>
+    {% endif %}
+
+    {% if request.user.rol == 'TAC' %}
+
+        <div class="container">
+            
+            <h2 align="center" class="form-titulo" style ="margin-left: 5px;"><strong>No posee permisos para visualizar esta pantalla.</strong> </h2>
+
+            <img src="{% static 'img/error.gif' %}">
+            
+        </div>        
+
+
+    {% endif %}    
+
+{% endif %}
 
 {% endblock %}
 

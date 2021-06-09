@@ -1,88 +1,105 @@
 {% extends 'base/base.html' %}
+{% load static %}
 
 {%block title%}
 ETL - Actualizar Base de Datos
 {%endblock%}
 
 {% block content %}
+{% if user.is_authenticated %}
+    {% if request.user.rol == 'ADM' %}
+    
+      <header>
+        <div class="container">
+            
+            </br>
+            <h2 align="center" class="form-titulo" style ="margin-left: 5px;">Procedimiento ETL </br>Actualizar Base de Datos Gerencial.</h2>
+            </br></br></br>
+            
+        </div>
+      </header>
 
-  <header>
     <div class="container">
+
+        {% if mensaje %}
+            </br>
+            <h3> <strong><i> {{ mensaje }} </i></strong> </h3>
         
-        </br>
-        <h2 align="center" class="form-titulo" style ="margin-left: 5px;">Procedimiento ETL </br>Actualizar Base de Datos Gerencial.</h2>
-        </br></br></br>
+        {% else %}
         
-    </div>
-  </header>
+            </br>
+            <h4>Para comenzar con el procedimiento de Extracción, Transformaci&oacute;n y Carga</br> de los datos de la Base de Datos Transaccional a la Base de Datos Gerencial, </br> porfavor presione el bot&oacute;n <strong>Comenzar ETL</strong> </h4>
+            </br>
 
-<div class="container">
+            <a><input class = "btn-buscar btn-busqueda"  type="button" data-toggle="modal" data-target="#modalETL" value="Comenzar ETL"></a>
+            </br>
+        
+        {% endif %}
 
-    {% if mensaje %}
-        </br>
-        <h3> <strong><i> {{ mensaje }} </i></strong> </h3>
-    
-    {% else %}
-    
-        </br>
-        <h4>Para comenzar con el procedimiento de Extracción, Transformaci&oacute;n y Carga</br> de los datos de la Base de Datos Transaccional a la Base de Datos Gerencial, </br> porfavor presione el bot&oacute;n <strong>Comenzar ETL</strong> </h4>
-        </br>
-
-        <a><input class = "btn-buscar btn-busqueda"  type="button" data-toggle="modal" data-target="#modalETL" value="Comenzar ETL"></a>
-        </br>
-    
-    {% endif %}
-
-    <!-- Modal -->
-    <div class="modal fade" id="modalETL" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle"><strong>Comenzar Proceso ETL</strong></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <h4>Una vez comenzado el Proceso ETL no se podr&aacute; realizar ninguna otra acci&oacute;n en el sistema hasta que finalice el proceso.</h4>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary btn-sm tableButton" data-dismiss="modal" style="border-color:red; background-color:red"> Cancelar </button>
-                    <button type="button" class="btn btn-primary btn-sm tableButton" onclick="location.href='{% url 'sistemaGerencialAgro:procesoETL' user.username %}'" style="border-color:green; background-color:green;"> Comenzar </button>
+        <!-- Modal -->
+        <div class="modal fade" id="modalETL" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle"><strong>Comenzar Proceso ETL</strong></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h4>Una vez comenzado el Proceso ETL no se podr&aacute; realizar ninguna otra acci&oacute;n en el sistema hasta que finalice el proceso.</h4>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary btn-sm tableButton" data-dismiss="modal" style="border-color:red; background-color:red"> Cancelar </button>
+                        <button type="button" class="btn btn-primary btn-sm tableButton" onclick="location.href='{% url 'sistemaGerencialAgro:procesoETL' user.username %}'" style="border-color:green; background-color:green;"> Comenzar </button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    </br></br>
-    <h2 align="center" class="form-titulo" style ="margin-left: 5px;">B&iacute;tacora de acciones ETL.</h2>
-    </br></br></br>
+        </br></br>
+        <h2 align="center" class="form-titulo" style ="margin-left: 5px;">B&iacute;tacora de acciones ETL.</h2>
+        </br></br></br>
 
-    <div>
-        <table>
-            <thead>
-        	   <tr>
-                    <th>Usuario Responsable</th>
-            		<th>Fecha de Realizaci&oacute;n</th>
-                    <th>Hora de Realizaci&oacute;n</th>
-                    <th>Descripcion</th>
-        		</tr>
-            </thead>
+        <div>
+            <table>
+                <thead>
+            	   <tr>
+                        <th>Usuario Responsable</th>
+                		<th>Fecha de Realizaci&oacute;n</th>
+                        <th>Hora de Realizaci&oacute;n</th>
+                        <th>Descripcion</th>
+            		</tr>
+                </thead>
 
-            {% if bitacora %}
-            {% for bi in bitacora %}
-        		<tr class="etiqueta-tr">
-                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ bi.usuario }}</td>
-            		<td class="th-borde width-th-xx" style = "text-align:center;">{{ bi.fecha_modificacion }}</td>
-                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ bi.hora_modificacion }}</td>
-            		<td class="th-borde width-th-xx" style = "text-align:center;">{{ bi.descripcion }}</td>
-        		</tr>
-            {% endfor %}
-            {% endif %}     
+                {% if bitacora %}
+                {% for bi in bitacora %}
+            		<tr class="etiqueta-tr">
+                        <td class="th-borde width-th-xx" style = "text-align:center;">{{ bi.usuario }}</td>
+                		<td class="th-borde width-th-xx" style = "text-align:center;">{{ bi.fecha_modificacion }}</td>
+                        <td class="th-borde width-th-xx" style = "text-align:center;">{{ bi.hora_modificacion }}</td>
+                		<td class="th-borde width-th-xx" style = "text-align:center;">{{ bi.descripcion }}</td>
+            		</tr>
+                {% endfor %}
+                {% endif %}     
 
-    	</table>
-    </div>
-    </br></br></br>
+        	</table>
+        </div>
+        </br></br></br>
+    {% endif %}
+
+    {% if request.user.rol == 'GER' or request.user.rol == 'TAC' %}
+
+        <div class="container">
+            
+            <h2 align="center" class="form-titulo" style ="margin-left: 5px;"><strong>No posee permisos para visualizar esta pantalla.</strong> </h2>
+
+            <img src="{% static 'img/error.gif' %}">
+            
+        </div>        
 
 
+    {% endif %}    
+
+{% endif %}
 {% endblock %}

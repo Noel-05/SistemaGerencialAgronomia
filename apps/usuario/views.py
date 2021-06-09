@@ -71,7 +71,7 @@ Clase para listar los usuarios del sistema.
 @return     retorna la lista de los usuarios del sistema.
 @author     Roberto Paz
 """
-class ListadoUsuario(LoginPAMixin, ListView):
+class ListadoUsuario(LoginAMixin, ListView):
     model=Usuario
 
     def get_queryset(self):

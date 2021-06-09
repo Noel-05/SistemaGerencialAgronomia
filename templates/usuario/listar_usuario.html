@@ -10,7 +10,8 @@ Listado de Usuarios
 {% endblock extra_css %}
 
 {% block content %}
-
+{% if user.is_authenticated %}
+    {% if request.user.rol == 'ADM' %}
     <div class="container" align="center">
 
         <font face="small fonts" size="10" color="#049286">
@@ -45,6 +46,22 @@ Listado de Usuarios
 
         </div>
     </div>
+    {% endif %}
+
+    {% if request.user.rol == 'GER' or request.user.rol == 'TAC' %}
+
+        <div class="container">
+            
+            <h2 align="center" class="form-titulo" style ="margin-left: 5px;"><strong>No posee permisos para visualizar esta pantalla.</strong> </h2>
+
+            <img src="{% static 'img/error.gif' %}">
+            
+        </div>        
+
+
+    {% endif %}    
+
+{% endif %}
 
 <div class="modal fade" tabindex="-1" id="creacion" role="dialog"></div>
 <div class="modal fade" tabindex="-1" id="edicion" role="dialog"></div>

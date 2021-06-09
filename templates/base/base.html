@@ -62,6 +62,8 @@
 
 </head>
 
+{% if user.is_authenticated %}
+
 <body>
 
   <header id="header">
@@ -101,6 +103,7 @@
           </ul>
         </li>
 
+        {% if request.user.rol == 'ADM' or request.user.rol == 'GER' %}
         <li class="list-group-item menu-has-children"><a style="text-decoration:none" href="#intro">Reportes Gerenciales</a>
           <ul>
             <li><a href = "{% url 'sistemaGerencialAgro:listar_servicios' %}">Estudiantes en Servicio Social por Modalidad</a></li>
@@ -110,13 +113,15 @@
             <li><a href = "{% url 'sistemaGerencialAgro:consulta_estudiante_docente' %}">Docentes Tutores de Servicio Social</a></li>
           </ul>
         </li>
+        {% endif %}
 
+        {% if request.user.rol == 'ADM'%}
         <li class="list-group-item" onclick="window.location.href='{% url 'sistemaGerencialAgro:procedimientoETL' %}'"><a style="text-decoration:none" href="{% url 'sistemaGerencialAgro:procedimientoETL' %}">Actualizar BD</a></li>
 
         {% comment %} <li class="list-group-item" onclick="window.location.href='{% url 'sistemaGerencialAgro:actualizarBD' %}'"><a style="text-decoration:none" href="{% url 'sistemaGerencialAgro:actualizarBD' %}">Actualizar BD Ej.</a></li> {% endcomment %}
 
         <li class="list-group-item" onclick="window.location.href='{% url 'usuario:inicio_usuarios' %}'"><a style="text-decoration:none" href="{% url 'usuario:inicio_usuarios' %}">Usuarios</a></li>
-
+        {% endif %}
 
       </ul>
     </div>
@@ -139,4 +144,5 @@
 
 </body>
 
+{% endif %}
 </html>
