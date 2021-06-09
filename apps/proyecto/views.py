@@ -878,7 +878,7 @@ def exportarEstudiantesPorGenero(request,sexo):
 
     return response
 
-    """
+"""
 Función para recuperar y mostrar el listado de servicios sociales 
 @param      una solicitud de petición (request)
 @return     retorna el template EstudiantesPorModalidad.html con el diccionario detallado en la descripción.
@@ -1093,11 +1093,11 @@ solicitudes por estado
 """
 def consultaSolicitud(request):
 
-    #estudiante_list=Estudiante.objects.order_by('carnet_estudiante')
+    
     estado_solicitud=EstadoSolicitud.objects.order_by('carnet_estudiante')
     
     context = {
-        #'estudiante_list': estudiante_list,
+        
         'estado_solicitud':estado_solicitud,
     }
 
@@ -1117,6 +1117,7 @@ def consultaEstudiantesSolicitudAprobada(request):
     if request.method == 'POST':
         estado = request.POST['estado']
 
+        # Se usa doble subrayado para que funcione como el "." en el template (osea un join)
         estado_solicitud_filtro = EstadoSolicitud.objects.filter(aceptado = estado)
         context = {
             'estado_solicitud_filtro': estado_solicitud_filtro,
@@ -1214,7 +1215,7 @@ por periodo
 
 def consultaEstudiantesPeriodo(request):
 
-    #estudiante_list=Estudiante.objects.order_by('carnet_estudiante')
+
     consulta_periodo=Solicitud.objects.order_by('carnet_estudiante')
     
     context = {
@@ -1236,6 +1237,7 @@ Función para realizar el filtro correspondiente del servicio social por periodo
 
 def consultaEstudiantesServSocialPeriodo(request):
     if request.method == 'POST':
+        # Se usa doble subrayado para que funcione como el "." en el template (osea un join)
         fecha = request.POST['fechaInicio']
         periodo_servicio_filtro = Solicitud.objects.filter(fecha_inicio = fecha)
         fecha = request.POST['fechaFin']
@@ -1343,12 +1345,9 @@ def consultaEstudiantesCarrera(request):
 
     carreras = Carrera.objects.all()
     consulta_carrera=Solicitud.objects.order_by('carnet_estudiante')
-
-    # Se usa doble subrayado para que funcione como el "." en el template (osea un join)
-    #proyectos_departamento = ServicioSocial.objects.order_by('carnet_estudiante__carnet_estudiante__codigo_carrera__departamento')
     
     context = {
-        #'proyectos_departamento': proyectos_departamento,
+    
         'carreras': carreras,
         'consulta_carrera': consulta_carrera,
     }
@@ -1370,7 +1369,7 @@ def consultaEstudiantesCarreraPeriodo(request):
     if request.method == 'POST':
         fecha = request.POST['fecha']
         carrera = request.POST['carrera']
-
+        # Se usa doble subrayado para que funcione como el "." en el template (osea un join)
         carrera_periodo_filtro = Solicitud.objects.filter(carnet_estudiante__codigo_carrera__nombre_carrera = carrera)
         
         carreras = Carrera.objects.all()
