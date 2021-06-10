@@ -1321,16 +1321,22 @@ def exportarEstudiantesServSocialPeriodo(request, fecha_inicio, fecha_fin):
     # Sheet body, remaining rows
     font_style = xlwt.XFStyle()
 
-    periodo_servicio_filtro = Solicitud.objects.filter(fecha_inicio = fecha_inicio)
-    periodo_servicio_filtro = Solicitud.objects.filter(fecha_fin = fecha_fin)
+    periodo_servicio_filtro = Solicitud.objects.order_by('fecha_inicio')
+   
     
     for periodo in  periodo_servicio_filtro:
-        if fecha_inicio <= periodo.fecha_inicio and fecha_fin >= periodo.fecha_inicio or fecha_inicio <= periodo.fecha_fin and fecha_fin >= periodo.fecha_fin:
-    
-            fecha_formato_inicio = datetime.strftime(periodo.fecha_inicio, '%Y-%m-%d')  # trasformar
-            fecha_formato_fin = datetime.strftime(periodo.fecha_fin, '%Y-%m-%d')  # trasformar
+
+
+        fecha_formato_inicio = datetime.strftime(periodo.fecha_inicio, '%Y-%m-%d')  # trasformar
+        fecha_formato_fin = datetime.strftime(periodo.fecha_fin, '%Y-%m-%d')  # trasformar
+
+        fecha_formato_inicio_i = datetime.strftime(periodo.fecha_inicio, '%Y-%m-%d')  # trasformar
+        fecha_formato_fin_i = datetime.strftime(periodo.fecha_fin, '%Y-%m-%d')  # trasformar
+
+        if fecha_inicio <= fecha_formato_inicio and fecha_fin >= fecha_formato_inicio or fecha_inicio <= fecha_formato_fin and fecha_fin >= fecha_formato_fin :
+            
             row_num += 1
-            row = [periodo.carnet_estudiante_id,periodo.carnet_estudiante.carnet_estudiante.nombre_estudiante,periodo.carnet_estudiante.carnet_estudiante.apellido_estudiante,fecha_formato_inicio,fecha_formato_fin]
+            row = [periodo.carnet_estudiante_id,periodo.carnet_estudiante.carnet_estudiante.nombre_estudiante,periodo.carnet_estudiante.carnet_estudiante.apellido_estudiante,fecha_formato_inicio_i,fecha_formato_fin_i]
             print(row)
             for col_num in range(len(row)):
                 ws.write(row_num, col_num, row[col_num], font_style)
