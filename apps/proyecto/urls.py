@@ -31,8 +31,8 @@ urlpatterns = [
     # Estudiantes en Servicio Social por Período.
     path('sistemaGerencialAgro/consultaServicioSocialPeriodo/', login_required(consultaEstudiantesPeriodo), name="consulta_periodo_servsocial"),
     path('sistemaGerencialAgro/filtroServicioSocialPeriodo/', login_required(consultaEstudiantesServSocialPeriodo), name="filtrar_periodo_servsocial"),
-    path('sistemaGerencialAgro/reporteServicioSocialPeriodo/<str:fecha>/', login_required(reporteEstudiantesServSocialPeriodo), name="reporte_periodo_servsocial"),
-    path('sistemaGerencialAgro/exportarServicioSocialPeriodo/<str:fecha>/', login_required(exportarEstudiantesServSocialPeriodo), name="exportar_periodo_servsocial"),
+    path('sistemaGerencialAgro/reporteServicioSocialPeriodo/<str:fecha_inicio>/<str:fecha_fin>', login_required(reporteEstudiantesServSocialPeriodo), name="reporte_periodo_servsocial"),
+    path('sistemaGerencialAgro/exportarServicioSocialPeriodo/<str:fecha_inicio>/<str:fecha_fin>', login_required(exportarEstudiantesServSocialPeriodo), name="exportar_periodo_servsocial"),
 
         # Estudiantes en Servicio Social por Porcentaje.
     path('sistemaGerencialAgro/porcentaje/', login_required(consultaEstudiantesPorcentajeCarrera), name="buscar_porcentaje"),

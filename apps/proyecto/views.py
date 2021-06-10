@@ -1238,13 +1238,19 @@ Función para realizar el filtro correspondiente del servicio social por periodo
 def consultaEstudiantesServSocialPeriodo(request):
     if request.method == 'POST':
         # Se usa doble subrayado para que funcione como el "." en el template (osea un join)
-        fecha = request.POST['fechaInicio']
-        periodo_servicio_filtro = Solicitud.objects.filter(fecha_inicio = fecha)
-        fecha = request.POST['fechaFin']
-        periodo_servicio_filtro = Solicitud.objects.filter(fecha_fin = fecha)
+        fecha_inicio = request.POST['fechaInicio']
+        fecha_fin = request.POST['fechaFin']
+        periodo_servicio_filtro = Solicitud.objects.order_by('fecha_inicio')
+
+        print(periodo_servicio_filtro)
+        print(fecha_inicio)
+        print(fecha_fin)
+
+
         context = {
             'periodo_servicio_filtro': periodo_servicio_filtro,
-            'fecha' : fecha,
+            'fecha_inicio' : fecha_inicio,
+            'fecha_fin' : fecha_fin,
 
         }
 
@@ -1261,15 +1267,17 @@ Función para realizar el PDF correspondiente con los datos recuperados a partir
 @author     Karla Abrego
 """        
 
-def reporteEstudiantesServSocialPeriodo(request, fecha):
+def reporteEstudiantesServSocialPeriodo(request, fecha_inicio, fecha_fin):
 
-    periodo_servicio_filtro = Solicitud.objects.filter(fecha_inicio = fecha)
-    periodo_servicio_filtro = Solicitud.objects.filter(fecha_fin = fecha)
+    periodo_servicio_filtro = Solicitud.objects.order_by('fecha_inicio')
+    
 
     template = get_template('reportes/ReporteServicioSocialPeriodo.html')
 
     context = {
         'periodo_servicio_filtro': periodo_servicio_filtro,
+        'fecha_inicio' : fecha_inicio, 
+        'fecha_fin' : fecha_fin,
 
     }
 
@@ -1292,7 +1300,7 @@ Función para realizar el CSV correspondiente con los datos recuperados a partir
 @author     Karla Abrego
 """   
 
-def exportarEstudiantesServSocialPeriodo(request, fecha):
+def exportarEstudiantesServSocialPeriodo(request, fecha_inicio, fecha_fin):
 
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="RT-ServicioSocialPorPeriodo.csv"'
@@ -1313,18 +1321,19 @@ def exportarEstudiantesServSocialPeriodo(request, fecha):
     # Sheet body, remaining rows
     font_style = xlwt.XFStyle()
 
-    periodo_servicio_filtro = Solicitud.objects.filter(fecha_inicio = fecha)
-    periodo_servicio_filtro = Solicitud.objects.filter(fecha_fin = fecha)
-
+    periodo_servicio_filtro = Solicitud.objects.filter(fecha_inicio = fecha_inicio)
+    periodo_servicio_filtro = Solicitud.objects.filter(fecha_fin = fecha_fin)
+    
     for periodo in  periodo_servicio_filtro:
-        fecha_formato = datetime.strftime(periodo.fecha_inicio, '%Y-%m-%d')  # trasformar
-        row_num += 1
-        fecha_formato_final = datetime.strftime(periodo.fecha_fin, '%Y-%m-%d')  # trasformar
-        row_num += 1
-        row = [periodo.carnet_estudiante_id,periodo.carnet_estudiante.carnet_estudiante.nombre_estudiante,periodo.carnet_estudiante.carnet_estudiante.apellido_estudiante,fecha_formato, fecha_formato_final]
-        
-        for col_num in range(len(row)):
-            ws.write(row_num, col_num, row[col_num], font_style)
+        if fecha_inicio <= periodo.fecha_inicio and fecha_fin >= periodo.fecha_inicio or fecha_inicio <= periodo.fecha_fin and fecha_fin >= periodo.fecha_fin:
+    
+            fecha_formato_inicio = datetime.strftime(periodo.fecha_inicio, '%Y-%m-%d')  # trasformar
+            fecha_formato_fin = datetime.strftime(periodo.fecha_fin, '%Y-%m-%d')  # trasformar
+            row_num += 1
+            row = [periodo.carnet_estudiante_id,periodo.carnet_estudiante.carnet_estudiante.nombre_estudiante,periodo.carnet_estudiante.carnet_estudiante.apellido_estudiante,fecha_formato_inicio,fecha_formato_fin]
+            print(row)
+            for col_num in range(len(row)):
+                ws.write(row_num, col_num, row[col_num], font_style)
 
     wb.save(response)
 
@@ -1491,7 +1500,6 @@ def exportarEstudianteCarreraPeriodo1(request,carrera):
     for periodo in  carrera_periodo_filtro:
         if periodo.carnet_estudiante.codigo_carrera.nombre_carrera == carrera:
             fecha_formato = datetime.strftime(periodo.fecha_inicio, '%Y-%m-%d')  # trasformar
-            row_num += 1
             fecha_formato_fin = datetime.strftime(periodo.fecha_fin, '%Y-%m-%d')  # trasformar
             row_num += 1
             row = [periodo.carnet_estudiante_id,periodo.carnet_estudiante.carnet_estudiante.nombre_estudiante,periodo.carnet_estudiante.carnet_estudiante.apellido_estudiante,fecha_formato,fecha_formato_fin]
@@ -1536,10 +1544,8 @@ def exportarEstudianteCarreraPeriodo2(request,fecha,carrera):
     for periodo in  carrera_periodo_filtro:
         if periodo.carnet_estudiante.codigo_carrera.nombre_carrera == carrera:
             fecha_formato = datetime.strftime(periodo.fecha_inicio, '%Y-%m-%d')  # trasformar
-            if fecha <= fecha_formato:
-                row_num += 1
             fecha_formato_fin = datetime.strftime(periodo.fecha_fin, '%Y-%m-%d')  # trasformar
-            if fecha <= fecha_formato_fin:
+            if fecha <= fecha_formato and fecha <= fecha_formato_fin:
                 row_num += 1
             row = [periodo.carnet_estudiante_id,periodo.carnet_estudiante.carnet_estudiante.nombre_estudiante,periodo.carnet_estudiante.carnet_estudiante.apellido_estudiante,fecha_formato,fecha_formato_fin]
             

@@ -20,17 +20,18 @@
             </thead>
 
             {% if periodo_servicio_filtro %}
-
-            {% for  periodo in periodo_servicio_filtro %}
-        		<tr class="etiqueta-tr">
-                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.carnet_estudiante}}</td>
-            		<td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.carnet_estudiante.carnet_estudiante.nombre_estudiante}}</td>
-                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.carnet_estudiante.carnet_estudiante.apellido_estudiante }}</td>
-            		<td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.fecha_inicio }}</td>
-                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.fecha_fin }}</td>
-        		</tr>
-            {% endfor %}
-            {% endif %}      
+                {% for  periodo in periodo_servicio_filtro %}
+                    {% if fecha_inicio <= periodo.fecha_inicio|date:"Y-m-d" and fecha_fin >= periodo.fecha_inicio|date:"Y-m-d" or fecha_inicio <= periodo.fecha_fin|date:"Y-m-d" and fecha_fin >= periodo.fecha_fin|date:"Y-m-d" %}
+                        <tr class="etiqueta-tr">
+                            <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.carnet_estudiante}}</td>
+                            <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.carnet_estudiante.carnet_estudiante.nombre_estudiante}}</td>
+                            <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.carnet_estudiante.carnet_estudiante.apellido_estudiante }}</td>
+                            <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.fecha_inicio }}</td>
+                            <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.fecha_fin }}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}    
 
         </table>
     </div>

@@ -19,18 +19,18 @@ Estudiantes por periodo
     <div align="center" class="busqueda">
         <form method="POST" action="{% url 'sistemaGerencialAgro:filtrar_periodo_servsocial' %}">
             {% csrf_token %} 
-            <input type="date" name="fechaInicio"  id = "fecha" class = "input-style" placeholder="Porfavor Seleccione la Fecha de inicio." maxlength="7" required>
-            <input type="date" name="fechaFin"  id = "fecha" class = "input-style" placeholder="Porfavor Seleccione la Fecha de Fin." maxlength="7" required>
+            <input type="date" name="fechaInicio"  id = "fecha1" class = "input-style" placeholder="Porfavor Seleccione la Fecha de inicio." maxlength="7" required>
+            <input type="date" name="fechaFin"  id = "fecha2" class = "input-style" placeholder="Porfavor Seleccione la Fecha de Fin." maxlength="7" required>
             </br></br>
             <input class="btn-buscar btn-busqueda" type = "submit" value = "Buscar" id = "fechaBuscar"></br></br>
         </form>
         
     </div>
 
-    {% if fecha %}
+    {% if fecha_inicio and fecha_fin %}
         <div align="center" class="busqueda">
-            <input class="btn-buscar btn-busqueda" type = "submit" value = "Imprimir PDF" id = "ImprimirPDF" onclick="window.location.href='{% url 'sistemaGerencialAgro:reporte_periodo_servsocial' fecha %}'">
-            <input class="btn-buscar btn-busqueda" type = "submit" value = "Exportar CSV" id = "ExportarCSV" onclick="window.location.href='{% url 'sistemaGerencialAgro:exportar_periodo_servsocial' fecha %}'">
+            <input class="btn-buscar btn-busqueda" type = "submit" value = "Imprimir PDF" id = "ImprimirPDF" onclick="window.location.href='{% url 'sistemaGerencialAgro:reporte_periodo_servsocial' fecha_inicio fecha_fin %}'">
+            <input class="btn-buscar btn-busqueda" type = "submit" value = "Exportar CSV" id = "ExportarCSV" onclick="window.location.href='{% url 'sistemaGerencialAgro:exportar_periodo_servsocial' fecha_inicio fecha_fin %}'">
            
         </div>
     {% endif %}    
@@ -51,35 +51,35 @@ Estudiantes por periodo
         		</tr>
             </thead>
 
-        {% if periodo_servicio_filtro %}
+            {% if periodo_servicio_filtro %}
+                {% for  periodo in periodo_servicio_filtro %}
+                    {% if fecha_inicio <= periodo.fecha_inicio|date:"Y-m-d" and fecha_fin >= periodo.fecha_inicio|date:"Y-m-d" or fecha_inicio <= periodo.fecha_fin|date:"Y-m-d" and fecha_fin >= periodo.fecha_fin|date:"Y-m-d" %}
+                        <tr class="etiqueta-tr">
+                            <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.carnet_estudiante}}</td>
+                            <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.carnet_estudiante.carnet_estudiante.nombre_estudiante}}</td>
+                            <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.carnet_estudiante.carnet_estudiante.apellido_estudiante }}</td>
+                            <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.fecha_inicio }}</td>
+                            <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.fecha_fin }}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+                
 
-            {% for  periodo in periodo_servicio_filtro %}
-        		<tr class="etiqueta-tr">
-                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.carnet_estudiante}}</td>
-            		<td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.carnet_estudiante.carnet_estudiante.nombre_estudiante}}</td>
-                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.carnet_estudiante.carnet_estudiante.apellido_estudiante }}</td>
-            		<td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.fecha_inicio }}</td>
-                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.fecha_fin }}</td>
-        		</tr>
-            {% endfor %}
-        
+            {% elif consulta_periodo %}
+                {% for periodo in consulta_periodo %}
+                        <tr class="etiqueta-tr">
+                            <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.carnet_estudiante}}</td>
+                            <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.carnet_estudiante.carnet_estudiante.nombre_estudiante}}</td>
+                            <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.carnet_estudiante.carnet_estudiante.apellido_estudiante }}</td>
+                            <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.fecha_inicio }}</td>
+                            <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.fecha_fin }}</td>
+                        </tr>
+                {% endfor %}
+            {% endif %}     
 
-        {% elif consulta_periodo %}
-
-            {% for periodo in consulta_periodo %}
-                <tr class="etiqueta-tr">
-                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.carnet_estudiante}}</td>
-                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.carnet_estudiante.carnet_estudiante.nombre_estudiante}}</td>
-                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.carnet_estudiante.carnet_estudiante.apellido_estudiante }}</td>
-                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.fecha_inicio }}</td>
-                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.fecha_fin }}</td>
-                </tr>
-            {% endfor %}
-        {% endif %}     
-
-    	</table>
+        </table>
     </div>
-</br></br>
+    </br></br>
 
 {% endblock %}
 
