@@ -1307,8 +1307,8 @@ def exportarEstudiantesServSocialPeriodo(request, fecha_inicio, fecha_fin):
         fecha_formato_inicio = datetime.strftime(periodo.fecha_inicio, '%Y-%m-%d')  # trasformar
         fecha_formato_fin = datetime.strftime(periodo.fecha_fin, '%Y-%m-%d')  # trasformar
 
-        fecha_formato_inicio_i = datetime.strftime(periodo.fecha_inicio, '%Y-%m-%d')  # trasformar
-        fecha_formato_fin_i = datetime.strftime(periodo.fecha_fin, '%Y-%m-%d')  # trasformar
+        fecha_formato_inicio_i = datetime.strftime(periodo.fecha_inicio, '%d-%m-%Y')  # trasformar
+        fecha_formato_fin_i = datetime.strftime(periodo.fecha_fin, '%d-%m-%Y')  # trasformar
 
         if fecha_inicio <= fecha_formato_inicio and fecha_fin >= fecha_formato_inicio or fecha_inicio <= fecha_formato_fin and fecha_fin >= fecha_formato_fin :
             

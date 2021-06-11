@@ -158,6 +158,26 @@ class FormularioUsuario(forms.ModelForm):
 			raise forms.ValidationError('Su contraseña debe de contener al menos una letra mayúscula y una minúscula, un número, un carácter especial, y contener entre 8 y 16 caracteres')
 		return password2
 
+	def clean_nombres(self):
+		nombres=self.cleaned_data.get('nombres')
+		regex = re.compile('^[A-Za-zÁÉÍÓÚáéíóúñÑüÜ ]+$')
+
+		if not regex.match(nombres):
+			raise forms.ValidationError('Los nombres no deben contener, caracteres especiales, ni números')		
+		if not 2 <= len(nombres) <= 100:
+			raise forms.ValidationError('Los nombres deben de contener mas caracteres')
+		return nombres
+
+	def clean_apellidos(self):
+		apellidos=self.cleaned_data.get('apellidos')
+		regex = re.compile('^[A-Za-zÁÉÍÓÚáéíóúñÑüÜ ]+$')
+
+		if not regex.match(apellidos):
+			raise forms.ValidationError('Los apellidos no deben contener, caracteres especiales, ni números')		
+		if not 2 <= len(apellidos) <= 100:
+			raise forms.ValidationError('Los apellidos deben de contener mas caracteres')
+		return apellidos
+
 	def save(self, commit=True):
 		user=super().save(commit=False)
 		user.set_password(self.cleaned_data['password1'])
@@ -196,6 +216,26 @@ class FormularioUsuarioEditar(forms.ModelForm):
 				}
 			)
 		}
+
+	def clean_nombres(self):
+		nombres=self.cleaned_data.get('nombres')
+		regex = re.compile('^[A-Za-zÁÉÍÓÚáéíóúñÑüÜ ]+$')
+
+		if not regex.match(nombres):
+			raise forms.ValidationError('Los nombres no deben contener, caracteres especiales, ni números')		
+		if not 2 <= len(nombres) <= 100:
+			raise forms.ValidationError('Los nombres deben de contener mas caracteres')
+		return nombres
+
+	def clean_apellidos(self):
+		apellidos=self.cleaned_data.get('apellidos')
+		regex = re.compile('^[A-Za-zÁÉÍÓÚáéíóúñÑüÜ ]+$')
+
+		if not regex.match(apellidos):
+			raise forms.ValidationError('Los apellidos no deben contener, caracteres especiales, ni números')		
+		if not 2 <= len(apellidos) <= 100:
+			raise forms.ValidationError('Los apellidos deben de contener mas caracteres')
+		return apellidos
 
 	def save(self, commit=True):
 		user=super().save(commit=False)
