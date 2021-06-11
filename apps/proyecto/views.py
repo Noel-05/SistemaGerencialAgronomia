@@ -733,7 +733,7 @@ def reporteEstudiantesPorcentajeCarrera(request, porcentaje):
     html = template.render(context)
         
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="RT-EstudiantesPorPorcentaje.pdf"'
+    response['Content-Disposition'] = 'inline; filename="RT-EstudiantesPorPorcentaje.pdf"'
         
     pisa_status = pisa.CreatePDF(html, dest=response)
         
@@ -831,7 +831,7 @@ def  reporteEstudiantesPorGenero(request,sexo):
     html = template.render(context)
         
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="RT-EstudiantesPorGenero.pdf"'
+    response['Content-Disposition'] = 'inline; filename="RT-EstudiantesPorGenero.pdf"'
         
     pisa_status = pisa.CreatePDF(html, dest=response)
         
@@ -903,41 +903,20 @@ def  consultaEstudiantesPorModalidad(request):
     modalidad = request.POST['modalidad']
     fecha = request.POST['fecha']
         
-    if modalidad != "" and fecha != "":
-        estudiantes = Solicitud.objects.all()
-            
-        return render(
-                request,
-                'proyecto/EstudiantesPorModalidad.html',
-                {'estudiantes':estudiantes,'modalidad':modalidad,'fecha':fecha}
-            )
+    # Se usa doble subrayado para que funcione como el "." en el template (osea un join)
+    modalidad_filtro = ServicioSocial.objects.filter(carnet_estudiante__modalidad=modalidad)
 
-    elif modalidad != "":
-            servicios = ServicioSocial.objects.filter(carnet_estudiante__modalidad=modalidad)
-            
-            return render(
-                request,
-                'proyecto/EstudiantesPorModalidad.html',
-                {'servicios':servicios,'modalidad':modalidad,'fecha':fecha}
-            )
+    context = {
+        'modalidad_filtro': modalidad_filtro,
+        'fecha': fecha,
+        'modalidad': modalidad,
+    }
 
-    elif fecha != "":
-            servicios = ServicioSocial.objects.filter(carnet_estudiante__fecha_inicio=fecha)
-            
-            return render(
-                request,
-                'proyecto/EstudiantesPorModalidad.html',
-                {'servicios':servicios,'modalidad':modalidad,'fecha':fecha}
-            )
-
-    else:
-            estudiantes = Solicitud.objects.all()
-            
-            return render(
-                request,
-                'proyecto/EstudiantesPorModalidad.html',
-                {'estudiantes':estudiantes,'modalidad':modalidad,'fecha':fecha}
-            )
+    return render(
+        request,
+        'proyecto/EstudiantesPorModalidad.html', 
+        context,
+    )
 
 """Función para realizar el PDF correspondiente con los datos recuperados a partir del filtro.
 @param      una solicitud de petición (request) y el modalidad para filtrar en la sentencia SQL.
@@ -975,23 +954,21 @@ def reporteEstudiantesPorModalidad(request, modalidad):
 """
 
 def  reporteEstudiantesPorModalidadFecha(request, modalidad,fecha):
-    services=[]
+    fecha_inicio=fecha
     servicios = ServicioSocial.objects.filter(carnet_estudiante__modalidad=modalidad)
-    for servicio in servicios:
-        if servicio.carnet_estudiante.fecha_inicio==fecha:
-            services.append(dict(servicio))
 
     template = get_template('reportes/ReporteModalidad.html')
         
     context = {
             'title':'Reporte de estudiantes por modalidad',
-            'services':services
+            'servicios':servicios,
+            'fecha_inicio':fecha_inicio,
         }
         
     html = template.render(context)
         
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="RG-EstudiantesPorModalidad.pdf"'
+    response['Content-Disposition'] = 'inline; filename="RG-EstudiantesPorModalidad.pdf"'
         
     pisa_status = pisa.CreatePDF(html, dest=response)
         

@@ -15,20 +15,19 @@
                 </tr>
             </thead>
 
-             {% if services%}
-                {% for servicio in services %}
+             {% if servicios %}
+                    {% for servicio in servicios %}
                     <tr class="etiqueta-tr">
-                     <td class="th-borde width-th-xx" style = "text-align:center;">{{ servicio.carnet_estudiante.modalidad}}</td>
+                     <td class="th-borde width-th-xx" style = "text-align:center;">
+                     {{servicio.carnet_estudiante.modalidad}}</td>
                     <td class="th-borde width-th-xx" style = "text-align:center;">{{ servicio.carnet_estudiante.carnet_estudiante.carnet_estudiante}}</td>
                     <td class="th-borde width-th-xx" style = "text-align:center;">{{ servicio.carnet_estudiante.carnet_estudiante.carnet_estudiante.nombre_estudiante}}</td>
                     <td class="th-borde width-th-xx" style = "text-align:center;">{{ servicio.carnet_estudiante.carnet_estudiante.carnet_estudiante.apellido_estudiante }}</td>
                     <td class="th-borde width-th-xx" style = "text-align:center;">{{ servicio.codigo_proyecto.codigo_proyecto }}</td>
                     <td class="th-borde width-th-xx" style = "text-align:center;">{{ servicio.carnet_estudiante.fecha_inicio }}</td>
-                    </tr>
-
-                {% endfor %}
-
-            {% endif %}     
+                    </tr>  
+                    {% endfor %}
+            {% endif %}    
 
 
         </table>
