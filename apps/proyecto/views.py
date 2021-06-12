@@ -704,7 +704,8 @@ Función para realizar el filtro correspondiente de los estudiantes por porcenta
 def consultaEstudiantesPorcentajeCarrera(request):
     if request.method == 'POST':
         porcentaje = request.POST['porcentaje']
-        estudios_universitarios = EstudioUniversitario.objects.filter(porc_carrerar_aprob=porcentaje)
+        estudios_universitarios = EstudioUniversitario.objects.all()
+        estudios_universitarios = estudios_universitarios.filter(porc_carrerar_aprob__gte=porcentaje)
 
     return render(
         request,
@@ -721,8 +722,7 @@ def consultaEstudiantesPorcentajeCarrera(request):
 @author     Elmer Huiza
 """
 def reporteEstudiantesPorcentajeCarrera(request, porcentaje):
-
-    estudios_universitarios = EstudioUniversitario.objects.filter(porc_carrerar_aprob=porcentaje)
+    estudios_universitarios = EstudioUniversitario.objects.filter(porc_carrerar_aprob__gte=porcentaje)
 
     template = get_template('reportes/ReportePorcentajeCarrera.html')
         
@@ -770,7 +770,8 @@ def exportarEstudiantesPorcentaje(request, porcentaje):
     # Sheet body, remaining rows
     font_style = xlwt.XFStyle()
 
-    estudios_universitarios = EstudioUniversitario.objects.filter(porc_carrerar_aprob=porcentaje)
+    estudios_universitarios = EstudioUniversitario.objects.all()
+    estudios_universitarios=estudios_universitarios.filter(porc_carrerar_aprob__gte=porcentaje)
 
     for estudio in estudios_universitarios:
         row_num += 1
@@ -954,15 +955,14 @@ def reporteEstudiantesPorModalidad(request, modalidad):
 """
 
 def  reporteEstudiantesPorModalidadFecha(request, modalidad,fecha):
-    fecha_inicio=fecha
-    servicios = ServicioSocial.objects.filter(carnet_estudiante__modalidad=modalidad)
+    servicios = ServicioSocial.objects.all()
+    servicios = servicios.filter(carnet_estudiante__modalidad=modalidad).filter(carnet_estudiante__fecha_inicio__gte=fecha)
 
     template = get_template('reportes/ReporteModalidad.html')
         
     context = {
             'title':'Reporte de estudiantes por modalidad',
             'servicios':servicios,
-            'fecha_inicio':fecha_inicio,
         }
         
     html = template.render(context)
@@ -1004,11 +1004,12 @@ def exportarEstudiantesPorModalidadFecha(request, fecha, modalidad):
     # Sheet body, remaining rows
     font_style = xlwt.XFStyle()
 
-    estudiantes = ServicioSocial.objects.filter(carnet_estudiante__modalidad=modalidad).filter(carnet_estudiante__fecha_inicio=fecha)
+    estudiantes = ServicioSocial.objects.filter(carnet_estudiante__modalidad=modalidad).filter(carnet_estudiante__fecha_inicio__gte=fecha)
 
     for estudiante in estudiantes:
         row_num += 1
-        row = [estudiante.carnet_estudiante.modalidad,estudiante.carnet_estudiante_id,estudiante.carnet_estudiante.carnet_estudiante.carnet_estudiante.nombre_estudiante,estudiante.carnet_estudiante.carnet_estudiante.carnet_estudiante.apellido_estudiante,estudiante.codigo_proyecto_id,estudiante.carnet_estudiante.fecha_inicio]
+        fecha_formato_inicio = datetime.strftime(estudiante.carnet_estudiante.fecha_inicio, '%Y-%m-%d') 
+        row = [estudiante.carnet_estudiante.modalidad,estudiante.carnet_estudiante_id,estudiante.carnet_estudiante.carnet_estudiante.carnet_estudiante.nombre_estudiante,estudiante.carnet_estudiante.carnet_estudiante.carnet_estudiante.apellido_estudiante,estudiante.codigo_proyecto_id,fecha_formato_inicio]
         
         for col_num in range(len(row)):
             ws.write(row_num, col_num, row[col_num], font_style)
@@ -1048,7 +1049,8 @@ def exportarEstudiantesPorModalidad(request,modalidad):
 
     for estudiante in estudiantes:
         row_num += 1
-        row = [estudiante.carnet_estudiante.modalidad,estudiante.carnet_estudiante_id,estudiante.carnet_estudiante.carnet_estudiante.carnet_estudiante.nombre_estudiante,estudiante.carnet_estudiante.carnet_estudiante.carnet_estudiante.apellido_estudiante,estudiante.codigo_proyecto_id,estudiante.carnet_estudiante.fecha_inicio]
+        fecha_formato_inicio = datetime.strftime(estudiante.carnet_estudiante.fecha_inicio, '%Y-%m-%d')
+        row = [estudiante.carnet_estudiante.modalidad,estudiante.carnet_estudiante_id,estudiante.carnet_estudiante.carnet_estudiante.carnet_estudiante.nombre_estudiante,estudiante.carnet_estudiante.carnet_estudiante.carnet_estudiante.apellido_estudiante,estudiante.codigo_proyecto_id,fecha_formato_inicio]
         
         for col_num in range(len(row)):
             ws.write(row_num, col_num, row[col_num], font_style)
