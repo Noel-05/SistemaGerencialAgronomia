@@ -870,7 +870,8 @@ def exportarEstudiantesPorGenero(request,sexo):
     estudiantes=Solicitud.objects.filter(carnet_estudiante__carnet_estudiante__sexo_estudiante=sexo)
     for estudiante in estudiantes:
         row_num += 1
-        row = [estudiante.carnet_estudiante.carnet_estudiante.sexo_estudiante,estudiante.carnet_estudiante_id,estudiante.carnet_estudiante.carnet_estudiante.nombre_estudiante,estudiante.carnet_estudiante.carnet_estudiante.apellido_estudiante,estudiante.modalidad,estudiante.fecha_inicio]
+        fecha_formato_inicio = datetime.strftime(estudiante.fecha_inicio, '%Y-%m-%d')
+        row = [estudiante.carnet_estudiante.carnet_estudiante.sexo_estudiante,estudiante.carnet_estudiante_id,estudiante.carnet_estudiante.carnet_estudiante.nombre_estudiante,estudiante.carnet_estudiante.carnet_estudiante.apellido_estudiante,estudiante.modalidad,fecha_formato_inicio]
         
         for col_num in range(len(row)):
             ws.write(row_num, col_num, row[col_num], font_style)
