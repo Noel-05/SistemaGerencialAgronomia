@@ -1,40 +1,58 @@
 {%block title%}
-<strong> Reporte de Estudiantes en Servicio Social a partir de un Periodo Determinado. </strong>
 {%endblock%}
 {% block content %}
 
 <div class="container">
+        
     <div>
+        <table>
+            <thead>
+                <tr>
+                    <th><img src="static/img/FondoUPS_Inicio.png" width="150" height="70"></th>
+                    <th>
+                        UNIVERSIDAD DE EL SALVADOR</br>
+                        FACULTAD DE CIENCIAS AGRONOMICAS</br>
+                        UNIDAD DE DESARROLLO ACADEMICO</br>
+                        UNIDAD DE PROYECCION SOCIAL</br>
+                    </th>
+                    <th><img src="static/img/logoUES.jpg" width="70" height="90"></th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+
+    <h3 align="center"><strong> Reporte de Estudiantes en Servicio Social a partir de un Periodo Determinado. </strong></h3>
 
     </br>
 
-        <table>
-            <thead>
-               <tr>
-                <th>Carnet</th>
-                <th>Nombre</th>
-                <th>Apellido</th>
-                <th>Fecha de inicio</th>
-                <th>Fecha de finalizacion</th>
-                </tr>
-            </thead>
+    <table>
+        <thead>
+            <tr>
+            <th>Carnet</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Fecha de inicio</th>
+            <th>Fecha de finalizacion</th>
+            </tr>
+        </thead>
 
-            {% if periodo_servicio_filtro %}
-                {% for  periodo in periodo_servicio_filtro %}
-                    {% if fecha_inicio <= periodo.fecha_inicio|date:"Y-m-d" and fecha_fin >= periodo.fecha_inicio|date:"Y-m-d" or fecha_inicio <= periodo.fecha_fin|date:"Y-m-d" and fecha_fin >= periodo.fecha_fin|date:"Y-m-d" %}
-                        <tr class="etiqueta-tr">
-                            <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.carnet_estudiante}}</td>
-                            <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.carnet_estudiante.carnet_estudiante.nombre_estudiante}}</td>
-                            <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.carnet_estudiante.carnet_estudiante.apellido_estudiante }}</td>
-                            <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.fecha_inicio }}</td>
-                            <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.fecha_fin }}</td>
-                        </tr>
-                    {% endif %}
-                {% endfor %}
-            {% endif %}    
+        {% if periodo_servicio_filtro %}
+            {% for  periodo in periodo_servicio_filtro %}
+                {% if fecha_inicio <= periodo.fecha_inicio|date:"Y-m-d" and fecha_fin >= periodo.fecha_inicio|date:"Y-m-d" or fecha_inicio <= periodo.fecha_fin|date:"Y-m-d" and fecha_fin >= periodo.fecha_fin|date:"Y-m-d" %}
+                    <tr class="etiqueta-tr">
+                        <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.carnet_estudiante}}</td>
+                        <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.carnet_estudiante.carnet_estudiante.nombre_estudiante}}</td>
+                        <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.carnet_estudiante.carnet_estudiante.apellido_estudiante }}</td>
+                        <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.fecha_inicio }}</td>
+                        <td class="th-borde width-th-xx" style = "text-align:center;">{{ periodo.fecha_fin }}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        {% endif %}    
 
-        </table>
-    </div>
+    </table>
+
+</div>
 
 {% endblock %}
 

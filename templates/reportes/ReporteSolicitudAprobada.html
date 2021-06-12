@@ -1,38 +1,59 @@
 {%block title%}
-<strong> Reporte de Solicitudes de Servicio Social Aprobadas. </strong>
 {%endblock%}
 {% block content %}
 
 <div class="container">
+        
     <div>
+        <table>
+            <thead>
+                <tr>
+                    <th><img src="static/img/FondoUPS_Inicio.png" width="150" height="70"></th>
+                    <th>
+                        UNIVERSIDAD DE EL SALVADOR</br>
+                        FACULTAD DE CIENCIAS AGRONOMICAS</br>
+                        UNIDAD DE DESARROLLO ACADEMICO</br>
+                        UNIDAD DE PROYECCION SOCIAL</br>
+                    </th>
+                    <th><img src="static/img/logoUES.jpg" width="70" height="90"></th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+
+    <h3 align="center"><strong> Reporte de Solicitudes de Servicio Social Aprobadas. </strong></h3>
 
     </br>
 
-        <table>
-            <thead>
-               <tr>
-                    <th>Carnet</th>
-                    <th>Nombre</th>
-                    <th>Apellido</th>
-                    <th>Estado</th>
-                    <th>Observaciones</th>
-                </tr>
-            </thead>
+    <table>
+        <thead>
+            <tr>
+                <th>Carnet</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Estado</th>
+                <th>Observaciones</th>
+            </tr>
+        </thead>
 
-            {% if estado_solicitud_filtro %}
-            {% for solapro in estado_solicitud_filtro %}
-                <tr class="etiqueta-tr">
-                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ solapro.carnet_estudiante}}</td>
-                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ solapro.carnet_estudiante.carnet_estudiante.carnet_estudiante.nombre_estudiante}}</td>
-                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ solapro.carnet_estudiante.carnet_estudiante.carnet_estudiante.apellido_estudiante }}</td>
-                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ solapro.aceptado }}</td>
+        {% if estado_solicitud_filtro %}
+        {% for solapro in estado_solicitud_filtro %}
+            <tr class="etiqueta-tr">
+                <td class="th-borde width-th-xx" style = "text-align:center;">{{ solapro.carnet_estudiante}}</td>
+                <td class="th-borde width-th-xx" style = "text-align:center;">{{ solapro.carnet_estudiante.carnet_estudiante.carnet_estudiante.nombre_estudiante}}</td>
+                <td class="th-borde width-th-xx" style = "text-align:center;">{{ solapro.carnet_estudiante.carnet_estudiante.carnet_estudiante.apellido_estudiante }}</td>
+                <td class="th-borde width-th-xx" style = "text-align:center;">{{ solapro.aceptado }}</td>
+                {% if not solapro.observaciones %}
+                    <td class="th-borde width-th-xx" style = "text-align:center;">-</td>
+                {% else %}
                     <td class="th-borde width-th-xx" style = "text-align:center;">{{ solapro.observaciones }}</td>
-                </tr>
-            {% endfor %}
-            {% endif %}     
+                {% endif %}
+            </tr>
+        {% endfor %}
+        {% endif %}     
 
-        </table>
-    </div>
+    </table>
+</div>
 
 {% endblock %}
 

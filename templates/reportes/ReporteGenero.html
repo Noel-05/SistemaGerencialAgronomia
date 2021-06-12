@@ -3,33 +3,55 @@
 {%endblock%}
 {% block content %}
 
-     <table>
+<div class="container">
+        
+    <div>
+        <table>
             <thead>
-        	   <tr>
-                    <th>Carnet</th>
-            		<th>Nombre</th>
-                    <th>Apellido</th>
-            	    <th>Sexo</th>
-            	    <th>Modalidad</th>
-                    <th>Fecha de inicio</th>
-        		</tr>
+                <tr>
+                    <th><img src="static/img/FondoUPS_Inicio.png" width="150" height="70"></th>
+                    <th>
+                        UNIVERSIDAD DE EL SALVADOR</br>
+                        FACULTAD DE CIENCIAS AGRONOMICAS</br>
+                        UNIDAD DE DESARROLLO ACADEMICO</br>
+                        UNIDAD DE PROYECCION SOCIAL</br>
+                    </th>
+                    <th><img src="static/img/logoUES.jpg" width="70" height="90"></th>
+                </tr>
             </thead>
-
-            {% if estudiantes %}
-            {% for estudiante in estudiantes %}
-        		<tr class="etiqueta-tr">
-                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ estudiante.carnet_estudiante }}</td>
-            		<td class="th-borde width-th-xx" style = "text-align:center;">{{ estudiante.carnet_estudiante.carnet_estudiante.nombre_estudiante}}</td>
-                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ estudiante.carnet_estudiante.carnet_estudiante.apellido_estudiante }}</td>
-            		<td class="th-borde width-th-xx" style = "text-align:center;">{{ estudiante.carnet_estudiante.carnet_estudiante.sexo_estudiante }}</td>
-                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ estudiante.modalidad }}</td>
-                     <td class="th-borde width-th-xx" style = "text-align:center;">{{ estudiante.fecha_inicio }}</td>
-        		</tr>
-            {% endfor %}
-            {% endif %}     
-
-    	</table>
+        </table>
     </div>
+
+    <h3 align="center"><strong> Reporte de Estudiantes en Servicio Social por Genero. </strong></h3>
+
+    </br>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Carnet</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Sexo</th>
+                <th>Modalidad</th>
+                <th>Fecha de inicio</th>
+            </tr>
+        </thead>
+
+        {% if estudiantes %}
+        {% for estudiante in estudiantes %}
+            <tr class="etiqueta-tr">
+                <td class="th-borde width-th-xx" style = "text-align:center;">{{ estudiante.carnet_estudiante }}</td>
+                <td class="th-borde width-th-xx" style = "text-align:center;">{{ estudiante.carnet_estudiante.carnet_estudiante.nombre_estudiante}}</td>
+                <td class="th-borde width-th-xx" style = "text-align:center;">{{ estudiante.carnet_estudiante.carnet_estudiante.apellido_estudiante }}</td>
+                <td class="th-borde width-th-xx" style = "text-align:center;">{{ estudiante.carnet_estudiante.carnet_estudiante.sexo_estudiante }}</td>
+                <td class="th-borde width-th-xx" style = "text-align:center;">{{ estudiante.modalidad }}</td>
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ estudiante.fecha_inicio }}</td>
+            </tr>
+        {% endfor %}
+        {% endif %}     
+
+    </table>
 
 </div>
 

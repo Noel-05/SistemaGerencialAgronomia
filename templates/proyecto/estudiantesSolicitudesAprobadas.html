@@ -60,7 +60,11 @@ Solicitudes Aprobadas
             		<td class="th-borde width-th-xx" style = "text-align:center;">{{ est.carnet_estudiante.carnet_estudiante.carnet_estudiante.nombre_estudiante}}</td>
                     <td class="th-borde width-th-xx" style = "text-align:center;">{{ est.carnet_estudiante.carnet_estudiante.carnet_estudiante.apellido_estudiante }}</td>
             		<td class="th-borde width-th-xx" style = "text-align:center;">{{ est.aceptado }}</td>
-                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ est.observaciones }}</td>
+                    {% if not est.observaciones %}
+                        <td class="th-borde width-th-xx" style = "text-align:center;">-</td>
+                    {% else %}
+                        <td class="th-borde width-th-xx" style = "text-align:center;">{{ est.observaciones }}</td>
+                    {% endif %}
         		</tr>
         {% endfor %}
            
@@ -72,7 +76,11 @@ Solicitudes Aprobadas
             		<td class="th-borde width-th-xx" style = "text-align:center;">{{ est.carnet_estudiante.carnet_estudiante.carnet_estudiante.nombre_estudiante}}</td>
                     <td class="th-borde width-th-xx" style = "text-align:center;">{{ est.carnet_estudiante.carnet_estudiante.carnet_estudiante.apellido_estudiante }}</td>
             		<td class="th-borde width-th-xx" style = "text-align:center;">{{ est.aceptado }}</td>
-                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ est.observaciones }}</td>
+                    {% if not est.observaciones %}
+                        <td class="th-borde width-th-xx" style = "text-align:center;">-</td>
+                    {% else %}
+                        <td class="th-borde width-th-xx" style = "text-align:center;">{{ est.observaciones }}</td>
+                    {% endif %}
         		</tr>
         {% endfor %}
     {% endif %}     

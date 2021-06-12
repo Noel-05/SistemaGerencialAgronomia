@@ -48,6 +48,54 @@ def index(request):
 
 
 """
+Función para mostrar imagenes dentro de los reportes en PDF elaborados.
+@param      una url relativa
+@return     Retorna la configuración de Settings donde estan alojadas las imagenes
+@author     Noel Renderos
+"""
+
+def link_callback(uri, rel):
+    """
+    Convierte HTML a URIs absoluta en el Path del sistema para que  xhtml2pdf
+    tenga acceso a los recuros
+    """
+    result = finders.find(uri)
+
+    if result:
+        if not isinstance(result, (list, tuple)):
+            result = [result]
+    
+        result = list(os.path.realpath(path) for path in result)
+        path = result[0]
+    
+    else:
+        sUrl = settings.STATIC_URL  # Typically /static/
+        sRoot = settings.STATIC_ROOT  # Typically /home/userX/project_static/
+        mUrl = settings.MEDIA_URL  # Typically /media/
+        mRoot = settings.MEDIA_ROOT  # Typically /home/userX/project_static/media/
+
+        if uri.startswith(mUrl):
+            path = os.path.join(mRoot, uri.replace(mUrl, ""))
+    
+        elif uri.startswith(sUrl):
+            path = os.path.join(sRoot, uri.replace(sUrl, ""))
+    
+        else:
+            return uri
+
+    # make sure that file exists
+    if not os.path.isfile(path):
+        raise Exception(
+            'media URI must start with %s or %s' % (sUrl, mUrl)
+        )
+    
+    return path
+
+
+#---------------------------------------------------------------------------------------------------------------
+
+
+"""
 Función para recuperar y mostrar el listado de departamentos para su selección y realización del 
 filtro correspondiente y de la recuperación de todos los proyectos agrupados por departamento.
 @param      una solicitud de petición (request)
@@ -125,7 +173,7 @@ def reporteEstudiantesDepartamento(request, depto):
     response = HttpResponse(content_type = 'application/pdf')
     response['Content-Disposition'] = 'inline; filename="RT-ProyectosPorDepartamento.pdf"'
     
-    pisa_status = pisa.CreatePDF(html, dest = response)
+    pisa_status = pisa.CreatePDF(html, dest = response, link_callback=link_callback)
     
     if pisa_status.err:
         return HttpResponse('We had some errors <pre>'+ html + '</pre>')
@@ -259,7 +307,7 @@ def reporteEstudiantesPorDocentes1(request, docent):
     response = HttpResponse(content_type = 'application/pdf')
     response['Content-Disposition'] = 'inline; filename="RG-EstudiantesPorDocente.pdf"'
     
-    pisa_status = pisa.CreatePDF(html, dest = response)
+    pisa_status = pisa.CreatePDF(html, dest = response, link_callback=link_callback)
     
     if pisa_status.err:
         return HttpResponse('We had some errors <pre>'+ html + '</pre>')
@@ -293,7 +341,7 @@ def reporteEstudiantesPorDocentes2(request, fecha_inic, docent):
     response = HttpResponse(content_type = 'application/pdf')
     response['Content-Disposition'] = 'inline; filename="RG-EstudiantesPorDocente.pdf"'
     
-    pisa_status = pisa.CreatePDF(html, dest = response)
+    pisa_status = pisa.CreatePDF(html, dest = response, link_callback=link_callback)
     
     if pisa_status.err:
         return HttpResponse('We had some errors <pre>'+ html + '</pre>')
@@ -727,7 +775,7 @@ def reporteEstudiantesPorcentajeCarrera(request, porcentaje):
     template = get_template('reportes/ReportePorcentajeCarrera.html')
         
     context = {
-            'title':'Reporte de estudiantes por porcentaje carrera aprobado','estudios_universitarios':estudios_universitarios,
+            'estudios_universitarios':estudios_universitarios,
         }
         
     html = template.render(context)
@@ -735,7 +783,7 @@ def reporteEstudiantesPorcentajeCarrera(request, porcentaje):
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'inline; filename="RT-EstudiantesPorPorcentaje.pdf"'
         
-    pisa_status = pisa.CreatePDF(html, dest=response)
+    pisa_status = pisa.CreatePDF(html, dest=response, link_callback=link_callback)
         
     if pisa_status.err:
         return HttpResponse('We had some errors <pre>'+ html + '</pre>')
@@ -826,7 +874,7 @@ def  reporteEstudiantesPorGenero(request,sexo):
     template = get_template('reportes/ReporteGenero.html')
         
     context = {
-        'title':'Reporte de estudiantes por género','estudiantes':estudiantes
+        'estudiantes':estudiantes
     }
         
     html = template.render(context)
@@ -834,7 +882,7 @@ def  reporteEstudiantesPorGenero(request,sexo):
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'inline; filename="RT-EstudiantesPorGenero.pdf"'
         
-    pisa_status = pisa.CreatePDF(html, dest=response)
+    pisa_status = pisa.CreatePDF(html, dest=response, link_callback=link_callback)
         
     if pisa_status.err:
         return HttpResponse('We had some errors <pre>'+ html + '</pre>')
@@ -940,7 +988,7 @@ def reporteEstudiantesPorModalidad(request, modalidad):
     response = HttpResponse(content_type = 'application/pdf')
     response['Content-Disposition'] = 'inline; filename="RG-EstudiantesPorModalidad.pdf"'
     
-    pisa_status = pisa.CreatePDF(html, dest = response)
+    pisa_status = pisa.CreatePDF(html, dest = response, link_callback=link_callback)
     
     if pisa_status.err:
         return HttpResponse('We had some errors <pre>'+ html + '</pre>')
@@ -961,7 +1009,6 @@ def  reporteEstudiantesPorModalidadFecha(request, modalidad,fecha):
     template = get_template('reportes/ReporteModalidad.html')
         
     context = {
-            'title':'Reporte de estudiantes por modalidad',
             'servicios':servicios,
         }
         
@@ -970,7 +1017,7 @@ def  reporteEstudiantesPorModalidadFecha(request, modalidad,fecha):
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'inline; filename="RG-EstudiantesPorModalidad.pdf"'
         
-    pisa_status = pisa.CreatePDF(html, dest=response)
+    pisa_status = pisa.CreatePDF(html, dest=response, link_callback=link_callback)
         
     if pisa_status.err:
         return HttpResponse('We had some errors <pre>'+ html + '</pre>')
@@ -1132,7 +1179,7 @@ def reporteSolicitudAprobada(request, estado):
     response = HttpResponse(content_type = 'application/pdf')
     response['Content-Disposition'] = 'inline; filename="SolicitudesAprobadas.pdf"'
     
-    pisa_status = pisa.CreatePDF(html, dest = response)
+    pisa_status = pisa.CreatePDF(html, dest = response, link_callback=link_callback)
     
     if pisa_status.err:
         return HttpResponse('We had some errors <pre>'+ html + '</pre>')
@@ -1265,7 +1312,7 @@ def reporteEstudiantesServSocialPeriodo(request, fecha_inicio, fecha_fin):
     response = HttpResponse(content_type = 'application/pdf')
     response['Content-Disposition'] = 'inline; filename="ServicioSocialPorPeriodo.pdf"'
     
-    pisa_status = pisa.CreatePDF(html, dest = response)
+    pisa_status = pisa.CreatePDF(html, dest = response, link_callback=link_callback)
     
     if pisa_status.err:
         return HttpResponse('We had some errors <pre>'+ html + '</pre>')
@@ -1410,7 +1457,7 @@ def reporteEstudianteCarreraPeriodo1(request, carrera):
     response = HttpResponse(content_type = 'application/pdf')
     response['Content-Disposition'] = 'inline; filename="ServicioSocialCarreraPeriodo.pdf"'
     
-    pisa_status = pisa.CreatePDF(html, dest = response)
+    pisa_status = pisa.CreatePDF(html, dest = response, link_callback=link_callback)
     
     if pisa_status.err:
         return HttpResponse('We had some errors <pre>'+ html + '</pre>')
@@ -1445,7 +1492,7 @@ def reporteEstudianteCarreraPeriodo2(request, fecha, carrera):
     response = HttpResponse(content_type = 'application/pdf')
     response['Content-Disposition'] = 'inline; filename="ServicioSocialCarreraPeriodo.pdf"'
     
-    pisa_status = pisa.CreatePDF(html, dest = response)
+    pisa_status = pisa.CreatePDF(html, dest = response, link_callback=link_callback)
     
     if pisa_status.err:
         return HttpResponse('We had some errors <pre>'+ html + '</pre>')

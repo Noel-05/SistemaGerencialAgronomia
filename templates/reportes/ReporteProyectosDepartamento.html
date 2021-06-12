@@ -1,41 +1,59 @@
+{% load static %}
 {%block title%}
-<strong> Reporte de Proyectos de Estudiantes en Servicio Social por Departamento. </strong>
 {%endblock%}
 {% block content %}
 
 <div class="container">
+        
     <div>
+        <table>
+            <thead>
+                <tr>
+                    <th><img src="static/img/FondoUPS_Inicio.png" width="150" height="70"></th>
+                    <th>
+                        UNIVERSIDAD DE EL SALVADOR</br>
+                        FACULTAD DE CIENCIAS AGRONOMICAS</br>
+                        UNIDAD DE DESARROLLO ACADEMICO</br>
+                        UNIDAD DE PROYECCION SOCIAL</br>
+                    </th>
+                    <th><img src="static/img/logoUES.jpg" width="70" height="90"></th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+
+    <h3 align="center"><strong> Reporte de Proyectos de Estudiantes en Servicio Social por Departamento. </strong></h3>
 
     </br>
 
-        <table>
-            <thead>
-        	   <tr>
-                    <th>Departamento</th>
-                    <th>Proyecto</th>
-            	    <th>Carnet</th>
-            	    <th>Nombre</th>
-            	    <th>Apellido</th>
-            		<th>Carrera</th>
-        		</tr>
-            </thead>
+    <table>
+        <thead>
+            <tr>
+                <th>Departamento</th>
+                <th>Proyecto</th>
+                <th>Carnet</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Carrera</th>
+            </tr>
+        </thead>
 
-            {% if proyectos_departamento_filtro %}
+        {% if proyectos_departamento_filtro %}
 
-                {% for proydep in proyectos_departamento_filtro %}
-                    <tr class="etiqueta-tr">
-                        <td class="th-borde width-th-xx" style = "text-align:center;">{{ proydep.carnet_estudiante.carnet_estudiante.codigo_carrera.departamento.nombreDepartamento }}</td>
-                        <td class="th-borde width-th-xx" style = "text-align:center;">{{ proydep.codigo_proyecto.descripcion_proyecto }}</td>
-                        <td class="th-borde width-th-xx" style = "text-align:center;">{{ proydep.carnet_estudiante.carnet_estudiante.carnet_estudiante }}</td>
-                        <td class="th-borde width-th-xx" style = "text-align:center;">{{ proydep.carnet_estudiante.carnet_estudiante.carnet_estudiante.nombre_estudiante }}</td>
-                        <td class="th-borde width-th-xx" style = "text-align:center;">{{ proydep.carnet_estudiante.carnet_estudiante.carnet_estudiante.apellido_estudiante }}</td>
-                        <td class="th-borde width-th-xx" style = "text-align:center;">{{ proydep.carnet_estudiante.carnet_estudiante.codigo_carrera.nombre_carrera }}</td>
-                    </tr>
-                {% endfor %}
+            {% for proydep in proyectos_departamento_filtro %}
+                <tr class="etiqueta-tr">
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ proydep.carnet_estudiante.carnet_estudiante.codigo_carrera.departamento.nombreDepartamento }}</td>
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ proydep.codigo_proyecto.descripcion_proyecto }}</td>
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ proydep.carnet_estudiante.carnet_estudiante.carnet_estudiante }}</td>
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ proydep.carnet_estudiante.carnet_estudiante.carnet_estudiante.nombre_estudiante }}</td>
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ proydep.carnet_estudiante.carnet_estudiante.carnet_estudiante.apellido_estudiante }}</td>
+                    <td class="th-borde width-th-xx" style = "text-align:center;">{{ proydep.carnet_estudiante.carnet_estudiante.codigo_carrera.nombre_carrera }}</td>
+                </tr>
+            {% endfor %}
 
-            {% endif %}   
+        {% endif %}   
 
-    	</table>
-    </div>
+    </table>
+</div>
 
 {% endblock %}
