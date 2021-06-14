@@ -1,6 +1,6 @@
 {% extends 'base/base.html' %}
 {%block title%}
-Actualizar Base de Datos Gerencial
+Respaldar Base de Datos Gerencial
 {%endblock%}
 {% block content %}
 
@@ -8,7 +8,7 @@ Actualizar Base de Datos Gerencial
     <div class="container">
         
         </br>
-        <h2 align="center" class="form-titulo" style ="margin-left: 5px;">Actualizar Base de Datos Gerencial</h2>
+        <h2 align="center" class="form-titulo" style ="margin-left: 5px;">Respaldo de Base de Datos Gerencial</h2>
         </br></br></br>
         
     </div>
@@ -19,7 +19,7 @@ Actualizar Base de Datos Gerencial
     </br>
 
     <h3><strong>PASO 1.</strong></h5>
-    <h4>Porfavor presiona el bot&oacute;n <strong><i> Descargar Script </i></strong> </br> para descargar los datos de la </br> Base de Datos Transaccional. </h4>
+    <h4>Porfavor presiona el bot&oacute;n <strong><i> Descargar Script </i></strong> </br> para descargar el respaldo de la </br> Base de Datos Transaccional. </h4>
 
     </br>
 
@@ -54,11 +54,11 @@ Actualizar Base de Datos Gerencial
     </br></br></br></br></br>
 
     <h3><strong>PASO 3.</strong></h5>
-    <h4>Una vez subido el archivo descargado al </br> sistema, presiona el bot&oacute;n <strong><i>Actualizar BD</i></strong> </br> para que los nuevos cambios se agreguen </br> a la Base de Datos Gerencial.</h4>
+    <h4>Una vez subido el archivo descargado al </br> sistema, presiona el bot&oacute;n <strong><i>Restaurar BD</i></strong> </br> para que el respaldo de BD se ejecute </br> dentro de la Base de Datos Gerencial.</h4>
 
     </br>
     
-    <a href = "{% url 'sistemaGerencialAgro:actualizarBD' %}"><input class = "btn-buscar btn-busqueda"  type="button" href = "{% url 'sistemaGerencialAgro:actualizarBD' %}" onclick = "return '{% url 'sistemaGerencialAgro:actualizarBD' %}' )" value="Actualizar BD"></a>
+    <a href = "{% url 'sistemaGerencialAgro:actualizarBD' %}"><input class = "btn-buscar btn-busqueda"  type="button" href = "{% url 'sistemaGerencialAgro:actualizarBD' %}" onclick = "return '{% url 'sistemaGerencialAgro:actualizarBD' %}' )" value="Restaurar BD"></a>
     
     </br></br></br></br>
 

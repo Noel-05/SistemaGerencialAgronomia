@@ -71,8 +71,6 @@ urlpatterns = [
     path('sistemaGerencialAgro/exportarCarreraPeriodo1/<str:carrera>/', login_required(exportarEstudianteCarreraPeriodo1), name="exportar_carrera_periodo_uno"),
     path('sistemaGerencialAgro/exportarCarreraPeriodo2/<str:fecha>/<str:carrera>/', login_required(exportarEstudianteCarreraPeriodo2), name="exportar_carrera_periodo_dos"),
 
-
-
     # Docentes Tutores de Servicio Social.
     path('sistemaGerencialAgro/consultaEstudiantesPorDocente/', login_required(consultaEstudiantesDocente), name="consulta_estudiante_docente"),
     path('sistemaGerencialAgro/filtrarEstudiantesPorDocente/', login_required(filtrarEstudiantesDocentes), name="filtrar_estudiante_docente"),
@@ -80,15 +78,9 @@ urlpatterns = [
     path('sistemaGerencialAgro/reporteEstudiantesPorDocente2/<str:fecha_inic>/<str:docent>/', login_required(reporteEstudiantesPorDocentes2), name="reporte_estudiante_docente_dos"),
     path('sistemaGerencialAgro/exportarEstudiantesPorDocente1/<str:fecha_inic>/<str:docent>/', login_required(exportarEstudiantesDocente1), name="exportar_estudiante_docente_uno"),
     path('sistemaGerencialAgro/exportarEstudiantesPorDocente2/<str:docent>/', login_required(exportarEstudiantesDocente2), name="exportar_estudiante_docente_dos"),
-
-
-    # ->->->->->->->  NOTA: <-<-<-<-<-<-<-
-    # LA PERSONA QUE HIZO ESTAS URL DE ABAJO AGREGARLAS A LA SECCION DE ARRIBA QUE CORRESPONDA.
-    
-
     
     # Actualizar la BD por medio de la subida del archivo.
     #path('sistemaGerencialAgro/list/', lista, name='lista'),
-    #path('sistemaGerencialAgro/actualizarBD/', actualizarBD, name='actualizarBD'),
+    path('sistemaGerencialAgro/actualizarBD/', actualizarBD, name='actualizarBD'),
 
 ]

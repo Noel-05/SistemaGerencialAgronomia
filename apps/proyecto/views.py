@@ -1594,50 +1594,53 @@ def exportarEstudianteCarreraPeriodo2(request,fecha,carrera):
 
 #---------------------------------------------------------------------------------------------------------------
 
-# def actualizarBD(request):
-#     # Handle file upload
-#     if request.method == 'POST':
-#         form = DocumentForm(request.POST, request.FILES)
+
+
+def actualizarBD(request):
+    # Handle file upload
+    if request.method == 'POST':
+        form = DocumentForm(request.POST, request.FILES)
         
-#         if form.is_valid():
-#             archivo = request.FILES['docfile']
+        if form.is_valid():
+            archivo = request.FILES['docfile']
 
-#             handle_uploaded_file(archivo)
+            handle_uploaded_file(archivo)
             
-#             #newdoc = Document(docfile = archivo)
-#             #newdoc.save()
+            #newdoc = Document(docfile = archivo)
+            #newdoc.save()
 
-#             # Redirect to the document list after POST
-#             return HttpResponseRedirect(reverse_lazy('sistemaGerencialAgro:actualizarBD'))
+            # Redirect to the document list after POST
+            return HttpResponseRedirect(reverse_lazy('sistemaGerencialAgro:actualizarBD'))
     
-#     else:
-#         form = DocumentForm() # A empty, unbound form
+    else:
+        form = DocumentForm() # A empty, unbound form
 
-#     # Load documents for the list page
-#     documents = Document.objects.all()
+    # Load documents for the list page
+    documents = Document.objects.all()
 
-#     # Render list page with the documents and the form
-#     return render(
-#         request,
-#         'proyecto/actualizarBD.html',
-#         {
-#             'documents': documents, 
-#             'form': form
-#         }
-#     )
+    # Render list page with the documents and the form
+    return render(
+        request,
+        'proyecto/actualizarBD.html',
+        {
+            'documents': documents, 
+            'form': form
+        }
+    )
 
-# def handle_uploaded_file(f):
-#     filename = f.name
 
-#     if filename != 'db.sqlite3':
-#         filename = 'db.sqlite3'
+def handle_uploaded_file(f):
+    filename = f.name
 
-#     destination = open('media/db/'+filename, 'wb+')
+    if filename != 'dbRespaldo.sqlite3':
+        filename = 'dbRespaldo.sqlite3'
 
-#     for chunk in f.chunks(): 
-#         destination.write(chunk)
+    destination = open('media/respaldoDB/'+filename, 'wb+')
 
-#     destination.close()
+    for chunk in f.chunks(): 
+        destination.write(chunk)
+
+    destination.close()
 
 #------------------------------------------------------------------------------
 

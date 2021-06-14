@@ -118,7 +118,7 @@
         {% if request.user.rol == 'ADM'%}
         <li class="list-group-item" onclick="window.location.href='{% url 'sistemaGerencialAgro:procedimientoETL' %}'"><a style="text-decoration:none" href="{% url 'sistemaGerencialAgro:procedimientoETL' %}">Actualizar BD</a></li>
 
-        {% comment %} <li class="list-group-item" onclick="window.location.href='{% url 'sistemaGerencialAgro:actualizarBD' %}'"><a style="text-decoration:none" href="{% url 'sistemaGerencialAgro:actualizarBD' %}">Actualizar BD Ej.</a></li> {% endcomment %}
+        <li class="list-group-item" onclick="window.location.href='{% url 'sistemaGerencialAgro:actualizarBD' %}'"><a style="text-decoration:none" href="{% url 'sistemaGerencialAgro:actualizarBD' %}">Respaldo BD</a></li>
 
         <li class="list-group-item" onclick="window.location.href='{% url 'usuario:inicio_usuarios' %}'"><a style="text-decoration:none" href="{% url 'usuario:inicio_usuarios' %}">Usuarios</a></li>
         {% endif %}
