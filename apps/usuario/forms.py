@@ -134,7 +134,7 @@ class FormularioUsuario(forms.ModelForm):
 			'username': forms.TextInput(
 				attrs={
 					'class': 'form-control',
-					'placeholder': 'Ingrese su Carnet',
+					'placeholder': 'Ingrese su Nombre de Usuario',
 				}
 			)
 		
@@ -177,6 +177,15 @@ class FormularioUsuario(forms.ModelForm):
 		if not 2 <= len(apellidos) <= 100:
 			raise forms.ValidationError('Los apellidos deben de contener mas caracteres')
 		return apellidos
+
+	def clean_username(self):
+		username = self.cleaned_data.get('username')
+
+		regex = re.compile('^([A-Za-z0-9]{4,15})*$')
+
+		if not regex.match(username):
+			raise forms.ValidationError('Su username debe de contener entre 4 y 15 caracteres, y solo puede contener letras y números')
+		return username	
 
 	def save(self, commit=True):
 		user=super().save(commit=False)
@@ -236,6 +245,15 @@ class FormularioUsuarioEditar(forms.ModelForm):
 		if not 2 <= len(apellidos) <= 100:
 			raise forms.ValidationError('Los apellidos deben de contener mas caracteres')
 		return apellidos
+
+	def clean_username(self):
+		username = self.cleaned_data.get('username')
+
+		regex = re.compile('^([A-Za-z0-9]{4,15})*$')
+
+		if not regex.match(username):
+			raise forms.ValidationError('Su username debe de contener entre 4 y 15 caracteres, y solo puede contener letras y números')
+		return username			
 
 	def save(self, commit=True):
 		user=super().save(commit=False)

@@ -19,8 +19,8 @@ Estudiantes por género
         <form method="POST" action="{% url 'sistemaGerencialAgro:buscar_genero' %}">
             {% csrf_token %} 
             <h3>Selecciona el genero a filtrar: </h3> </br>
-            <input type="radio" name="sexo"  id = "sexo" value="F">Femenino
-            <input type="radio" name="sexo"  id = "sexo" value="M">Masculino
+            <input type="radio" name="sexo"  id = "sexo" value="F" required>Femenino
+            <input type="radio" name="sexo"  id = "sexo" value="M" required>Masculino
             
             </br></br></br>
             
